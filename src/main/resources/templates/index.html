@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>woodwhales-code-generator</title>
+<link rel="stylesheet" th:href="@{/webjars/layui/css/layui.css}" media="all">
+<link rel="stylesheet" th:href="@{/css/mycss.css}" >
+</head>
+<body>
+<div class="layui-container">
+<div class="layui-header">
+    <div class="layui-logo">woodwhales-code-generator</div>
+</div>
+<div class="layui-row">
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+  <legend>数据库链接信息</legend>
+</fieldset>
+<form class="layui-form">
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">IP地址</label>
+      <div class="layui-input-inline">
+        <input type="text" name="ip" lay-verify="required" autocomplete="off" placeholder="请输入主机名或IP地址" class="layui-input" value="127.0.0.1">
+      </div>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">端口</label>
+      <div class="layui-input-inline">
+        <input type="text" name="port" lay-verify="required" autocomplete="off" class="layui-input" value="3306">
+      </div>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">用户</label>
+      <div class="layui-input-inline">
+        <input type="text" name="username" lay-verify="required" autocomplete="off" placeholder="请输入用户名" class="layui-input">
+      </div>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">密码</label>
+    <div class="layui-input-inline">
+      <input type="password" name="password" lay-verify="required|pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item" id="schemaDivId" hidden="true">
+    <label class="layui-form-label">schema</label>
+    <div class="layui-input-inline">
+      <input value='false' id="needGenerate" hidden="true">
+      <select name="schema" id="schema" lay-filter="schema" disabled="">
+        <option value=""></option>
+      </select>
+    </div>
+  </div>
+  <div class="layui-form-item" id="processDivId" hidden="true">
+    <label class="layui-form-label">目录</label>
+    <div class="layui-input-inline">
+      <input value='false' id="processId" hidden="true">
+      <div class="layui-input-inline">
+        <input type="text" name="generateDir" id="generateDir" autocomplete="off" placeholder="请指定要生成的目录路径" class="layui-input">
+      </div>
+    </div>
+  </div>
+  <div class="layui-form-item" id="packageNameDivId" hidden="true">
+    <label class="layui-form-label">包名</label>
+    <div class="layui-input-inline">
+      <div class="layui-input-inline">
+        <input type="text" name="packageName" id="packageName" autocomplete="off" placeholder="请输入要生成的包名称" class="layui-input">
+      </div>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button type="submit" class="layui-btn" lay-submit="" id="btnId" lay-filter="btnId">测试</button>
+      <button type="reset" class="layui-btn layui-btn-primary" id="resetBtnId">重置</button>
+    </div>
+  </div>
+</form>
+</div>
+
+<div class="layui-row" id="tableInfosDiv" hidden="true">
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;" id="tableInfoLableId" hidden="true">
+  <legend>数据库表展示</legend>
+</fieldset>
+
+<table id="tableInfosId" lay-filter="tableInfosId"></table>
+</div>
+
+<div class="layui-row" style="height: 44px; background-color: #000; line-height: 44px; color: #FFF;">
+      &nbsp;&nbsp;&nbsp;&nbsp;© <a href="https://woodwhales.cn/" style="color: #FFF;">woodwhales.cn</a> - woodwhales's blog 
+</div>
+</div>
+
+<script th:src="@{/webjars/layui/layui.js}"></script>
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:inline="none">
+
+layui.use(['form', 'layer', 'table'], function(){
+	var form = layui.form,
+	layer = layui.layer,
+	table = layui.table
+	;
+	
+	var emptySchema = function() {
+		$('#schema').attr('disabled','');
+	    $("#schema").empty();
+	    $('#schemaDivId').hide();
+	    $('#processDivId').hide();
+	    $('#packageNameDivId').hide();
+	    $('#tableInfosDiv').hide();
+
+	    $('#processId').val('false');
+	    $('#schema').removeAttr("lay-verify");
+	    $('#generateDir').removeAttr("lay-verify");
+	    $('#packageName').removeAttr("lay-verify");
+	    layui.form.render("select");
+	    updateBtnToTest();
+	}
+	
+	var openGenerate = function() {
+		$('#schemaDivId').show();
+		$('#needGenerate').val('true');
+		$('#needGenerateDirDivId').hide();
+		$('#needGenerateDir').val('false');
+	}
+	
+	var updateBtnToTest = function() {
+		$('#btnId').html('测试');
+    }
+	
+	var updateBtnToSubmit = function() {
+        $('#btnId').html('提交');
+    }
+	
+	var closeGenerate = function() {
+		$('#schemaDivId').hide();
+		$('#tableInfosDiv').hide();
+        $('#needGenerate').val('false');
+    }
+	
+	var isNeedGenerate = function() {
+		if($('#needGenerate').val() == 'true') {
+			return true;
+		} 
+		
+		return false;
+	}
+	
+	var isProcess = function() {
+        if($('#processId').val() == 'true') {
+            return true;
+        } 
+        
+        return false;
+    }
+	
+	$("#resetBtnId").on("click",function() {
+		emptySchema();
+	});
+	
+	$('#testBtnId').html('提交');
+	
+	var updatedSelect = function(res) {
+		updateBtnToSubmit();
+		$('#processId').val('false');
+        openGenerate();
+        // 数据库下拉选增加数据库名称
+        $('#schema').append(new Option('请选择', ''));
+        $.each(res.data, function(index, item) {
+            $('#schema').append(new Option(item, item));
+        });
+        $('#schema').removeAttr("disabled");
+        $('#schema').attr('lay-verify','required');
+        layui.form.render("select");
+	}
+	
+	form.on('submit(btnId)', function(data) {
+		if(isNeedGenerate() && isProcess()) {
+			$.ajax({
+                url:'/generate/process',
+                type:'post',
+                dataType:'json',
+                contentType:"application/json",
+                async:true,
+                cache:false,
+                data:JSON.stringify(data.field),
+                success:function(res) {
+                    if(res.code == '0000') {
+                    	layer.msg('生成成功');
+                    } else {
+                        layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
+                    }
+                },
+                error:function(res) {
+                    layer.msg('网络异常', {icon: 5});
+                }
+            });
+            
+            return false;
+		} else if(isNeedGenerate()) {
+			$('#processId').val('false');
+			$.ajax({
+	            url:'/generate/buildTableInfo',
+	            type:'post',
+	            dataType:'json',
+	            contentType:"application/json",
+	            async:true,
+	            cache:false,
+	            data:JSON.stringify(data.field),
+	            success:function(res) {
+	                if(res.code == '0000') {
+	                	$('#tableInfoLableId').show();
+
+	                	$('#processId').val('true');
+
+	                	$('#processDivId').show();
+	                	$('#packageNameDivId').show();
+	                	
+	                	$('#tableInfosDiv').show();
+	                	
+	                	$('#generateDir').attr('lay-verify','required');
+	                	$('#packageName').attr('lay-verify','required');
+	                	
+	                	$('#btnId').html('生成');
+	                	table.render({
+	                		  elem: '#tableInfosId' //指定原始表格元素选择器（推荐id选择器）
+	                		  ,cols: [[
+	                			  {field: 'dbName', title: '数据库名称', width:'25%'}
+	                			  ,{field: 'name', title: 'Class名', width:'25%'}
+	                			  ,{field: 'comment', title: '注释', width:'40%'}
+	                			  ,{field: 'keys', title: '主键', width:'10%', templet:function(data) {
+	                				  return data.keys.join(',');
+	                			  }}
+	                		  ]]
+	                	      ,data: res.data
+                		});
+	                } else {
+	                    $('#tableInfoLableId').hide();
+	                    layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
+	                }
+	            },
+	            error:function(res) {
+	                $('#tableInfoLableId').hide();
+	                layer.msg('网络异常', {icon: 5});
+	            }
+	        });
+			
+			return false;
+		}
+		
+		emptySchema();
+		
+        $.ajax({
+            url:'/generate/buildConnection',
+            type:'post',
+            dataType:'json',
+            contentType:"application/json",
+            async:true,
+            cache:false,
+            data:JSON.stringify(data.field),
+            success:function(res) {
+            	if(res.code == '0000') {
+            		updatedSelect(res)
+            	} else {
+            		layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
+            	}
+            },
+            error:function(res) {
+                layer.msg('网络异常', {icon: 5});
+            }
+        });
+        
+	    return false;
+    });
+	
+	
+});
+
+</script>
+</body>
+</html>
