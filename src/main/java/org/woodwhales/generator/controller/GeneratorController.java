@@ -14,6 +14,7 @@ import org.woodwhales.generator.controller.request.DataBaseRequestBody;
 import org.woodwhales.generator.controller.response.RespVO;
 import org.woodwhales.generator.entity.DataBaseInfo;
 import org.woodwhales.generator.entity.TableInfo;
+import org.woodwhales.generator.exception.GenerateException;
 import org.woodwhales.generator.service.FreeMarkerService;
 import org.woodwhales.generator.service.GenerateService;
 
@@ -65,29 +66,13 @@ public class GeneratorController {
 	}
 	
 	private File checkBaseDirPath(String baseDirPath) {
-		// File baseDir = FileUtils.getFile(baseDirPath);
 		File tmpfile = FileUtils.getFile(baseDirPath + File.separator + "src" + File.separator + "main" + File.separator + "java");
-		// 如果根目录存在并且不为空目录
-//		if(baseDir.exists()) {
-//			if(tmpfile) {
-//				
-//			}
-//			
-//			String[] files = baseDir.list();
-//			if(files.length > 0) { 
-//				log.info("files = {}", files.toString());
-//				throw new RuntimeException("要生成代码的目录不为空");
-//			}
-//			
-//			return baseDir;
-//		} 
-		
 		if(!tmpfile.exists()) {
 			try {
 				FileUtils.forceMkdir(tmpfile);
 			} catch (Exception e) {
 				log.error("create dir process failed, {}", e);
-				throw new RuntimeException("生成代码的目录失败");
+				throw new GenerateException("生成代码的目录失败");
 			}
 		}
 
@@ -109,7 +94,7 @@ public class GeneratorController {
 				FileUtils.forceMkdir(targetDirFile);
 			} catch (Exception e) {
 				log.error("create dir process failed, {}", e);
-				throw new RuntimeException("生成代码的包目录失败");
+				throw new GenerateException("生成代码的包目录失败");
 			}
 		}
 
