@@ -1,5 +1,4 @@
 package org.woodwhales.generator.service.impl;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +14,7 @@ import org.woodwhales.generator.service.FreeMarkerService;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,8 +40,8 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
 	}
 
 	@Override
-	public void process(File targetFile, String packageName, DataBaseInfo dataBaseInfo, List<TableInfo> tables) throws Exception {
-		HashMap<String, Object> dataModel = new HashMap<>();
+	public boolean process(File targetFile, String packageName, DataBaseInfo dataBaseInfo, List<TableInfo> tables) throws Exception {
+		HashMap<String, Object> dataModel = new HashMap<>(16);
 		dataModel.put("settings", dataBaseInfo);
 		dataModel.put("packageName", packageName);
 		String targetFilePath = targetFile.getAbsolutePath();
@@ -57,10 +57,10 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
 			process(dataModel, tableInfo, targetFilePath, "service", tableInfo.getName()+"Service");
 			process(dataModel, tableInfo, targetFilePath, "service.impl", tableInfo.getName()+"ServiceImpl");
 		}
-		
+		return true;
 	}
 	
-	private void process(HashMap<String, Object> dataModel, TableInfo tableInfo, String targetFilePath, String templateName, String fileName) throws Exception {
+	private boolean process(HashMap<String, Object> dataModel, TableInfo tableInfo, String targetFilePath, String templateName, String fileName) throws Exception {
 		Template template = configuration.getTemplate(templateName + ".ftl");
 		
 		String[] split = StringUtils.split(templateName, ".");
@@ -73,8 +73,13 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
 		FileUtils.forceMkdir(new File(modelPath));
 		// 是否覆盖原来的文件
 		boolean isCoverOldFile = true;
-		FileWriter fw = new FileWriter(new File(modelPath + File.separator + fileName +".java"), !isCoverOldFile);
-		template.process(dataModel, fw);
+		try(FileWriter fw = new FileWriter(new File(modelPath + File.separator + fileName +".java"), !isCoverOldFile);) {
+			template.process(dataModel, fw);
+		} catch (IOException e) {
+			log.error("生成文件异常，cause = {}", e.getCause().getMessage());
+			return false;
+		}
+		return true;
 	}
 
 	@Override

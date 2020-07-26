@@ -40,21 +40,6 @@ public class GeneratorController {
 	@Qualifier("markdownService")
 	private FreeMarkerService markdownService;
 
-	@PostMapping("/markdown")
-	public RespVO markdown(@RequestBody DataBaseRequestBody dataBaseRequestBody) throws Exception {
-		String baseDirPath = dataBaseRequestBody.getGenerateDir();
-		File baseDir = new File(baseDirPath);
-
-		DataBaseInfo dataBaseInfo = DataBaseInfo.convert(dataBaseRequestBody);
-		List<TableInfo> tables = generateService.listTables(dataBaseInfo);
-
-		String packageName = dataBaseRequestBody.getPackageName();
-
-		markdownService.process(baseDir, packageName, dataBaseInfo, tables);
-
-		return RespVO.success();
-	}
-
 	/**
 	 * 通过数据基本链接信息，获取数据库的元信息
 	 * @param dataBaseRequestBody
@@ -95,10 +80,22 @@ public class GeneratorController {
 		
 		DataBaseInfo dataBaseInfo = DataBaseInfo.convert(dataBaseRequestBody);
 		List<TableInfo> tables = generateService.listTables(dataBaseInfo);
-		
-		javaFileService.process(targetFile, packageName, dataBaseInfo, tables);
-		
-		return RespVO.success();
+
+		boolean generateCodeSuccess = false;
+		boolean generateMarkdownSuccess = false;
+		if (dataBaseRequestBody.getGenerateCode()) {
+			generateCodeSuccess = javaFileService.process(targetFile, packageName, dataBaseInfo, tables);
+		} else {
+			generateCodeSuccess = true;
+		}
+
+		if (dataBaseRequestBody.getGenerateMarkdown()) {
+			generateMarkdownSuccess = markdownService.process(new File(baseDirPath), packageName, dataBaseInfo, tables);
+		} else {
+			generateMarkdownSuccess = true;
+		}
+
+		return RespVO.resp(generateCodeSuccess && generateMarkdownSuccess);
 	}
 	
 	private File checkBaseDirPath(String baseDirPath) {

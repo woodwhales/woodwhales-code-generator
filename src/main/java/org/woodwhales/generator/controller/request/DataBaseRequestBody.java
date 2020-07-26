@@ -1,10 +1,10 @@
 package org.woodwhales.generator.controller.request;
 
-import javax.validation.constraints.NotBlank;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor
@@ -37,5 +37,15 @@ public class DataBaseRequestBody {
 	 * 生成代码的目录
 	 */
 	private String generateDir;
+
+	/**
+	 * 是否生成数据库表结构设计文档
+	 */
+	private Boolean generateMarkdown;
+
+	/**
+	 * 是否生成代码
+	 */
+	private Boolean generateCode;
 
 }

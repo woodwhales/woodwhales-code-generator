@@ -20,6 +20,6 @@ public interface FreeMarkerService {
 	 * @param tables
 	 * @throws Exception
 	 */
-	void process(File targetFile, String packageName, DataBaseInfo dataBaseInfo, List<TableInfo> tables) throws Exception;
+	boolean process(File targetFile, String packageName, DataBaseInfo dataBaseInfo, List<TableInfo> tables) throws Exception;
 	
 }

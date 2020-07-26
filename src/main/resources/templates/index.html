@@ -17,6 +17,18 @@
 </fieldset>
 <form class="layui-form">
   <div class="layui-form-item">
+    <label class="layui-form-label">生成代码</label>
+    <div class="layui-input-block">
+      <input type="checkbox" name="generateCode" checked="" lay-skin="switch" lay-text="是|否">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">生成数据库表结构设计文档</label>
+    <div class="layui-input-block">
+      <input type="checkbox" name="generateMarkdown" lay-skin="switch" lay-text="是|否">
+    </div>
+  </div>
+  <div class="layui-form-item">
     <div class="layui-inline">
       <label class="layui-form-label">IP地址</label>
       <div class="layui-input-inline">
@@ -176,8 +188,22 @@ layui.use(['form', 'layer', 'table'], function(){
         $('#schema').attr('lay-verify','required');
         layui.form.render("select");
 	}
-	
+
 	form.on('submit(btnId)', function(data) {
+
+        if(data.field.generateCode == "on") {
+          data.field.generateCode = true;
+        } else {
+          data.field.generateCode = false;
+        }
+
+        if(data.field.generateMarkdown == "on") {
+          data.field.generateMarkdown = true;
+        } else {
+          data.field.generateMarkdown = false;
+        }
+
+        console.log(JSON.stringify(data.field));
 		if(isNeedGenerate() && isProcess()) {
 			$.ajax({
                 url:'/generate/process',

@@ -14,7 +14,15 @@ public class RespVO {
 	private String code;
 	private String msg;
 	private Object data;
-	
+
+	public static RespVO resp(boolean result) {
+		if(result) {
+			return success();
+		}
+
+		return error();
+	}
+
 	public static RespVO success() {
 		return new RespVO("0000", "success", StringUtils.EMPTY);
 	}
