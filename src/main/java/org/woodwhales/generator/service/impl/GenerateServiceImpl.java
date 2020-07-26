@@ -2,6 +2,7 @@ package org.woodwhales.generator.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,8 @@ public class GenerateServiceImpl implements GenerateService {
 	@Autowired
 	private TableConfig tableConfig;
 
-	private Connection getConnection(DataBaseInfo dataBaseInfo) throws Exception {
+	@Override
+	public Connection getConnection(DataBaseInfo dataBaseInfo) throws Exception {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		return DriverManager.getConnection(dataBaseInfo.getUrl(), dataBaseInfo.getProperties());
 	}
@@ -116,10 +118,22 @@ public class GenerateServiceImpl implements GenerateService {
 		List<Column> columns = new ArrayList<>();
 		while (resultSet.next()) {
 			String columnName = resultSet.getString("COLUMN_NAME");
+			String typeName = resultSet.getString("TYPE_NAME");
+			String remarks = resultSet.getString("REMARKS");
+			String defaultValue = resultSet.getString("COLUMN_DEF");
+			int columnSize = resultSet.getInt("COLUMN_SIZE");
+			boolean nullable = BooleanUtils.toBoolean(resultSet.getInt("NULLABLE"));
+			String nullableString = BooleanUtils.toString(nullable, "是", "否");
+
 			Column column = Column.builder()
 								  .dbName(columnName)
-								  .dbType(resultSet.getString("TYPE_NAME"))
-								  .comment(resultSet.getString("REMARKS")).build();
+								  .dbType(typeName)
+								  .nullAble(nullable)
+					              .nullableString(nullableString)
+								  .columnSize(columnSize)
+								  .defaultValue(defaultValue)
+								  .comment(remarks).build();
+
 			// 将数据库表的字段类型转成 java 变量类型
 			column.setType(convertType(column.getDbType()));
 			column.setName(StringTools.upperWithOutFisrtChar(columnName));

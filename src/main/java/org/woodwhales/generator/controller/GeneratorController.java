@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +33,27 @@ public class GeneratorController {
 	private GenerateService generateService;
 	
 	@Autowired
-	private FreeMarkerService freeMarkerService;
+	@Qualifier("javaFileService")
+	private FreeMarkerService javaFileService;
+
+	@Autowired
+	@Qualifier("markdownService")
+	private FreeMarkerService markdownService;
+
+	@PostMapping("/markdown")
+	public RespVO markdown(@RequestBody DataBaseRequestBody dataBaseRequestBody) throws Exception {
+		String baseDirPath = dataBaseRequestBody.getGenerateDir();
+		File baseDir = new File(baseDirPath);
+
+		DataBaseInfo dataBaseInfo = DataBaseInfo.convert(dataBaseRequestBody);
+		List<TableInfo> tables = generateService.listTables(dataBaseInfo);
+
+		String packageName = dataBaseRequestBody.getPackageName();
+
+		markdownService.process(baseDir, packageName, dataBaseInfo, tables);
+
+		return RespVO.success();
+	}
 
 	/**
 	 * 通过数据基本链接信息，获取数据库的元信息
@@ -75,7 +96,7 @@ public class GeneratorController {
 		DataBaseInfo dataBaseInfo = DataBaseInfo.convert(dataBaseRequestBody);
 		List<TableInfo> tables = generateService.listTables(dataBaseInfo);
 		
-		freeMarkerService.process(targetFile, packageName, dataBaseInfo, tables);
+		javaFileService.process(targetFile, packageName, dataBaseInfo, tables);
 		
 		return RespVO.success();
 	}

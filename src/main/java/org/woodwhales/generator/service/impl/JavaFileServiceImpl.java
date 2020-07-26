@@ -1,32 +1,30 @@
 package org.woodwhales.generator.service.impl;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.woodwhales.generator.entity.DataBaseInfo;
 import org.woodwhales.generator.entity.TableInfo;
 import org.woodwhales.generator.service.FreeMarkerService;
 
-import freemarker.cache.FileTemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateExceptionHandler;
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.HashMap;
+import java.util.List;
 
+/**
+ * 模板接口实现
+ * @author woodwhales
+ */
 @Slf4j
-@Service
-public class FreeMarkerServiceImpl implements FreeMarkerService {
+@Service("javaFileService")
+public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMarkerService {
 	
 	private Configuration configuration;
 	
@@ -38,18 +36,7 @@ public class FreeMarkerServiceImpl implements FreeMarkerService {
 	 */
 	@PostConstruct
 	public void init() {
-		configuration = new Configuration(Configuration.VERSION_2_3_22);
-		configuration.setDefaultEncoding("UTF-8");
-		configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-		Resource resource = resourceLoader.getResource("classpath:template");
-		File file;
-		try {
-			file = resource.getFile();
-			FileTemplateLoader templateLoader = new FileTemplateLoader(file);
-			configuration.setTemplateLoader(templateLoader);
-		} catch (IOException e) {
-			log.error("load template process is failed, {}", e);
-		}
+		configuration = getConfiguration(resourceLoader);
 	}
 
 	@Override
@@ -90,4 +77,8 @@ public class FreeMarkerServiceImpl implements FreeMarkerService {
 		template.process(dataModel, fw);
 	}
 
+	@Override
+	protected String filePath() {
+		return "classpath:template";
+	}
 }
