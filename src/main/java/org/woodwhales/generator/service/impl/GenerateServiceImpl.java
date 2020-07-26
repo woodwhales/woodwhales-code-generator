@@ -1,13 +1,6 @@
 package org.woodwhales.generator.service.impl;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +13,13 @@ import org.woodwhales.generator.entity.TableInfo;
 import org.woodwhales.generator.service.GenerateService;
 import org.woodwhales.generator.util.StringTools;
 
-import lombok.extern.slf4j.Slf4j;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -41,6 +40,7 @@ public class GenerateServiceImpl implements GenerateService {
 	public List<String> listSchema(DataBaseInfo dataBaseInfo) throws Exception {
 		Connection connection = getConnection(dataBaseInfo);
 		DatabaseMetaData metaData = connection.getMetaData();
+
 		ResultSet resultSet = metaData.getCatalogs();
 		
 		List<String> schemaList = new ArrayList<>();
@@ -55,9 +55,13 @@ public class GenerateServiceImpl implements GenerateService {
 	@Override
 	public List<TableInfo> listTables(DataBaseInfo dataBaseInfo) throws Exception {
 		Connection connection = getConnection(dataBaseInfo);
+
+		final String catalog = connection.getCatalog();
+
 		DatabaseMetaData metaData = connection.getMetaData();
-		ResultSet resultSet = metaData.getTables(dataBaseInfo.getSchema(), null, null, new String[] {"TABLE"});
-		
+		final String schema = dataBaseInfo.getSchema();
+
+		ResultSet resultSet = metaData.getTables(schema, null, null, new String[] {"TABLE"});
 		List<TableInfo> tableInfos = new ArrayList<>();
 		while (resultSet.next()) {
 			String tableName = resultSet.getString("TABLE_NAME");
@@ -72,7 +76,7 @@ public class GenerateServiceImpl implements GenerateService {
 			
 			tableInfo.setName(StringTools.upper(tempTableName));
 			
-			List<String> primaryKeys = getPrimaryKey(metaData, tableName);
+			List<String> primaryKeys = getPrimaryKey(metaData, catalog, schema, tableName);
 			
 			tableInfo.setKeys(primaryKeys);
 			
@@ -99,6 +103,14 @@ public class GenerateServiceImpl implements GenerateService {
 		return primaryKeyTypes;
 	}
 
+	/**
+	 * 获取当前数据库表的所有字段信息
+	 * @param metaData
+	 * @param schema
+	 * @param tableInfo
+	 * @return
+	 * @throws Exception
+	 */
 	private List<Column> getColumns(DatabaseMetaData metaData, String schema, TableInfo tableInfo) throws Exception {
 		ResultSet resultSet = metaData.getColumns(schema, null, tableInfo.getDbName(), null);
 		List<Column> columns = new ArrayList<>();
@@ -108,7 +120,7 @@ public class GenerateServiceImpl implements GenerateService {
 								  .dbName(columnName)
 								  .dbType(resultSet.getString("TYPE_NAME"))
 								  .comment(resultSet.getString("REMARKS")).build();
-			
+			// 将数据库表的字段类型转成 java 变量类型
 			column.setType(convertType(column.getDbType()));
 			column.setName(StringTools.upperWithOutFisrtChar(columnName));
 			column.setPrimaryKey(checkPrimaryKey(columnName, tableInfo.getKeys()));
@@ -140,8 +152,8 @@ public class GenerateServiceImpl implements GenerateService {
 		return type;
 	}
 
-	private List<String> getPrimaryKey(DatabaseMetaData metaData, String tableName) throws Exception {
-		ResultSet primaryKeys = metaData.getPrimaryKeys(null, null, tableName);
+	private List<String> getPrimaryKey(DatabaseMetaData metaData, String catalog, String schema, String tableName) throws Exception {
+		ResultSet primaryKeys = metaData.getPrimaryKeys(catalog, schema, tableName);
 
 		List<String> keys = new ArrayList<>();
 		while (primaryKeys.next()) {

@@ -1,8 +1,6 @@
 package org.woodwhales.generator.controller;
 
-import java.io.File;
-import java.util.List;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +16,13 @@ import org.woodwhales.generator.exception.GenerateException;
 import org.woodwhales.generator.service.FreeMarkerService;
 import org.woodwhales.generator.service.GenerateService;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.File;
+import java.util.List;
 
+/**
+ * 生成代码相关接口
+ * @author woodwhales
+ */
 @Slf4j
 @RestController
 @RequestMapping("/generate")
@@ -31,13 +34,25 @@ public class GeneratorController {
 	@Autowired
 	private FreeMarkerService freeMarkerService;
 
+	/**
+	 * 通过数据基本链接信息，获取数据库的元信息
+	 * @param dataBaseRequestBody
+	 * @return
+	 * @throws Exception
+	 */
 	@PostMapping("/buildConnection")
 	public RespVO buildConnection(@RequestBody DataBaseRequestBody dataBaseRequestBody) throws Exception {
 		log.info("dataBaseRequestBody = {}", dataBaseRequestBody);
 		DataBaseInfo dataBaseInfo = DataBaseInfo.convert(dataBaseRequestBody);
 		return RespVO.success(generateService.listSchema(dataBaseInfo));
 	}
-	
+
+	/**
+	 * 根据指定的schema生成数据对象信息
+	 * @param dataBaseRequestBody
+	 * @return
+	 * @throws Exception
+	 */
 	@PostMapping("/buildTableInfo")
 	public RespVO buildTableInfo(@RequestBody DataBaseRequestBody dataBaseRequestBody) throws Exception {
 		log.info("dataBaseRequestBody = {}", dataBaseRequestBody);
@@ -66,17 +81,17 @@ public class GeneratorController {
 	}
 	
 	private File checkBaseDirPath(String baseDirPath) {
-		File tmpfile = FileUtils.getFile(baseDirPath + File.separator + "src" + File.separator + "main" + File.separator + "java");
-		if(!tmpfile.exists()) {
+		File tmpFile = FileUtils.getFile(baseDirPath + File.separator + "src" + File.separator + "main" + File.separator + "java");
+		if(!tmpFile.exists()) {
 			try {
-				FileUtils.forceMkdir(tmpfile);
+				FileUtils.forceMkdir(tmpFile);
 			} catch (Exception e) {
 				log.error("create dir process failed, {}", e);
 				throw new GenerateException("生成代码的目录失败");
 			}
 		}
 
-		return tmpfile;
+		return tmpFile;
 	}
 
 	private File getTargetFile(String baseDirPath, String packageName) {
@@ -99,6 +114,5 @@ public class GeneratorController {
 		}
 
 		return targetDirFile;
-		
 	}
 }

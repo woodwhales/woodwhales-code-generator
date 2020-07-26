@@ -1,12 +1,22 @@
 package org.woodwhales.generator.util;
 
-import java.util.List;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+
+/**
+ * 字符串处理工具类
+ * @author woodwhales
+ */
 public class StringTools {
 
+	/**
+	 * 根据 separators 依次截取 str 之后的内容
+	 * @param str
+	 * @param separators
+	 * @return
+	 */
 	public static String substringAfter(String str, List<String> separators) {
 		if(CollectionUtils.isEmpty(separators)) {
 			return str;
@@ -17,7 +27,7 @@ public class StringTools {
 			tempStr = substringAfter(str, separator);
 		}
 		
-		return StringUtils.isBlank(tempStr) ? str : tempStr;
+		return StringUtils.defaultIfBlank(tempStr, str);
 	}
 	
 	/**
