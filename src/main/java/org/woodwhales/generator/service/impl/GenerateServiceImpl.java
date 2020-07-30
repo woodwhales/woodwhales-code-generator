@@ -11,13 +11,11 @@ import org.woodwhales.generator.config.TableConfig;
 import org.woodwhales.generator.entity.Column;
 import org.woodwhales.generator.entity.DataBaseInfo;
 import org.woodwhales.generator.entity.TableInfo;
+import org.woodwhales.generator.exception.GenerateException;
 import org.woodwhales.generator.service.GenerateService;
 import org.woodwhales.generator.util.StringTools;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +33,16 @@ public class GenerateServiceImpl implements GenerateService {
 	@Override
 	public Connection getConnection(DataBaseInfo dataBaseInfo) throws Exception {
 		Class.forName("com.mysql.cj.jdbc.Driver");
-		return DriverManager.getConnection(dataBaseInfo.getUrl(), dataBaseInfo.getProperties());
+		Connection connection = null;
+		try {
+			connection = DriverManager.getConnection(dataBaseInfo.getUrl(), dataBaseInfo.getProperties());
+		} catch (SQLException exception) {
+			log.error("cause by : {}", exception.getMessage(), exception);
+			StringUtils.equals("28000", exception.getSQLState());
+			throw new GenerateException("数据库链接失败，账号或密码不正确！");
+		}
+
+		return connection;
 	}
 
 	@Override
