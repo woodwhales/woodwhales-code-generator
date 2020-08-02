@@ -71,24 +71,23 @@ public class GeneratorController {
 		log.info("dataBaseRequestBody = {}", dataBaseRequestBody);
 		// 检查目标文件目录是否为合法文件夹
 		String baseDirPath = dataBaseRequestBody.getGenerateDir();
-		
-		File baseDir = checkBaseDirPath(baseDirPath);
-		
-		String packageName = dataBaseRequestBody.getPackageName();
-		
-		File targetFile = getTargetFile(baseDir.getAbsolutePath(), packageName);
-		
 		DataBaseInfo dataBaseInfo = DataBaseInfo.convert(dataBaseRequestBody);
 		List<TableInfo> tables = generateService.listTables(dataBaseInfo, true);
 
-		boolean generateCodeSuccess = false;
-		boolean generateMarkdownSuccess = false;
+		String packageName = dataBaseRequestBody.getPackageName();
+
+		boolean generateCodeSuccess;
+		boolean generateMarkdownSuccess;
+		// 生成代码
 		if (dataBaseRequestBody.getGenerateCode()) {
+			File baseDir = checkBaseDirPath(baseDirPath);
+			File targetFile = getTargetFile(baseDir.getAbsolutePath(), packageName);
 			generateCodeSuccess = javaFileService.process(targetFile, packageName, dataBaseInfo, tables);
 		} else {
 			generateCodeSuccess = true;
 		}
 
+		// 生成markdown
 		if (dataBaseRequestBody.getGenerateMarkdown()) {
 			generateMarkdownSuccess = markdownService.process(new File(baseDirPath), packageName, dataBaseInfo, tables);
 		} else {
