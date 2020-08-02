@@ -6,9 +6,11 @@ import ${packageName}.entity.${table.name};
 
 public interface ${table.name}Service {
 
+    <#if primaryKeyType??>
     /**
-     *  根据id查询${table.name}
-     */
+    *  根据id查询${table.name}
+    */
     ${table.name} get${table.name}ById(${primaryKeyType} ${primaryKey});
-    
+    </#if>
+
 }

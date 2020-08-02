@@ -24,11 +24,12 @@ public class ${table.name}Controller {
 
     @Autowired
     private ${table.name}Service service;
-    
+
+    <#if primaryKeyType??>
     @GetMapping("/{${primaryKey}}")
     public Object get${table.name}By${primaryKey?cap_first}(@PathVariable(name = "${primaryKey}") ${primaryKeyType} ${primaryKey}, HttpServletRequest request, HttpServletResponse response) {
         return service.get${table.name}By${primaryKey?cap_first}(${primaryKey});
     }
-    
+    </#if>
 
 }

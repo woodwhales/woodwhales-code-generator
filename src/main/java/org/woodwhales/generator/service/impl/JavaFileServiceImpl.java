@@ -51,8 +51,18 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
 			process(dataModel, tableInfo, targetFilePath, "entity", tableInfo.getName());
 			process(dataModel, tableInfo, targetFilePath, "mapper", tableInfo.getName()+"Mapper");
 
-			dataModel.put("primaryKey", tableInfo.getKeys().get(0));
-			dataModel.put("primaryKeyType", tableInfo.getKeyTypes().get(0));
+			if(tableInfo.getKeys().size() > 0) {
+				dataModel.put("primaryKey", tableInfo.getKeys().get(0));
+			} else {
+				dataModel.put("primaryKey", null);
+			}
+
+			if(tableInfo.getKeyTypes().size() > 0) {
+				dataModel.put("primaryKeyType", tableInfo.getKeyTypes().get(0));
+			} else {
+				dataModel.put("primaryKeyType", null);
+			}
+
 			process(dataModel, tableInfo, targetFilePath, "controller", tableInfo.getName()+"Controller");
 			process(dataModel, tableInfo, targetFilePath, "service", tableInfo.getName()+"Service");
 			process(dataModel, tableInfo, targetFilePath, "service.impl", tableInfo.getName()+"ServiceImpl");

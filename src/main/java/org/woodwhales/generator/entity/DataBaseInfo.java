@@ -1,15 +1,15 @@
 package org.woodwhales.generator.entity;
 
-import java.util.Properties;
-
-import org.apache.commons.lang3.StringUtils;
-import org.woodwhales.generator.constant.MyConstant;
-import org.woodwhales.generator.controller.request.DataBaseRequestBody;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.woodwhales.generator.constant.MyConstant;
+import org.woodwhales.generator.controller.request.DataBaseRequestBody;
+
+import java.util.List;
+import java.util.Properties;
 
 @Data
 @Builder
@@ -39,6 +39,16 @@ public class DataBaseInfo {
 	 * 生成代码的目录
 	 */
 	private String generateDir;
+
+	/**
+	 * 要生成的数据库表名列表
+	 */
+	private List<String> dbNameList;
+
+	/**
+	 * 是否生成全部数据库表
+	 */
+	private Boolean selectAll;
 	
 	public static DataBaseInfo convert(DataBaseRequestBody dataBaseRequestBody) {
 		return DataBaseInfo.builder()
@@ -49,6 +59,8 @@ public class DataBaseInfo {
 							.schema(dataBaseRequestBody.getSchema())
 							.packageName(dataBaseRequestBody.getPackageName())
 							.generateDir(dataBaseRequestBody.getGenerateDir())
+							.dbNameList(dataBaseRequestBody.getDbNameList())
+							.selectAll(dataBaseRequestBody.getSelectAll())
 							.build();
 	}
 	

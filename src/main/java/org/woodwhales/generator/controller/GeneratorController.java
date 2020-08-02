@@ -63,7 +63,7 @@ public class GeneratorController {
 	public RespVO buildTableInfo(@RequestBody DataBaseRequestBody dataBaseRequestBody) throws Exception {
 		log.info("dataBaseRequestBody = {}", dataBaseRequestBody);
 		DataBaseInfo dataBaseInfo = DataBaseInfo.convert(dataBaseRequestBody);
-		return RespVO.success(generateService.listTables(dataBaseInfo));
+		return RespVO.success(generateService.listTables(dataBaseInfo, false));
 	}
 	
 	@PostMapping("/process")
@@ -79,7 +79,7 @@ public class GeneratorController {
 		File targetFile = getTargetFile(baseDir.getAbsolutePath(), packageName);
 		
 		DataBaseInfo dataBaseInfo = DataBaseInfo.convert(dataBaseRequestBody);
-		List<TableInfo> tables = generateService.listTables(dataBaseInfo);
+		List<TableInfo> tables = generateService.listTables(dataBaseInfo, true);
 
 		boolean generateCodeSuccess = false;
 		boolean generateMarkdownSuccess = false;

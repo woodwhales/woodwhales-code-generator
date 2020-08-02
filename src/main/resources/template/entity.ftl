@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.AllArgsConstructor;
@@ -31,9 +32,10 @@ public class ${table.name} implements Serializable {
      * ${column.comment}
      */
     <#if column.primaryKey>
-    @TableId(type = IdType.AUTO)
+    @TableId(value = "${column.dbName}", type = IdType.AUTO)
     private ${column.type} ${column.name};
     <#else>
+    @TableField(value = "${column.dbName}")
     private ${column.type} ${column.name};
     </#if>
 

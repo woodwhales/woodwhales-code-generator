@@ -31,9 +31,10 @@ public interface GenerateService {
 	/**
 	 * 根据 dataBaseInfo 生成数据库表信息
 	 * @param dataBaseInfo
+	 * @param isProcess 是否生成
 	 * @return
 	 * @throws Exception
 	 */
-	List<TableInfo> listTables(DataBaseInfo dataBaseInfo) throws Exception;
+	List<TableInfo> listTables(DataBaseInfo dataBaseInfo, boolean isProcess) throws Exception;
 	
 }

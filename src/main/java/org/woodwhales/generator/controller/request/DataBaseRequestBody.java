@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -47,5 +48,15 @@ public class DataBaseRequestBody {
 	 * 是否生成代码
 	 */
 	private Boolean generateCode;
+
+	/**
+	 * 要生成的数据库表名列表
+	 */
+	private List<String> dbNameList;
+
+	/**
+	 * 是否生成全部数据库表
+	 */
+	private Boolean selectAll;
 
 }

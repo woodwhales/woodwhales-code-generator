@@ -1,5 +1,6 @@
 package org.woodwhales.generator.service.impl;
 
+import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -55,7 +56,7 @@ public class GenerateServiceImpl implements GenerateService {
 	}
 
 	@Override
-	public List<TableInfo> listTables(DataBaseInfo dataBaseInfo) throws Exception {
+	public List<TableInfo> listTables(DataBaseInfo dataBaseInfo, boolean isProcess) throws Exception {
 		Connection connection = getConnection(dataBaseInfo);
 
 		final String catalog = connection.getCatalog();
@@ -63,28 +64,42 @@ public class GenerateServiceImpl implements GenerateService {
 		DatabaseMetaData metaData = connection.getMetaData();
 		final String schema = dataBaseInfo.getSchema();
 
+		final List<String> dbNameList = dataBaseInfo.getDbNameList();
+		final Boolean selectAll = dataBaseInfo.getSelectAll();
+		if(isProcess) {
+			Preconditions.checkArgument(CollectionUtils.isNotEmpty(dbNameList), "未选择要生成的数据库表");
+		}
+
 		ResultSet resultSet = metaData.getTables(schema, null, null, new String[] {"TABLE"});
 		List<TableInfo> tableInfos = new ArrayList<>();
 		while (resultSet.next()) {
 			String tableName = resultSet.getString("TABLE_NAME");
+
+			if (isProcess && !selectAll && !dbNameList.contains(tableName)) {
+				continue;
+			}
+
 			TableInfo tableInfo = TableInfo.builder()
-									.dbName(tableName)
-									.comment(resultSet.getString("REMARKS"))
-									.build();
+											.dbName(tableName)
+											.comment(resultSet.getString("REMARKS"))
+											.build();
 			
-			String tempTableName = tableName;
 			// 格式化表名
-			tempTableName = StringTools.substringAfter(tempTableName, tableConfig.getPrefix());
-			
+			String tempTableName = StringTools.substringAfter(tableName, tableConfig.getPrefix());
 			tableInfo.setName(StringTools.upper(tempTableName));
-			
+
+			// setKeys
 			List<String> primaryKeys = getPrimaryKey(metaData, catalog, schema, tableName);
-			
 			tableInfo.setKeys(primaryKeys);
-			
+
+			// setColumns
 			List<Column> columns = getColumns(metaData, dataBaseInfo.getSchema(), tableInfo);
 			tableInfo.setColumns(columns);
-			tableInfo.setKeyTypes(getPrimaryKeyTypes(primaryKeys, columns));
+
+			// setKeyTypes
+			List<String> primaryKeyTypes = getPrimaryKeyTypes(primaryKeys, columns);
+			tableInfo.setKeyTypes(primaryKeyTypes);
+
 			tableInfos.add(tableInfo);
 		}
 		
@@ -95,7 +110,7 @@ public class GenerateServiceImpl implements GenerateService {
 		List<String> primaryKeyTypes = new ArrayList<>();
 		for (String primaryKey : primaryKeys) {
 			for (Column column : columns) {
-				if(column.isPrimaryKey() && column.getName().equals(primaryKey)) {
+				if(column.isPrimaryKey() && column.getDbName().equals(primaryKey)) {
 					primaryKeyTypes.add(column.getType());
 				}
 			}
@@ -155,14 +170,18 @@ public class GenerateServiceImpl implements GenerateService {
 	private String convertType(String dbType) {
 		Map<String, String> typeMap = columnConfig.getType();
 		String type = typeMap.get(dbType);
+
+		if(StringUtils.isNotBlank(type)) {
+			return type;
+		}
 		
-		if(StringUtils.isBlank(type)) {
-			for(String key : typeMap.keySet()){
-				if(StringUtils.containsIgnoreCase(dbType, key)) {
-					return typeMap.get(key);
-				}
+		for(String key : typeMap.keySet()){
+			if(StringUtils.containsIgnoreCase(dbType, key)) {
+				type = typeMap.get(key);
 			}
 		}
+
+		Preconditions.checkArgument(StringUtils.isNotBlank(type), "数据字段类型[%s]未匹配", dbType);
 		return type;
 	}
 

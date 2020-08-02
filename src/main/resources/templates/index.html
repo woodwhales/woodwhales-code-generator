@@ -23,7 +23,7 @@
     </div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">生成数据库表结构设计文档</label>
+    <label class="layui-form-label">生成文档</label>
     <div class="layui-input-block">
       <input type="checkbox" name="generateMarkdown" lay-skin="switch" lay-text="是|否">
     </div>
@@ -203,27 +203,41 @@ layui.use(['form', 'layer', 'table'], function(){
           data.field.generateMarkdown = false;
         }
 
-        console.log(JSON.stringify(data.field));
 		if(isNeedGenerate() && isProcess()) {
-			$.ajax({
-                url:'/generate/process',
-                type:'post',
-                dataType:'json',
-                contentType:"application/json",
-                async:true,
-                cache:false,
-                data:JSON.stringify(data.field),
-                success:function(res) {
-                    if(res.code == '0000') {
-                    	layer.msg('生成成功');
-                    } else {
-                        layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
-                    }
-                },
-                error:function(res) {
-                    layer.msg('网络异常', {icon: 5});
-                }
-            });
+          var checkStatus = table.checkStatus('tableInfosId');
+
+          if(checkStatus.data.length == 0) {
+            layer.msg('请选择要生成的数据库表', {icon: 5});
+            return false;
+          }
+
+          var dbNameList = new Array();
+          $.each(checkStatus.data,function(index, value) {
+            dbNameList.push(value.dbName);
+          });
+
+          data.field.dbNameList = dbNameList;
+          data.field.selectAll = checkStatus.isAll;
+
+          $.ajax({
+              url:'/generate/process',
+              type:'post',
+              dataType:'json',
+              contentType:"application/json",
+              async:true,
+              cache:false,
+              data:JSON.stringify(data.field),
+              success:function(res) {
+                  if(res.code == '0000') {
+                      layer.msg('生成成功', {icon: 1});
+                  } else {
+                      layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
+                  }
+              },
+              error:function(res) {
+                  layer.msg('网络异常', {icon: 5});
+              }
+          });
             
             return false;
 		} else if(isNeedGenerate()) {
@@ -253,11 +267,14 @@ layui.use(['form', 'layer', 'table'], function(){
 	                	$('#btnId').html('生成');
 	                	table.render({
 	                		  elem: '#tableInfosId' //指定原始表格元素选择器（推荐id选择器）
+                              , limit: Number.MAX_VALUE
+                              ,cellMinWidth: 80
 	                		  ,cols: [[
-	                			  {field: 'dbName', title: '数据库名称', width:'25%'}
-	                			  ,{field: 'name', title: 'Class名', width:'25%'}
-	                			  ,{field: 'comment', title: '注释', width:'40%'}
-	                			  ,{field: 'keys', title: '主键', width:'10%', templet:function(data) {
+                                  {type:'checkbox'}
+	                			  ,{field: 'dbName', title: '数据库名称'}
+	                			  ,{field: 'name', title: 'Class名'}
+	                			  ,{field: 'comment', title: '注释'}
+	                			  ,{field: 'keys', title: '主键', templet:function(data) {
 	                				  return data.keys.join(',');
 	                			  }}
 	                		  ]]

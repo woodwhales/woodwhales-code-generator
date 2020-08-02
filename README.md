@@ -27,15 +27,16 @@ JDK版本：JDK 1.8+
 
 ```shell
 @startuml
-
 [database-config]
-[freemarker-data-model]
-[freemarker-service]
-[freemarker-template]
 
+
+node {
+	[freemarker-data-model]  #pink
+	[freemarker-template]  #pink
+    [freemarker-service]
+}
 
 database "database" {
-
 }
 
 package "codeFile" {
@@ -46,15 +47,19 @@ package "templateFile" {
     [tempalte.ftl]
 }
 
-database -left-> [database-config] 
-templateFile -down-> [freemarker-template]
-[database-config] -down-> [freemarker-data-model]
-[freemarker-data-model] -down-> [freemarker-service]
-[freemarker-template] -down-> [freemarker-service]
-[freemarker-service] -down-> codeFile
+package "convertConfigFile" {
+    [typeConverter.properties]
+}
 
+Actor user
+
+user -down-> [database-config] : http request for generate
+[database-config] -right-> database
+[tempalte.ftl] -right-> [freemarker-template]
+database -down-> [freemarker-data-model] : database metaResult
+convertConfigFile -down-> [freemarker-data-model] : dbColumnType convert to javaType
+[freemarker-data-model] -down-> [freemarker-service]
+[freemarker-template] -right-> [freemarker-service]
+[freemarker-service] -down-> codeFile
 @enduml
 ```
-
-
-
