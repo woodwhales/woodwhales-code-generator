@@ -1,4 +1,5 @@
 package org.woodwhales.generator.service.impl;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
@@ -7,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-import org.woodwhales.generator.entity.DataBaseInfo;
 import org.woodwhales.generator.entity.TableInfo;
+import org.woodwhales.generator.model.GenerateInfo;
 import org.woodwhales.generator.service.FreeMarkerService;
 
 import javax.annotation.PostConstruct;
@@ -16,7 +17,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * 模板接口实现
@@ -40,13 +40,13 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
 	}
 
 	@Override
-	public boolean process(File targetFile, String packageName, DataBaseInfo dataBaseInfo, List<TableInfo> tables) throws Exception {
+	public boolean process(GenerateInfo generateInfo) throws Exception {
 		HashMap<String, Object> dataModel = new HashMap<>(16);
-		dataModel.put("settings", dataBaseInfo);
-		dataModel.put("packageName", packageName);
-		String targetFilePath = targetFile.getAbsolutePath();
+		dataModel.put("settings", generateInfo.getDataBaseInfo());
+		dataModel.put("packageName", generateInfo.getPackageName());
+		String targetFilePath = generateInfo.getJavaFile().getAbsolutePath();
 		
-		for (TableInfo tableInfo : tables) {
+		for (TableInfo tableInfo : generateInfo.getTables()) {
 			dataModel.put("table", tableInfo);
 			process(dataModel, tableInfo, targetFilePath, "entity", tableInfo.getName());
 			process(dataModel, tableInfo, targetFilePath, "mapper", tableInfo.getName()+"Mapper");

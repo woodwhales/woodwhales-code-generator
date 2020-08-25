@@ -1,10 +1,6 @@
 package org.woodwhales.generator.service;
 
-import org.woodwhales.generator.entity.DataBaseInfo;
-import org.woodwhales.generator.entity.TableInfo;
-
-import java.io.File;
-import java.util.List;
+import org.woodwhales.generator.model.GenerateInfo;
 
 /**
  * 模板接口
@@ -14,12 +10,9 @@ public interface FreeMarkerService {
 
 	/**
 	 * 生成目标文件
-	 * @param targetFile
-	 * @param packageName
-	 * @param dataBaseInfo
-	 * @param tables
+	 * @param generateInfo
 	 * @throws Exception
 	 */
-	boolean process(File targetFile, String packageName, DataBaseInfo dataBaseInfo, List<TableInfo> tables) throws Exception;
+	boolean process(GenerateInfo generateInfo) throws Exception;
 	
 }

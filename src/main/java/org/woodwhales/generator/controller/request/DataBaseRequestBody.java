@@ -59,4 +59,14 @@ public class DataBaseRequestBody {
 	 */
 	private Boolean selectAll;
 
+	/**
+	 * 父类
+	 */
+	private String superClass;
+
+	/**
+	 * 接口
+	 */
+	private String interfaceClass;
+
 }
