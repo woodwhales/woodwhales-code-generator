@@ -83,14 +83,16 @@
   </div>
   <div class="layui-form-item" id="superClassDivId" hidden="true">
     <label class="layui-form-label">父类</label>
-    <div class="layui-input-block">
+    <div class="layui-input-inline">
       <input type="text" name="superClass" autocomplete="off" placeholder="请输入父类" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item" id="interfaceDivId" hidden="true">
     <label class="layui-form-label">接口</label>
     <div class="layui-input-block">
-      <input type="text" name="interface" autocomplete="off" placeholder="请输入接口" class="layui-input">
+      <div class="layui-col-md1"><button class="layui-btn layui-btn-fluid" id="addInterface">添加接口</button></div>
+      <div class="layui-col-md1"><button class="layui-btn layui-btn-fluid layui-bg-red" id="clearInterface">清空接口</button></div>
+      <div class="layui-col-md10" id="interfaceListDivId"></div>
     </div>
   </div>
   <div class="layui-form-item">
@@ -118,27 +120,18 @@
 <script th:src="@{/webjars/layui/layui.js}"></script>
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script type="text/javascript" th:inline="none">
+
+  function closeTag(index) {
+    closeTagInner(index);
+  }
+
   layui.use(['form', 'layer', 'table'], function(){
 	var form = layui.form,
 	layer = layui.layer,
 	table = layui.table
 	;
 
-    var emptySchema = function() {
-		$('#schema').attr('disabled','');
-	    $("#schema").empty();
-	    $('#schemaDivId').hide();
-	    $('#processDivId').hide();
-	    $('#packageNameDivId').hide();
-	    $('#tableInfosDiv').hide();
-
-	    $('#processId').val('false');
-	    $('#schema').removeAttr("lay-verify");
-	    $('#generateDir').removeAttr("lay-verify");
-	    $('#packageName').removeAttr("lay-verify");
-	    layui.form.render("select");
-	    updateBtnToTest();
-	}
+    var interfaceList = new Array();
 	
 	var openGenerate = function() {
 		$('#schemaDivId').show();
@@ -197,6 +190,58 @@
         layui.form.render("select");
 	}
 
+    var emptySchema = function() {
+      $('#schema').attr('disabled','');
+      $("#schema").empty();
+      $('#schemaDivId').hide();
+      $('#processDivId').hide();
+      $('#packageNameDivId').hide();
+      $('#tableInfosDiv').hide();
+
+      $('#processId').val('false');
+      $('#schema').removeAttr("lay-verify");
+      $('#generateDir').removeAttr("lay-verify");
+      $('#packageName').removeAttr("lay-verify");
+      layui.form.render("select");
+      updateBtnToTest();
+      clearInterfaceFun();
+    }
+
+    window.closeTagInner = function(index) {
+      interfaceList.splice(index, 1);
+      showTagList(interfaceList);
+    }
+
+    clearInterfaceFun = function() {
+      interfaceList.splice(0, interfaceList.length);
+      showTagList(interfaceList);
+    }
+
+    $('#clearInterface').click(function () {
+      clearInterfaceFun();
+      return false;
+    })
+
+	$('#addInterface').click(function () {
+      layer.prompt({title: '接口全类名', formType: 3}, function(text, index) {
+        interfaceList.push(text);
+        showTagList(interfaceList);
+        layer.close(index);
+      });
+      return false;
+    })
+
+    showTagList = function(interfaceList) {
+      var tempArray = new Array();
+      $.each(interfaceList,function(index, value) {
+        tempArray.push('<div class="tag-class">'+
+                value +'&nbsp;<a class="tag-close" onclick=closeTag('+index+')>' +
+                '<i class="layui-icon layui-icon-close"></i></a></div>');
+      });
+      console.log(interfaceList)
+      $('#interfaceListDivId').html(tempArray.join(""))
+    }
+
 	form.on('submit(btnId)', function(data) {
 
         if(data.field.generateCode == "on") {
@@ -226,6 +271,10 @@
 
           data.field.dbNameList = dbNameList;
           data.field.selectAll = checkStatus.isAll;
+          data.field.interfaceList = interfaceList;
+          console.log(data.field)
+          alert(2222)
+          return false;
 
           $.ajax({
               url:'/generate/process',

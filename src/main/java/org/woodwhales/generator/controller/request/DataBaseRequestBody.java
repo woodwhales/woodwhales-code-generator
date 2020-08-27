@@ -67,6 +67,6 @@ public class DataBaseRequestBody {
 	/**
 	 * 接口
 	 */
-	private String interfaceClass;
+	private List<String> interfaceList;
 
 }
