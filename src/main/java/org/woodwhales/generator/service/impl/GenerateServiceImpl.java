@@ -62,6 +62,13 @@ public class GenerateServiceImpl implements GenerateService {
 		return schemaList;
 	}
 
+	/**
+	 *
+	 * @param dataBaseInfo
+	 * @param isProcess 是否要生成数据库表
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public List<TableInfo> listTables(DataBaseInfo dataBaseInfo, boolean isProcess) throws Exception {
 		Connection connection = getConnection(dataBaseInfo);
@@ -82,6 +89,7 @@ public class GenerateServiceImpl implements GenerateService {
 		while (resultSet.next()) {
 			String tableName = resultSet.getString("TABLE_NAME");
 
+			// 要生成并且不是生成全部过滤掉不需要生成的表
 			if (isProcess && !selectAll && !dbNameList.contains(tableName)) {
 				continue;
 			}

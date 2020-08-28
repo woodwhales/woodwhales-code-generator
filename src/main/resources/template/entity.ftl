@@ -6,6 +6,14 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+<#if hasSuperClass??>
+import ${superClass}
+</#if>
+<#if hasInterfaceList??>
+<#list interfaceList as interfaceClass>
+import ${interfaceClass}
+</#list>
+</#if>
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +31,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class ${table.name} implements Serializable {
+public class ${table.name} <#if superClassSimpleName??>extends ${superClassSimpleName}</#if> implements Serializable<#if hasInterfaceList??>, ${interfaceSimpleNameListString}</#if> {
     
     private static final long serialVersionUID = 1L;
 

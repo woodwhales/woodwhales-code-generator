@@ -4,25 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
+/**
+ * 生成代码请求体
+ * @author woodwhales
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DataBaseRequestBody {
-
-	@NotBlank(message = "ip字段为空")
-	private String ip; 
-	
-	@NotBlank(message = "port字段为空")
-	private Integer port; 
-	
-	@NotBlank(message = "username字段为空")
-	private String username; 
-	
-	@NotBlank(message = "password字段为空")
-	private String password; 
+public class DataBaseRequestBody extends BuildConnectionRequestBody {
 	
 	/**
 	 * 数据库名称
@@ -45,9 +36,19 @@ public class DataBaseRequestBody {
 	private Boolean generateMarkdown;
 
 	/**
+	 * 是否覆盖markdown
+	 */
+	private Boolean overMarkdown;
+
+	/**
 	 * 是否生成代码
 	 */
 	private Boolean generateCode;
+
+	/**
+	 * 是否覆盖markdown
+	 */
+	private Boolean overCode;
 
 	/**
 	 * 要生成的数据库表名列表

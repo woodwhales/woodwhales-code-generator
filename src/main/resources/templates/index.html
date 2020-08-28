@@ -24,9 +24,21 @@
       </div>
     </div>
     <div class="layui-inline">
+      <label class="layui-form-label">覆盖代码</label>
+      <div class="layui-input-block">
+        <input type="checkbox" name="overCode" checked="" lay-skin="switch" lay-text="是|否">
+      </div>
+    </div>
+    <div class="layui-inline">
       <label class="layui-form-label">生成文档</label>
       <div class="layui-input-block">
         <input type="checkbox" name="generateMarkdown" lay-skin="switch" lay-text="是|否">
+      </div>
+    </div>
+    <div class="layui-inline">
+      <label class="layui-form-label">覆盖文档</label>
+      <div class="layui-input-block">
+        <input type="checkbox" name="overMarkdown" checked="" lay-skin="switch" lay-text="是|否">
       </div>
     </div>
   </div>
@@ -48,13 +60,13 @@
     <div class="layui-inline">
       <label class="layui-form-label">用户</label>
       <div class="layui-input-inline">
-        <input type="text" name="username" lay-verify="required" autocomplete="off" placeholder="请输入用户名" class="layui-input" value="root">
+        <input type="text" name="username" id="username" lay-verify="required" autocomplete="off" placeholder="请输入用户名" class="layui-input">
       </div>
     </div>
     <div class="layui-inline">
       <label class="layui-form-label">密码</label>
       <div class="layui-input-inline">
-        <input type="password" name="password" lay-verify="required|pass" placeholder="请输入密码" autocomplete="off" class="layui-input" value="root1234">
+        <input type="password" name="password" id="password" lay-verify="required|pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
       </div>
     </div>
   </div>
@@ -83,7 +95,7 @@
   <div class="layui-form-item" id="superClassDivId" hidden="true">
     <label class="layui-form-label">父类</label>
     <div class="layui-input-inline">
-      <input type="text" name="superClass" autocomplete="off" placeholder="请输入父类" class="layui-input">
+      <input type="text" name="superClass" id="superClass" autocomplete="off" placeholder="请输入父类" class="layui-input">
     </div>
   </div>
   <div class="layui-form-item" id="interfaceDivId" hidden="true">
@@ -97,7 +109,7 @@
   <div class="layui-form-item">
     <div class="layui-input-block">
       <button type="submit" class="layui-btn" lay-submit="" id="btnId" lay-filter="btnId">测试</button>
-      <button type="reset" class="layui-btn layui-btn-primary" id="resetBtnId">重置</button>
+      <button class="layui-btn layui-btn-primary" id="resetBtnId">重置</button>
     </div>
   </div>
 </form>
@@ -127,32 +139,46 @@
 	;
 
 	$('#resetBtnId').click(function () {
-	  if('提交' == $('#btnId').html()) {
-        // 清空账号密码
-	    return;
+
+      $("#generateDir").val('');
+      $("#packageName").val('');
+      $("#superClass").val('');
+
+      pageNameAndPathIdHide();
+      interfaceDivIdHide();
+      superClassDivIdHide();
+      tableInfosDivHide();
+      schemaDivIdHide();
+      generateDirRemoveAttr();
+      packageNameRemoveAttr();
+      clearInterfaceFun();
+      updateBtnToTest();
+
+	  if('测试' === $('#btnId').html()) {
+        $("#schema").empty();
+        $('#schema').removeAttr("lay-verify");
+        layui.form.render("select");
+	    return false;
       }
 
-      if('测试' == $('#btnId').html()) {
-        // 下拉选
-        return;
+	  if('提交' === $('#btnId').html()) {
+        $("#username").val('');
+        $("#password").val('');
+        updateBtnToTest();
+        return false;
       }
 
-      if('生成' == $('#btnId').html()) {
-        // 清空类名，包名，父类，接口，下拉选
-        return;
-      }
-
-      emptySchema();
+      return false;
     })
 
     let interfaceList = new Array();
 
     function emptySchema() {
-      $("#schema").empty();
       $('#schema').attr('disabled','');
+      $("#schema").empty();
       $('#schema').removeAttr("lay-verify");
       layui.form.render("select");
-      updateBtnToTest();
+      updateBtnToSubmit();
       clearInterfaceFun();
     }
 
@@ -191,7 +217,7 @@
 
     form.on('submit(btnId)', function(data) {
       replaceSwitchBtnValue(data);
-      if('测试' == $('#btnId').html()) {
+      if('测试' === $('#btnId').html()) {
         emptySchema();
         $.ajax({
           url:'/generate/buildConnection',
@@ -227,7 +253,7 @@
         return false;
       }
 
-      if('提交' == $('#btnId').html()) {
+      if('提交' === $('#btnId').html()) {
         $.ajax({
           url:'/generate/buildTableInfo',
           type:'post',
@@ -281,7 +307,7 @@
         return false;
       }
 
-      if('生成' == $('#btnId').html()) {
+      if('生成' === $('#btnId').html()) {
 
         // 判断是否选择要生成的表格数据
         var checkStatus = table.checkStatus('tableInfosId');
@@ -299,7 +325,7 @@
         data.field.dbNameList = dbNameList;
         data.field.selectAll = checkStatus.isAll;
         data.field.interfaceList = interfaceList;
-        return false;
+
         $.ajax({
           url:'/generate/process',
           type:'post',

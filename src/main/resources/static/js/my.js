@@ -66,6 +66,14 @@ function generateDirAddAttr() {
     $('#generateDir').attr('lay-verify','required');
 }
 
+function generateDirRemoveAttr() {
+    $('#generateDir').removeAttr("lay-verify");
+}
+
+function packageNameRemoveAttr() {
+    $('#packageName').removeAttr("lay-verify");
+}
+
 function packageNameAddAttr() {
     $('#packageName').attr('lay-verify','required');
 }
@@ -76,16 +84,28 @@ function packageNameAddAttr() {
  */
 function replaceSwitchBtnValue(data) {
 
-    if(data.field.generateCode == "on") {
+    if(data.field.generateCode === "on") {
         data.field.generateCode = true;
     } else {
         data.field.generateCode = false;
     }
 
-    if(data.field.generateMarkdown == "on") {
+    if(data.field.generateMarkdown === "on") {
         data.field.generateMarkdown = true;
     } else {
         data.field.generateMarkdown = false;
+    }
+
+    if(data.field.overCode === "on") {
+        data.field.overCode = true;
+    } else {
+        data.field.overCode = false;
+    }
+
+    if(data.field.overMarkdown === "on") {
+        data.field.overMarkdown = true;
+    } else {
+        data.field.overMarkdown = false;
     }
 
 }

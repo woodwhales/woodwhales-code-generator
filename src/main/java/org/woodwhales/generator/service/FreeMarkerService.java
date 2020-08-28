@@ -11,6 +11,7 @@ public interface FreeMarkerService {
 	/**
 	 * 生成目标文件
 	 * @param generateInfo
+	 * @return
 	 * @throws Exception
 	 */
 	boolean process(GenerateInfo generateInfo) throws Exception;

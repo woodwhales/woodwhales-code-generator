@@ -45,6 +45,10 @@ public class MarkdownServiceImpl extends BaseFeeMarkerService implements FreeMar
     @Override
     public boolean process(GenerateInfo generateInfo) throws Exception {
 
+        if(!generateInfo.getGenerateMarkdown()) {
+            return true;
+        }
+
         Template template = configuration.getTemplate("markdown.ftl");
 
         String targetFilePath = generateInfo.getMarkdownFile().getAbsolutePath();
@@ -52,11 +56,13 @@ public class MarkdownServiceImpl extends BaseFeeMarkerService implements FreeMar
         DataBaseInfo dataBaseInfo = generateInfo.getDataBaseInfo();
         String schema = dataBaseInfo.getSchema();
         String fileName = schema + "数据库表结构设计.md";
-        boolean isCoverOldFile = true;
-        HashMap<String, Object> dataModel = new HashMap<>();
+
+        final Boolean isCoverOldFile = generateInfo.getOverMarkdown();
+        HashMap<String, Object> dataModel = new HashMap<>(16);
         dataModel.put("tables", generateInfo.getTables());
         dataModel.put("schema", dataBaseInfo.getSchema());
-        try(FileWriter fw = new FileWriter(new File(targetFilePath + File.separator + fileName), !isCoverOldFile);) {
+
+        try(FileWriter fw = new FileWriter(new File(targetFilePath + File.separator + fileName), !isCoverOldFile)) {
             template.process(dataModel, fw);
         } catch (IOException | TemplateException e) {
             log.error("生成文件异常，cause = {}", e.getCause().getMessage());

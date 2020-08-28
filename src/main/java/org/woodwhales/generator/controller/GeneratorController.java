@@ -77,21 +77,11 @@ public class GeneratorController {
 
 		GenerateInfo generateInfo = generateInfoFactory.build(dataBaseRequestBody);
 
-		boolean generateCodeSuccess;
-		boolean generateMarkdownSuccess;
 		// 生成代码
-		if (dataBaseRequestBody.getGenerateCode()) {
-			generateCodeSuccess = javaFileService.process(generateInfo);
-		} else {
-			generateCodeSuccess = true;
-		}
+		boolean generateCodeSuccess = javaFileService.process(generateInfo);
 
 		// 生成markdown
-		if (dataBaseRequestBody.getGenerateMarkdown()) {
-			generateMarkdownSuccess = markdownService.process(generateInfo);
-		} else {
-			generateMarkdownSuccess = true;
-		}
+		boolean generateMarkdownSuccess = markdownService.process(generateInfo);
 
 		return RespVO.resp(generateCodeSuccess && generateMarkdownSuccess);
 	}

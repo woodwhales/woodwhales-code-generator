@@ -21,24 +21,16 @@ public class StringTools {
 		if(CollectionUtils.isEmpty(separators)) {
 			return str;
 		}
-		
-		String tempStr = null;
+
 		for (String separator : separators) {
-			tempStr = substringAfter(str, separator);
+			if (StringUtils.startsWith(str, separator)) {
+				return StringUtils.substringAfter(str, separator);
+			}
 		}
 		
-		return StringUtils.defaultIfBlank(tempStr, str);
+		return str;
 	}
-	
-	/**
-	 * 截取 separator 之后的字符串
-	 * @param str
-	 * @param separator
-	 * @return
-	 */
-	public static String substringAfter(String str, String separator) {
-		return StringUtils.substringAfter(str, separator);
-	}
+
 	
 	/**
 	 * 将下划线之后的字母转换成大写字母，首个字母会转成大写

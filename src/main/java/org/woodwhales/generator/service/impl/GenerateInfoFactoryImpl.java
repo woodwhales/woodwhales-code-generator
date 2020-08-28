@@ -2,7 +2,6 @@ package org.woodwhales.generator.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.woodwhales.generator.controller.request.DataBaseRequestBody;
@@ -30,35 +29,37 @@ public class GenerateInfoFactoryImpl implements GenerateInfoFactory {
     private GenerateService generateService;
 
     @Override
-    public GenerateInfo build(DataBaseRequestBody dataBaseRequestBody) throws Exception {
+    public GenerateInfo build(DataBaseRequestBody requestBody) throws Exception {
         // 检查目标文件目录是否为合法文件夹
-        String baseDirPath = dataBaseRequestBody.getGenerateDir();
-        File baseDir = checkBaseDirPath(baseDirPath);
+        String generateDir = requestBody.getGenerateDir();
+        File baseDir = checkBaseDirPath(generateDir);
 
-        String packageName = dataBaseRequestBody.getPackageName();
-        DataBaseInfo dataBaseInfo = DataBaseInfo.convert(dataBaseRequestBody);
+        DataBaseInfo dataBaseInfo = DataBaseInfo.convert(requestBody);
 
         List<TableInfo> tables = generateService.listTables(dataBaseInfo, true);
 
-        return buildGenerateInfo(packageName, dataBaseInfo, tables, baseDir, baseDirPath);
+        String packageName = requestBody.getPackageName();
+        final Boolean overCode = requestBody.getOverCode();
+        final Boolean overMarkdown = requestBody.getOverMarkdown();
+        final Boolean generateCode = requestBody.getGenerateCode();
+        final Boolean generateMarkdown = requestBody.getGenerateMarkdown();
+        final String superClass = requestBody.getSuperClass();
+        final List<String> interfaceList = requestBody.getInterfaceList();
+
+        return new GenerateInfo(baseDir.getAbsolutePath(), packageName,
+                dataBaseInfo, tables, overCode, overMarkdown,
+                generateCode, generateMarkdown, superClass, interfaceList);
     }
 
-    private GenerateInfo buildGenerateInfo(String packageName, DataBaseInfo dataBaseInfo, List<TableInfo> tables,
-                                           File baseDir, String baseDirPath) {
-        GenerateInfo generateInfo = new GenerateInfo(packageName, dataBaseInfo, tables);
-
-        // 设置 markdown 生成目录
-        generateInfo.setMarkdownFile(new File(baseDirPath));
-
-        // 设置 java代码 生成目录
-        File targetFile = getTargetFile(baseDir.getAbsolutePath(), packageName);
-        generateInfo.setJavaFile(targetFile);
-
-        return generateInfo;
-    }
-
+    /**
+     * 校验基础包路径是否存在，不存在则创建
+     * {baseDirPath}/src/main/java
+     * @param baseDirPath
+     * @return
+     */
     private File checkBaseDirPath(String baseDirPath) {
         File tmpFile = FileUtils.getFile(baseDirPath + File.separator + "src" + File.separator + "main" + File.separator + "java");
+        // 文件不存在则创建
         if(!tmpFile.exists()) {
             try {
                 FileUtils.forceMkdir(tmpFile);
@@ -71,25 +72,5 @@ public class GenerateInfoFactoryImpl implements GenerateInfoFactory {
         return tmpFile;
     }
 
-    private File getTargetFile(String baseDirPath, String packageName) {
-        String[] dirNames = StringUtils.split(packageName, ".");
-        StringBuffer sb = new StringBuffer();
-        for (String dirName : dirNames) {
-            sb.append(File.separator + dirName);
-        }
-        String packageDir = sb.toString();
 
-        String targetDir =  baseDirPath + File.separator + packageDir;
-        File targetDirFile = new File(targetDir);
-        if(!targetDirFile.exists()) {
-            try {
-                FileUtils.forceMkdir(targetDirFile);
-            } catch (Exception e) {
-                log.error("create dir process failed, {}", e);
-                throw new GenerateException("生成代码的包目录失败");
-            }
-        }
-
-        return targetDirFile;
-    }
 }

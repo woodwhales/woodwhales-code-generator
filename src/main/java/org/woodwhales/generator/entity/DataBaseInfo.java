@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.woodwhales.generator.constant.MyConstant;
 import org.woodwhales.generator.controller.request.BuildConnectionRequestBody;
 import org.woodwhales.generator.controller.request.DataBaseRequestBody;
@@ -25,21 +26,41 @@ public class DataBaseInfo {
 	private String username; 
 	
 	private String password;
-	
+
 	/**
 	 * 数据库名称
 	 */
 	private String schema;
-	
+
 	/**
 	 * 包名称
 	 */
 	private String packageName;
-	
+
 	/**
 	 * 生成代码的目录
 	 */
 	private String generateDir;
+
+	/**
+	 * 是否生成数据库表结构设计文档
+	 */
+	private Boolean generateMarkdown;
+
+	/**
+	 * 是否覆盖markdown
+	 */
+	private Boolean overMarkdown;
+
+	/**
+	 * 是否生成代码
+	 */
+	private Boolean generateCode;
+
+	/**
+	 * 是否覆盖markdown
+	 */
+	private Boolean overCode;
 
 	/**
 	 * 要生成的数据库表名列表
@@ -51,27 +72,26 @@ public class DataBaseInfo {
 	 */
 	private Boolean selectAll;
 
+	/**
+	 * 父类
+	 */
+	private String superClass;
+
+	/**
+	 * 接口
+	 */
+	private List<String> interfaceList;
+
 	public static DataBaseInfo convert(BuildConnectionRequestBody requestBody) {
-		return DataBaseInfo.builder()
-				.ip(requestBody.getIp())
-				.port(requestBody.getPort())
-				.username(requestBody.getUsername())
-				.password(requestBody.getPassword())
-				.build();
+		DataBaseInfo dataBaseInfo = new DataBaseInfo();
+		BeanUtils.copyProperties(requestBody, dataBaseInfo);
+		return dataBaseInfo;
 	}
 	
 	public static DataBaseInfo convert(DataBaseRequestBody requestBody) {
-		return DataBaseInfo.builder()
-							.ip(requestBody.getIp())
-							.port(requestBody.getPort())
-							.username(requestBody.getUsername())
-							.password(requestBody.getPassword())
-							.schema(requestBody.getSchema())
-							.packageName(requestBody.getPackageName())
-							.generateDir(requestBody.getGenerateDir())
-							.dbNameList(requestBody.getDbNameList())
-							.selectAll(requestBody.getSelectAll())
-							.build();
+		DataBaseInfo dataBaseInfo = new DataBaseInfo();
+		BeanUtils.copyProperties(requestBody, dataBaseInfo);
+		return dataBaseInfo;
 	}
 	
 	public Properties getProperties () {
@@ -80,12 +100,11 @@ public class DataBaseInfo {
 		properties.put("useInformationSchema", "true");
 		properties.put("user", this.username);
 		properties.put("password", this.password);
-		
 		return properties;
 	}
 	
 	public String getUrl() {
-		String url = null;
+		String url;
 		if(StringUtils.isNotBlank(this.schema)) {
 			url = MyConstant.templateUrl
 							.replace("[ip]", this.ip)
