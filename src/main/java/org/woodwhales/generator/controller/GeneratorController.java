@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.woodwhales.generator.controller.request.BuildConnectionRequestBody;
 import org.woodwhales.generator.controller.request.DataBaseRequestBody;
 import org.woodwhales.generator.controller.response.RespVO;
 import org.woodwhales.generator.entity.DataBaseInfo;
@@ -40,14 +41,14 @@ public class GeneratorController {
 
 	/**
 	 * 通过数据基本链接信息，获取数据库的元信息
-	 * @param dataBaseRequestBody
+	 * @param requestBody
 	 * @return
 	 * @throws Exception
 	 */
 	@PostMapping("/buildConnection")
-	public RespVO buildConnection(@RequestBody DataBaseRequestBody dataBaseRequestBody) throws Exception {
-		log.info("dataBaseRequestBody = {}", dataBaseRequestBody);
-		DataBaseInfo dataBaseInfo = DataBaseInfo.convert(dataBaseRequestBody);
+	public RespVO buildConnection(@RequestBody BuildConnectionRequestBody requestBody) throws Exception {
+		log.info("buildConnectionRequestBody = {}", requestBody);
+		DataBaseInfo dataBaseInfo = DataBaseInfo.convert(requestBody);
 		return RespVO.success(generateService.listSchema(dataBaseInfo));
 	}
 
@@ -63,7 +64,13 @@ public class GeneratorController {
 		DataBaseInfo dataBaseInfo = DataBaseInfo.convert(dataBaseRequestBody);
 		return RespVO.success(generateService.listTables(dataBaseInfo, false));
 	}
-	
+
+	/**
+	 * 生成代码或文档
+	 * @param dataBaseRequestBody
+	 * @return
+	 * @throws Exception
+	 */
 	@PostMapping("/process")
 	public RespVO process(@RequestBody DataBaseRequestBody dataBaseRequestBody) throws Exception {
 		log.info("dataBaseRequestBody = {}", dataBaseRequestBody);

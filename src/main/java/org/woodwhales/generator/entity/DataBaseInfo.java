@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.woodwhales.generator.constant.MyConstant;
+import org.woodwhales.generator.controller.request.BuildConnectionRequestBody;
 import org.woodwhales.generator.controller.request.DataBaseRequestBody;
 
 import java.util.List;
@@ -49,18 +50,27 @@ public class DataBaseInfo {
 	 * 是否生成全部数据库表
 	 */
 	private Boolean selectAll;
-	
-	public static DataBaseInfo convert(DataBaseRequestBody dataBaseRequestBody) {
+
+	public static DataBaseInfo convert(BuildConnectionRequestBody requestBody) {
 		return DataBaseInfo.builder()
-							.ip(dataBaseRequestBody.getIp())
-							.port(dataBaseRequestBody.getPort())
-							.username(dataBaseRequestBody.getUsername())
-							.password(dataBaseRequestBody.getPassword())
-							.schema(dataBaseRequestBody.getSchema())
-							.packageName(dataBaseRequestBody.getPackageName())
-							.generateDir(dataBaseRequestBody.getGenerateDir())
-							.dbNameList(dataBaseRequestBody.getDbNameList())
-							.selectAll(dataBaseRequestBody.getSelectAll())
+				.ip(requestBody.getIp())
+				.port(requestBody.getPort())
+				.username(requestBody.getUsername())
+				.password(requestBody.getPassword())
+				.build();
+	}
+	
+	public static DataBaseInfo convert(DataBaseRequestBody requestBody) {
+		return DataBaseInfo.builder()
+							.ip(requestBody.getIp())
+							.port(requestBody.getPort())
+							.username(requestBody.getUsername())
+							.password(requestBody.getPassword())
+							.schema(requestBody.getSchema())
+							.packageName(requestBody.getPackageName())
+							.generateDir(requestBody.getGenerateDir())
+							.dbNameList(requestBody.getDbNameList())
+							.selectAll(requestBody.getSelectAll())
 							.build();
 	}
 	

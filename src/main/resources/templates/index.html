@@ -48,20 +48,19 @@
     <div class="layui-inline">
       <label class="layui-form-label">用户</label>
       <div class="layui-input-inline">
-        <input type="text" name="username" lay-verify="required" autocomplete="off" placeholder="请输入用户名" class="layui-input">
+        <input type="text" name="username" lay-verify="required" autocomplete="off" placeholder="请输入用户名" class="layui-input" value="root">
       </div>
     </div>
     <div class="layui-inline">
       <label class="layui-form-label">密码</label>
       <div class="layui-input-inline">
-        <input type="password" name="password" lay-verify="required|pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
+        <input type="password" name="password" lay-verify="required|pass" placeholder="请输入密码" autocomplete="off" class="layui-input" value="root1234">
       </div>
     </div>
   </div>
   <div class="layui-form-item" id="schemaDivId" hidden="true">
     <label class="layui-form-label">schema</label>
     <div class="layui-input-inline">
-      <input value='false' id="needGenerate" hidden="true">
       <select name="schema" id="schema" lay-filter="schema" disabled="">
         <option value=""></option>
       </select>
@@ -90,8 +89,8 @@
   <div class="layui-form-item" id="interfaceDivId" hidden="true">
     <label class="layui-form-label">接口</label>
     <div class="layui-input-block">
-      <div class="layui-col-md1"><button class="layui-btn layui-btn-fluid" id="addInterface">添加接口</button></div>
-      <div class="layui-col-md1"><button class="layui-btn layui-btn-fluid layui-bg-red" id="clearInterface">清空接口</button></div>
+      <div class="layui-col-md1"><button class="layui-btn layui-btn-fluid" id="addInterface">添加</button></div>
+      <div class="layui-col-md1"><button class="layui-btn layui-btn-fluid layui-bg-red" id="clearInterface">清空</button></div>
       <div class="layui-col-md10" id="interfaceListDivId"></div>
     </div>
   </div>
@@ -105,7 +104,7 @@
 </div>
 
 <div class="layui-row" id="tableInfosDiv" hidden="true">
-<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;" id="tableInfoLableId" hidden="true">
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;" id="tableInfoLabelId" hidden="true">
   <legend>数据库表展示</legend>
 </fieldset>
 
@@ -119,89 +118,39 @@
 
 <script th:src="@{/webjars/layui/layui.js}"></script>
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/js/my.js}"></script>
 <script type="text/javascript" th:inline="none">
-
-  function closeTag(index) {
-    closeTagInner(index);
-  }
-
   layui.use(['form', 'layer', 'table'], function(){
 	var form = layui.form,
 	layer = layui.layer,
 	table = layui.table
 	;
 
-    var interfaceList = new Array();
-	
-	var openGenerate = function() {
-		$('#schemaDivId').show();
-		$('#needGenerate').val('true');
-		$('#needGenerateDirDivId').hide();
-		$('#needGenerateDir').val('false');
-	}
-	
-	var updateBtnToTest = function() {
-		$('#btnId').html('测试');
-    }
-	
-	var updateBtnToSubmit = function() {
-        $('#btnId').html('提交');
-    }
-	
-	var closeGenerate = function() {
-		$('#schemaDivId').hide();
-		$('#tableInfosDiv').hide();
-        $('#needGenerate').val('false');
-    }
-	
-	var isNeedGenerate = function() {
-		if($('#needGenerate').val() == 'true') {
-			return true;
-		} 
-		
-		return false;
-	}
-	
-	var isProcess = function() {
-        if($('#processId').val() == 'true') {
-            return true;
-        } 
-        
-        return false;
-    }
-	
-	$("#resetBtnId").on("click",function() {
-		emptySchema();
-	});
-	
-	$('#testBtnId').html('提交');
-	
-	var updatedSelect = function(res) {
-		updateBtnToSubmit();
-		$('#processId').val('false');
-        openGenerate();
-        // 数据库下拉选增加数据库名称
-        $('#schema').append(new Option('请选择', ''));
-        $.each(res.data, function(index, item) {
-            $('#schema').append(new Option(item, item));
-        });
-        $('#schema').removeAttr("disabled");
-        $('#schema').attr('lay-verify','required');
-        layui.form.render("select");
-	}
+	$('#resetBtnId').click(function () {
+	  if('提交' == $('#btnId').html()) {
+        // 清空账号密码
+	    return;
+      }
 
-    var emptySchema = function() {
-      $('#schema').attr('disabled','');
+      if('测试' == $('#btnId').html()) {
+        // 下拉选
+        return;
+      }
+
+      if('生成' == $('#btnId').html()) {
+        // 清空类名，包名，父类，接口，下拉选
+        return;
+      }
+
+      emptySchema();
+    })
+
+    let interfaceList = new Array();
+
+    function emptySchema() {
       $("#schema").empty();
-      $('#schemaDivId').hide();
-      $('#processDivId').hide();
-      $('#packageNameDivId').hide();
-      $('#tableInfosDiv').hide();
-
-      $('#processId').val('false');
+      $('#schema').attr('disabled','');
       $('#schema').removeAttr("lay-verify");
-      $('#generateDir').removeAttr("lay-verify");
-      $('#packageName').removeAttr("lay-verify");
       layui.form.render("select");
       updateBtnToTest();
       clearInterfaceFun();
@@ -212,7 +161,7 @@
       showTagList(interfaceList);
     }
 
-    clearInterfaceFun = function() {
+    function clearInterfaceFun() {
       interfaceList.splice(0, interfaceList.length);
       showTagList(interfaceList);
     }
@@ -231,156 +180,152 @@
       return false;
     })
 
-    showTagList = function(interfaceList) {
-      var tempArray = new Array();
+    function showTagList(interfaceList) {
+      let tempArray = new Array();
       $.each(interfaceList,function(index, value) {
-        tempArray.push('<div class="tag-class">'+
-                value +'&nbsp;<a class="tag-close" onclick=closeTag('+index+')>' +
+        tempArray.push('<div class="tag-class">'+ value +'&nbsp;<a class="tag-close" onclick=closeTag('+index+')>' +
                 '<i class="layui-icon layui-icon-close"></i></a></div>');
       });
-      console.log(interfaceList)
       $('#interfaceListDivId').html(tempArray.join(""))
     }
 
-	form.on('submit(btnId)', function(data) {
-
-        if(data.field.generateCode == "on") {
-          data.field.generateCode = true;
-        } else {
-          data.field.generateCode = false;
-        }
-
-        if(data.field.generateMarkdown == "on") {
-          data.field.generateMarkdown = true;
-        } else {
-          data.field.generateMarkdown = false;
-        }
-
-		if(isNeedGenerate() && isProcess()) {
-          var checkStatus = table.checkStatus('tableInfosId');
-
-          if(checkStatus.data.length == 0) {
-            layer.msg('请选择要生成的数据库表', {icon: 5});
-            return false;
-          }
-
-          var dbNameList = new Array();
-          $.each(checkStatus.data,function(index, value) {
-            dbNameList.push(value.dbName);
-          });
-
-          data.field.dbNameList = dbNameList;
-          data.field.selectAll = checkStatus.isAll;
-          data.field.interfaceList = interfaceList;
-          console.log(data.field)
-          alert(2222)
-          return false;
-
-          $.ajax({
-              url:'/generate/process',
-              type:'post',
-              dataType:'json',
-              contentType:"application/json",
-              async:true,
-              cache:false,
-              data:JSON.stringify(data.field),
-              success:function(res) {
-                  if(res.code == '0000') {
-                      layer.msg('生成成功', {icon: 1});
-                  } else {
-                      layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
-                  }
-              },
-              error:function(res) {
-                  layer.msg('网络异常', {icon: 5});
-              }
-          });
-            
-            return false;
-		} else if(isNeedGenerate()) {
-			$('#processId').val('false');
-			$.ajax({
-	            url:'/generate/buildTableInfo',
-	            type:'post',
-	            dataType:'json',
-	            contentType:"application/json",
-	            async:true,
-	            cache:false,
-	            data:JSON.stringify(data.field),
-	            success:function(res) {
-	                if(res.code == '0000') {
-	                	$('#tableInfoLableId').show();
-
-	                	$('#processId').val('true');
-
-	                	$('#processDivId').show();
-	                	$('#packageNameDivId').show();
-	                	
-	                	$('#tableInfosDiv').show();
-	                	$('#pageNameAndPathId').show();
-
-	                	$('#superClassDivId').show();
-	                	$('#interfaceDivId').show();
-
-	                	$('#generateDir').attr('lay-verify','required');
-	                	$('#packageName').attr('lay-verify','required');
-	                	
-	                	$('#btnId').html('生成');
-	                	table.render({
-	                		  elem: '#tableInfosId' //指定原始表格元素选择器（推荐id选择器）
-                              , limit: Number.MAX_VALUE
-                              ,cellMinWidth: 80
-	                		  ,cols: [[
-                                  {type:'checkbox'}
-	                			  ,{field: 'dbName', title: '数据库名称'}
-	                			  ,{field: 'name', title: 'Class名'}
-	                			  ,{field: 'comment', title: '注释'}
-	                			  ,{field: 'keys', title: '主键', templet:function(data) {
-	                				  return data.keys.join(',');
-	                			  }}
-	                		  ]]
-	                	      ,data: res.data
-                		});
-	                } else {
-	                    $('#tableInfoLableId').hide();
-	                    layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
-	                }
-	            },
-	            error:function(res) {
-	                $('#tableInfoLableId').hide();
-	                layer.msg('网络异常', {icon: 5});
-	            }
-	        });
-			
-			return false;
-		}
-		
-		emptySchema();
-		
+    form.on('submit(btnId)', function(data) {
+      replaceSwitchBtnValue(data);
+      if('测试' == $('#btnId').html()) {
+        emptySchema();
         $.ajax({
-            url:'/generate/buildConnection',
-            type:'post',
-            dataType:'json',
-            contentType:"application/json",
-            async:true,
-            cache:false,
-            data:JSON.stringify(data.field),
-            success:function(res) {
-            	if(res.code == '0000') {
-            		updatedSelect(res)
-            	} else {
-            		layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
-            	}
-            },
-            error:function(res) {
-                layer.msg('网络异常', {icon: 5});
+          url:'/generate/buildConnection',
+          type:'post',
+          dataType:'json',
+          contentType:"application/json",
+          async:true,
+          cache:false,
+          data:JSON.stringify(data.field),
+          success:function(res) {
+            if(res.code == '0000') {
+              layer.msg('生成成功', {icon: 1});
+              // 更新按钮为提交
+              updateBtnToSubmit();
+
+              // 数据库下拉选增加数据库名称并且增加必选校验
+              $('#schema').append(new Option('请选择', ''));
+              $.each(res.data, function(index, item) {
+                $('#schema').append(new Option(item, item));
+              });
+              $('#schema').removeAttr("disabled");
+              $('#schema').attr('lay-verify','required');
+              layui.form.render("select");
+              schemaDivIdShow();
+            } else {
+              layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
             }
+          },
+          error:function(res) {
+            layer.msg('网络异常', {icon: 5});
+          }
         });
-        
-	    return false;
+        return false;
+      }
+
+      if('提交' == $('#btnId').html()) {
+        $.ajax({
+          url:'/generate/buildTableInfo',
+          type:'post',
+          dataType:'json',
+          contentType:"application/json",
+          async:true,
+          cache:false,
+          data:JSON.stringify(data.field),
+          success:function(res) {
+            if(res.code == '0000') {
+              table.render({
+                elem: '#tableInfosId' //指定原始表格元素选择器（推荐id选择器）
+                , limit: Number.MAX_VALUE
+                ,cellMinWidth: 80
+                ,cols: [[
+                  {type:'checkbox'}
+                  ,{field: 'dbName', title: '数据库名称'}
+                  ,{field: 'name', title: 'Class名'}
+                  ,{field: 'comment', title: '注释'}
+                  ,{field: 'keys', title: '主键', templet:function(data) {
+                      return data.keys.join(',');
+                    }}
+                ]]
+                ,data: res.data
+              });
+
+              pageNameAndPathIdShow();
+              superClassDivIdShow();
+              interfaceDivIdShow();
+              generateDirAddAttr();
+
+              // 只要选中了生成代码，报名必须选择
+              if(data.field.generateCode) {
+                packageNameAddAttr();
+              }
+
+              tableInfoLabelIdShow();
+              tableInfosDivShow();
+              updateBtnToGenerate();
+              return false;
+            } else {
+              tableInfoLabelIdHide();
+              layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
+            }
+          },
+          error:function(res) {
+            tableInfoLabelIdHide();
+            layer.msg('网络异常', {icon: 5});
+          }
+        });
+        return false;
+      }
+
+      if('生成' == $('#btnId').html()) {
+
+        // 判断是否选择要生成的表格数据
+        var checkStatus = table.checkStatus('tableInfosId');
+
+        if(checkStatus.data.length == 0) {
+          layer.msg('请选择要生成的数据库表', {icon: 5});
+          return false;
+        }
+
+        let dbNameList = new Array();
+        $.each(checkStatus.data,function(index, value) {
+          dbNameList.push(value.dbName);
+        });
+
+        data.field.dbNameList = dbNameList;
+        data.field.selectAll = checkStatus.isAll;
+        data.field.interfaceList = interfaceList;
+        return false;
+        $.ajax({
+          url:'/generate/process',
+          type:'post',
+          dataType:'json',
+          contentType:"application/json",
+          async:true,
+          cache:false,
+          data:JSON.stringify(data.field),
+          success:function(res) {
+            if(res.code == '0000') {
+              layer.msg('生成成功', {icon: 1});
+            } else {
+              layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
+            }
+          },
+          error:function(res) {
+            layer.msg('网络异常', {icon: 5});
+          }
+        });
+
+        return false;
+      }
+
+      return false;
     });
-	
-	
+
 });
 
 </script>

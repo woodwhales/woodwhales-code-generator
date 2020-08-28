@@ -34,7 +34,7 @@ public class GenerateServiceImpl implements GenerateService {
 	@Override
 	public Connection getConnection(DataBaseInfo dataBaseInfo) throws Exception {
 		Class.forName("com.mysql.cj.jdbc.Driver");
-		Connection connection = null;
+		Connection connection;
 		try {
 			connection = DriverManager.getConnection(dataBaseInfo.getUrl(), dataBaseInfo.getProperties());
 		} catch (SQLException exception) {
