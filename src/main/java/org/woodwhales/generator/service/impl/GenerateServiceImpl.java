@@ -33,14 +33,16 @@ public class GenerateServiceImpl implements GenerateService {
 
 	@Override
 	public Connection getConnection(DataBaseInfo dataBaseInfo) throws Exception {
-		Class.forName("com.mysql.cj.jdbc.Driver");
+		Class.forName(dataBaseInfo.getDriveClassName());
 		Connection connection;
 		try {
 			connection = DriverManager.getConnection(dataBaseInfo.getUrl(), dataBaseInfo.getProperties());
 		} catch (SQLException exception) {
 			log.error("cause by : {}", exception.getMessage(), exception);
-			StringUtils.equals("28000", exception.getSQLState());
-			throw new GenerateException("数据库链接失败，账号或密码不正确！");
+			if (StringUtils.equals("28000", exception.getSQLState()) || exception.getErrorCode() == 1017) {
+				throw new GenerateException("账号或密码不正确！");
+			}
+			throw new GenerateException("数据库链接失败！");
 		}
 
 		return connection;

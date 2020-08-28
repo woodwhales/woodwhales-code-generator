@@ -27,12 +27,9 @@ public class StringToolsTest {
 		assertEquals("aBc", StringUtils.uncapitalize("ABc"));
 		assertEquals("_ABc", StringUtils.uncapitalize("_ABc"));
 
-
 		assertEquals("ABc", StringUtils.capitalize("aBc"));
 		assertEquals("_aBc", StringUtils.capitalize("_aBc"));
-
 	}
-
 
 }
 

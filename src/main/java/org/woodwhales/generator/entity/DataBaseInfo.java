@@ -13,6 +13,10 @@ import org.woodwhales.generator.controller.request.DataBaseRequestBody;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * 数据库链接配置数据对象
+ * @author woodwhales
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -26,6 +30,10 @@ public class DataBaseInfo {
 	private String username; 
 	
 	private String password;
+
+	private String dbType;
+
+	private String driveClassName;
 
 	/**
 	 * 数据库名称
@@ -104,17 +112,34 @@ public class DataBaseInfo {
 	}
 	
 	public String getUrl() {
-		String url;
-		if(StringUtils.isNotBlank(this.schema)) {
-			url = MyConstant.templateUrl
-							.replace("[ip]", this.ip)
-							.replace("[port]", this.port+"")
-							.replace("[schema]", this.schema);
-		} else {
-			url = MyConstant.templateUrlWithoutSchema
-							.replace("[ip]", this.ip)
-							.replace("[port]", this.port+"");
+		String url = null;
+
+		if(StringUtils.equals(dbType, "MYSQL")) {
+			if(StringUtils.isNotBlank(this.schema)) {
+				url = MyConstant.mysql_Template_Url
+						.replace("[ip]", this.ip)
+						.replace("[port]", this.port+"")
+						.replace("[schema]", this.schema);
+			} else {
+				url = MyConstant.mysql_Template_Url_Without_Schema
+						.replace("[ip]", this.ip)
+						.replace("[port]", this.port+"");
+			}
 		}
+
+		if(StringUtils.equals(dbType, "ORACLE")) {
+			if(StringUtils.isNotBlank(this.schema)) {
+				url = MyConstant.oracle_Template_Url
+						.replace("[ip]", this.ip)
+						.replace("[port]", this.port+"")
+						.replace("[schema]", this.schema);
+			} else {
+				url = MyConstant.oracle_Template_Url
+						.replace("[ip]", this.ip)
+						.replace("[port]", this.port+"");
+			}
+		}
+
 		return url;
 	}
 	

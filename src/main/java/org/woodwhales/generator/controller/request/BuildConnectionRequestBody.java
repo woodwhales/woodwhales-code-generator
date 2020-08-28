@@ -25,4 +25,10 @@ public class BuildConnectionRequestBody {
     @NotBlank(message = "password字段为空")
     private String password;
 
+    @NotBlank(message = "数据库类型为空")
+    private String dbType;
+
+    @NotBlank(message = "驱动类名为空")
+    private String driveClassName;
+
 }
