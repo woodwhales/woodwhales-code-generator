@@ -25,7 +25,9 @@ public class DataBaseInfo {
 	
 	private String ip; 
 	
-	private Integer port; 
+	private Integer port;
+
+	private String sid;
 	
 	private String username; 
 	
@@ -128,15 +130,11 @@ public class DataBaseInfo {
 		}
 
 		if(StringUtils.equals(dbType, "ORACLE")) {
-			if(StringUtils.isNotBlank(this.schema)) {
+			if(StringUtils.isNotBlank(this.sid)) {
 				url = MyConstant.oracle_Template_Url
 						.replace("[ip]", this.ip)
 						.replace("[port]", this.port+"")
-						.replace("[schema]", this.schema);
-			} else {
-				url = MyConstant.oracle_Template_Url
-						.replace("[ip]", this.ip)
-						.replace("[port]", this.port+"");
+						.replace("[sid]", this.sid);
 			}
 		}
 

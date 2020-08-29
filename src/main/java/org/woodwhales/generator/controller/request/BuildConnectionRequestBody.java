@@ -31,4 +31,6 @@ public class BuildConnectionRequestBody {
     @NotBlank(message = "驱动类名为空")
     private String driveClassName;
 
+    private String sid;
+
 }

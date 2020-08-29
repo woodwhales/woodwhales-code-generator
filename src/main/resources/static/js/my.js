@@ -74,6 +74,18 @@ function packageNameRemoveAttr() {
     $('#packageName').removeAttr("lay-verify");
 }
 
+function sidAddAttr() {
+    $('#sidDivId').show();
+    $('#sid').attr('lay-verify','required');
+    $('#sid').show();
+}
+
+function sidRemoveAttr() {
+    $('#sid').removeAttr("lay-verify");
+    $('#sid').hide();
+    $('#sidDivId').hide();
+}
+
 function packageNameAddAttr() {
     $('#packageName').attr('lay-verify','required');
 }

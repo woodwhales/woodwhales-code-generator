@@ -18,6 +18,14 @@
 <form class="layui-form">
   <div class="layui-form-item">
     <div class="layui-inline">
+      <label class="layui-form-label">数据库类型</label>
+      <div class="layui-input-block">
+        <input type="radio" name="dbType" lay-filter="dbType-filter" value="MYSQL" title="MySQL" checked="">
+        <input type="radio" name="dbType" lay-filter="dbType-filter" value="ORACLE" title="Oracle">
+        <input type="text" name="driveClassName" id="driveClassName" style="display: none" autocomplete="off" class="layui-input" value="com.mysql.cj.jdbc.Driver">
+      </div>
+    </div>
+    <div class="layui-inline">
       <label class="layui-form-label">生成代码</label>
       <div class="layui-input-block">
         <input type="checkbox" name="generateCode" checked="" lay-skin="switch" lay-text="是|否">
@@ -52,13 +60,13 @@
     <div class="layui-inline">
       <label class="layui-form-label">端口</label>
       <div class="layui-input-inline">
-        <input type="text" name="port" lay-verify="required" autocomplete="off" class="layui-input" value="3306">
+        <input type="text" name="port" id="port" lay-verify="required" autocomplete="off" class="layui-input" placeholder="请输入端口号" value="3306">
       </div>
     </div>
-    <div class="layui-inline">
+    <div class="layui-inline" id="sidDivId" style="display: none">
       <label class="layui-form-label">SID</label>
       <div class="layui-input-inline">
-        <input type="text" name="sid" lay-verify="required" autocomplete="off" class="layui-input" value="orcl">
+        <input type="text" name="sid" id="sid" lay-verify="required" autocomplete="off" placeholder="请输入SID" class="layui-input" value="orcl">
       </div>
     </div>
   </div>
@@ -143,6 +151,18 @@
 	layer = layui.layer,
 	table = layui.table
 	;
+
+    form.on('radio(dbType-filter)', function(data){
+      if(data.value === 'MYSQL') {
+        $('#driveClassName').val('com.mysql.cj.jdbc.Driver');
+        $('#port').val(3306);
+        sidRemoveAttr();
+      } else {
+        $('#driveClassName').val('oracle.jdbc.OracleDriver');
+        $('#port').val(1521);
+        sidAddAttr();
+      }
+    });
 
 	$('#resetBtnId').click(function () {
 
