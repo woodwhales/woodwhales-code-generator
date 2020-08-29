@@ -3,7 +3,6 @@ package org.woodwhales.generator.service;
 import org.woodwhales.generator.entity.DataBaseInfo;
 import org.woodwhales.generator.entity.TableInfo;
 
-import java.sql.Connection;
 import java.util.List;
 
 /**
@@ -11,14 +10,6 @@ import java.util.List;
  * @author woodwhales
  */
 public interface GenerateService {
-
-	/**
-	 * 根据 dataBaseInfo 生成 Connection
-	 * @param dataBaseInfo
-	 * @return
-	 * @throws Exception
-	 */
-	Connection getConnection(DataBaseInfo dataBaseInfo) throws Exception;
 
 	/**
 	 * 根据 dataBaseInfo 生成 schema 列表

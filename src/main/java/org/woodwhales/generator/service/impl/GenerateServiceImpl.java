@@ -1,67 +1,40 @@
 package org.woodwhales.generator.service.impl;
-
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.woodwhales.generator.config.ColumnConfig;
-import org.woodwhales.generator.config.TableConfig;
-import org.woodwhales.generator.entity.Column;
 import org.woodwhales.generator.entity.DataBaseInfo;
 import org.woodwhales.generator.entity.TableInfo;
-import org.woodwhales.generator.exception.GenerateException;
+import org.woodwhales.generator.service.ConnectionFactory;
+import org.woodwhales.generator.service.DataBaseInfoCache;
 import org.woodwhales.generator.service.GenerateService;
-import org.woodwhales.generator.util.StringTools;
 
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.Connection;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class GenerateServiceImpl implements GenerateService {
-	
-	@Autowired
-	private ColumnConfig columnConfig;
-	
-	@Autowired
-	private TableConfig tableConfig;
 
-	@Override
-	public Connection getConnection(DataBaseInfo dataBaseInfo) throws Exception {
-		Class.forName(dataBaseInfo.getDriveClassName());
-		Connection connection;
-		try {
-			connection = DriverManager.getConnection(dataBaseInfo.getUrl(), dataBaseInfo.getProperties());
-		} catch (SQLException exception) {
-			log.error("cause by : {}", exception.getMessage(), exception);
-			if (StringUtils.equals("28000", exception.getSQLState()) || exception.getErrorCode() == 1017) {
-				throw new GenerateException("账号或密码不正确！");
-			}
-			throw new GenerateException("数据库链接失败！");
-		}
+	@Autowired
+	private DataBaseInfoCache dataBaseInfoCache;
 
-		return connection;
-	}
+	@Autowired
+	private ConnectionFactory connectionFactory;
 
 	@Override
 	public List<String> listSchema(DataBaseInfo dataBaseInfo) throws Exception {
-		Connection connection = getConnection(dataBaseInfo);
-		DatabaseMetaData metaData = connection.getMetaData();
+		// 获取数据库链接
+		Connection connection = connectionFactory.buildConnection(dataBaseInfo);
 
-		ResultSet resultSet = metaData.getCatalogs();
-		
-		List<String> schemaList = new ArrayList<>();
-		while (resultSet.next()) {
-			schemaList.add(resultSet.getString(1));
-		}
-		resultSet.close();
-		connection.close();
-		return schemaList;
+		// 数据库链接成功之后清除缓存
+		dataBaseInfoCache.clearCache(dataBaseInfo.getDataBaseInfoKey());
+
+		// 查询所有数据库表名
+		return connectionFactory.listSchemas(connection);
 	}
 
 	/**
@@ -73,145 +46,48 @@ public class GenerateServiceImpl implements GenerateService {
 	 */
 	@Override
 	public List<TableInfo> listTables(DataBaseInfo dataBaseInfo, boolean isProcess) throws Exception {
-		Connection connection = getConnection(dataBaseInfo);
 
-		final String catalog = connection.getCatalog();
-
-		DatabaseMetaData metaData = connection.getMetaData();
+		// 先从缓存中获取
+		final String dataBaseInfoKey = dataBaseInfo.getDataBaseInfoKey();
 		final String schema = dataBaseInfo.getSchema();
 
-		final List<String> dbNameList = dataBaseInfo.getDbNameList();
-		final Boolean selectAll = dataBaseInfo.getSelectAll();
+		List<TableInfo> cacheTableInfoList = dataBaseInfoCache.getTableInfoList(dataBaseInfoKey);
+
+		// 生成代码
 		if(isProcess) {
-			Preconditions.checkArgument(CollectionUtils.isNotEmpty(dbNameList), "未选择要生成的数据库表");
-		}
-
-		ResultSet resultSet = metaData.getTables(schema, null, null, new String[] {"TABLE"});
-		List<TableInfo> tableInfos = new ArrayList<>();
-		while (resultSet.next()) {
-			String tableName = resultSet.getString("TABLE_NAME");
-
-			// 要生成并且不是生成全部过滤掉不需要生成的表
-			if (isProcess && !selectAll && !dbNameList.contains(tableName)) {
-				continue;
-			}
-
-			TableInfo tableInfo = TableInfo.builder()
-											.dbName(tableName)
-											.comment(resultSet.getString("REMARKS"))
-											.build();
-			
-			// 格式化表名
-			String tempTableName = StringTools.substringAfter(tableName, tableConfig.getPrefix());
-			tableInfo.setName(StringTools.upper(tempTableName));
-
-			// setKeys
-			List<String> primaryKeys = getPrimaryKey(metaData, catalog, schema, tableName);
-			tableInfo.setKeys(primaryKeys);
-
-			// setColumns
-			List<Column> columns = getColumns(metaData, dataBaseInfo.getSchema(), tableInfo);
-			tableInfo.setColumns(columns);
-
-			// setKeyTypes
-			List<String> primaryKeyTypes = getPrimaryKeyTypes(primaryKeys, columns);
-			tableInfo.setKeyTypes(primaryKeyTypes);
-
-			tableInfos.add(tableInfo);
-		}
-		
-		return tableInfos;
-	}
-	
-	private List<String> getPrimaryKeyTypes(List<String> primaryKeys, List<Column> columns) {
-		List<String> primaryKeyTypes = new ArrayList<>();
-		for (String primaryKey : primaryKeys) {
-			for (Column column : columns) {
-				if(column.isPrimaryKey() && column.getDbName().equals(primaryKey)) {
-					primaryKeyTypes.add(column.getType());
+			final List<String> dbNameList = dataBaseInfo.getDbNameList();
+			final Boolean selectAll = dataBaseInfo.getSelectAll();
+			// 不是全选，dbNameList不允许为空
+			Preconditions.checkArgument(!selectAll && CollectionUtils.isNotEmpty(dbNameList), "未选择要生成的数据库表");
+			if (Objects.nonNull(cacheTableInfoList)) {
+				if(selectAll) {
+					return cacheTableInfoList;
+				} else {
+					return getTableInfoListByDbNameList(cacheTableInfoList, dbNameList);
 				}
+			} else {
+				Connection connection = connectionFactory.buildConnection(dataBaseInfo);
+				List<TableInfo> tableInfos = connectionFactory.listTables(connection, schema);
+				dataBaseInfoCache.cacheTableInfoList(dataBaseInfoKey, tableInfos);
+				return getTableInfoListByDbNameList(tableInfos, dbNameList);
 			}
-			
-		}
-		
-		return primaryKeyTypes;
-	}
 
-	/**
-	 * 获取当前数据库表的所有字段信息
-	 * @param metaData
-	 * @param schema
-	 * @param tableInfo
-	 * @return
-	 * @throws Exception
-	 */
-	private List<Column> getColumns(DatabaseMetaData metaData, String schema, TableInfo tableInfo) throws Exception {
-		ResultSet resultSet = metaData.getColumns(schema, null, tableInfo.getDbName(), null);
-		List<Column> columns = new ArrayList<>();
-		while (resultSet.next()) {
-			String columnName = resultSet.getString("COLUMN_NAME");
-			String typeName = resultSet.getString("TYPE_NAME");
-			String remarks = resultSet.getString("REMARKS");
-			String defaultValue = resultSet.getString("COLUMN_DEF");
-			int columnSize = resultSet.getInt("COLUMN_SIZE");
-			boolean nullable = BooleanUtils.toBoolean(resultSet.getInt("NULLABLE"));
-			String nullableString = BooleanUtils.toString(nullable, "是", "否");
-
-			Column column = Column.builder()
-								  .dbName(columnName)
-								  .dbType(typeName)
-								  .nullAble(nullable)
-					              .nullableString(nullableString)
-								  .columnSize(columnSize)
-								  .defaultValue(defaultValue)
-								  .comment(remarks).build();
-
-			// 将数据库表的字段类型转成 java 变量类型
-			column.setType(convertType(column.getDbType()));
-			column.setName(StringTools.upperWithOutFisrtChar(columnName));
-			column.setPrimaryKey(checkPrimaryKey(columnName, tableInfo.getKeys()));
-			
-			columns.add(column);
-		}
-		
-		return columns;
-	}
-	
-	private boolean checkPrimaryKey(String columnName, List<String> keys) {
-		if(CollectionUtils.isEmpty(keys)) {
-			return false;
-		}
-		return keys.contains(columnName);
-	}
-
-	private String convertType(String dbType) {
-		Map<String, String> typeMap = columnConfig.getType();
-		String type = typeMap.get(dbType);
-
-		if(StringUtils.isNotBlank(type)) {
-			return type;
-		}
-		
-		for(String key : typeMap.keySet()){
-			if(StringUtils.containsIgnoreCase(dbType, key)) {
-				type = typeMap.get(key);
+		} else {
+			if (Objects.nonNull(cacheTableInfoList)) {
+				return cacheTableInfoList;
+			} else {
+				Connection connection = connectionFactory.buildConnection(dataBaseInfo);
+				List<TableInfo> tableInfos = connectionFactory.listTables(connection, schema);
+				dataBaseInfoCache.cacheTableInfoList(dataBaseInfoKey, tableInfos);
+				return tableInfos;
 			}
 		}
-
-		Preconditions.checkArgument(StringUtils.isNotBlank(type), "数据字段类型[%s]未匹配", dbType);
-		return type;
 	}
 
-	private List<String> getPrimaryKey(DatabaseMetaData metaData, String catalog, String schema, String tableName) throws Exception {
-		ResultSet primaryKeys = metaData.getPrimaryKeys(catalog, schema, tableName);
-
-		List<String> keys = new ArrayList<>();
-		while (primaryKeys.next()) {
-			String keyName = primaryKeys.getString("COLUMN_NAME");
-			keys.add(keyName);
-		}
-		
-		return keys;
+	private List<TableInfo> getTableInfoListByDbNameList(List<TableInfo> tableInfos, List<String> dbNameList) {
+		return tableInfos.stream()
+						.filter(tableInfo -> dbNameList.contains(tableInfo.getDbName()))
+						.collect(Collectors.toList());
 	}
 
 }

@@ -140,5 +140,22 @@ public class DataBaseInfo {
 
 		return url;
 	}
+
+	/**
+	 * 获取数据库唯一key
+	 * @return
+	 */
+	public String getDataBaseInfoKey() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(this.driveClassName)
+				.append(this.ip)
+				.append(this.port)
+				.append(this.username)
+				.append(this.password);
+				if(StringUtils.isNotBlank(this.schema)) {
+					stringBuilder.append(this.schema);
+				}
+		return stringBuilder.toString();
+	}
 	
 }
