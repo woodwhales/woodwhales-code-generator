@@ -21,23 +21,36 @@ public class DataBaseInfoCacheImpl implements DataBaseInfoCache {
 
     private Map<String, List<TableInfo>> tableInfosCache = new HashMap<>(16);
 
+    private Map<String, TableInfo> tableInfoCache = new HashMap<>(32);
+
     @Override
     public void clearCache(String dataBaseInfoKey) {
         // 数据库连接成功之后，清空缓存
         Iterator<Map.Entry<String, List<TableInfo>>> tableInfosCacheIterator = tableInfosCache.entrySet().iterator();
         while (tableInfosCacheIterator.hasNext()) {
             Map.Entry<String, List<TableInfo>> entry = tableInfosCacheIterator.next();
-            if (startsWith(dataBaseInfoKey, entry.getKey())) {
+            final String cacheKey = entry.getKey();
+            if (startsWith(cacheKey, dataBaseInfoKey)) {
+
+                // 清空table缓存
+                List<TableInfo> tables = entry.getValue();
+                tables.stream().forEach(table -> {
+                    tableInfoCache.remove(table.getTableKey());
+                });
+
                 tableInfosCacheIterator.remove();
             }
         }
     }
 
     @Override
-    public void cacheTableInfoList(String dataBaseInfoKey, List<TableInfo> tableInfos) {
+    public void cacheTableInfoList(final String dataBaseInfoKey, List<TableInfo> tableInfos) {
         Preconditions.checkArgument(StringUtils.isNotBlank(dataBaseInfoKey), "要缓存的key不允许为空");
         Objects.requireNonNull(tableInfos, "要缓存的数据库表信息不允许为空");
         tableInfosCache.put(dataBaseInfoKey, tableInfos);
+        tableInfos.stream().forEach(tableInfo -> {
+            tableInfoCache.put(tableInfo.getTableKey(), tableInfo);
+        });
     }
 
     @Override
@@ -51,5 +64,10 @@ public class DataBaseInfoCacheImpl implements DataBaseInfoCache {
         }
 
         return null;
+    }
+
+    @Override
+    public TableInfo getTableInfo(String tableKey) {
+        return tableInfoCache.get(tableKey);
     }
 }

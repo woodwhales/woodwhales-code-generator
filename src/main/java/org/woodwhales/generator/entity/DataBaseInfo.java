@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.woodwhales.generator.constant.MyConstant;
 import org.woodwhales.generator.controller.request.BuildConnectionRequestBody;
-import org.woodwhales.generator.controller.request.DataBaseRequestBody;
 
 import java.util.List;
 import java.util.Properties;
@@ -22,20 +21,41 @@ import java.util.Properties;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DataBaseInfo {
-	
-	private String ip; 
-	
+
+	/**
+	 * ip地址
+	 */
+	private String ip;
+
+	/**
+	 * 端口号
+	 */
 	private Integer port;
 
-	private String sid;
-	
-	private String username; 
-	
+	/**
+	 * 用户名
+	 */
+	private String username;
+
+	/**
+	 * 密码
+	 */
 	private String password;
 
+	/**
+	 * 数据库类型
+	 */
 	private String dbType;
 
+	/**
+	 * 数据库驱动全类名
+	 */
 	private String driveClassName;
+
+	/**
+	 * oracle 数据库的sid
+	 */
+	private String sid;
 
 	/**
 	 * 数据库名称
@@ -92,13 +112,12 @@ public class DataBaseInfo {
 	 */
 	private List<String> interfaceList;
 
+	/**
+	 * 数据库表名
+	 */
+	private String dbName;
+
 	public static DataBaseInfo convert(BuildConnectionRequestBody requestBody) {
-		DataBaseInfo dataBaseInfo = new DataBaseInfo();
-		BeanUtils.copyProperties(requestBody, dataBaseInfo);
-		return dataBaseInfo;
-	}
-	
-	public static DataBaseInfo convert(DataBaseRequestBody requestBody) {
 		DataBaseInfo dataBaseInfo = new DataBaseInfo();
 		BeanUtils.copyProperties(requestBody, dataBaseInfo);
 		return dataBaseInfo;

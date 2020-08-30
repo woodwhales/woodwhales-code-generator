@@ -1,6 +1,6 @@
 package org.woodwhales.generator.service;
 
-import org.woodwhales.generator.model.GenerateInfo;
+import org.woodwhales.generator.model.GenerateTableInfos;
 
 /**
  * 模板接口
@@ -10,10 +10,10 @@ public interface FreeMarkerService {
 
 	/**
 	 * 生成目标文件
-	 * @param generateInfo
+	 * @param generateTableInfos
 	 * @return
 	 * @throws Exception
 	 */
-	boolean process(GenerateInfo generateInfo) throws Exception;
+	boolean process(GenerateTableInfos generateTableInfos) throws Exception;
 	
 }

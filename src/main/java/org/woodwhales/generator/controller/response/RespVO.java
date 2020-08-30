@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RespVO {
+public class RespVO<T> {
 
 	private String code;
 	private String msg;
-	private Object data;
+	private T data;
 
 	public static RespVO resp(boolean result) {
 		if(result) {
@@ -27,7 +27,7 @@ public class RespVO {
 		return new RespVO("0000", "success", StringUtils.EMPTY);
 	}
 	
-	public static RespVO success(Object data) {
+	public static <T> RespVO<T> success(T data) {
 		return new RespVO("0000", "success", data);
 	}
 	

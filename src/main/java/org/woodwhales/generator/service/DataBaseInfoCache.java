@@ -35,4 +35,11 @@ public interface DataBaseInfoCache {
      * @return
      */
     List<TableInfo> getTableInfoList(String dataBaseInfoKey);
+
+    /**
+     * 根据 tableKey 查询对应的 TableInfo
+     * @param tableKey
+     * @return
+     */
+    TableInfo getTableInfo(String tableKey);
 }

@@ -1,5 +1,6 @@
 package org.woodwhales.generator.service;
 
+import org.woodwhales.generator.controller.request.GenerateTemplateRequestBody;
 import org.woodwhales.generator.entity.DataBaseInfo;
 import org.woodwhales.generator.entity.TableInfo;
 
@@ -27,5 +28,19 @@ public interface GenerateService {
 	 * @throws Exception
 	 */
 	List<TableInfo> listTables(DataBaseInfo dataBaseInfo, boolean isProcess) throws Exception;
-	
+
+	/**
+	 * 根据tableKey获取TableInfo
+	 * @param tableKey
+	 * @return
+	 */
+	TableInfo getTableInfo(String tableKey);
+
+
+	/**
+	 * 根据模板生成文件
+	 * @param requestBody
+	 * @return
+	 */
+	TableInfo getTableInfo(GenerateTemplateRequestBody requestBody);
 }

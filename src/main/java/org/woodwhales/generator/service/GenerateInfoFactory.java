@@ -1,7 +1,7 @@
 package org.woodwhales.generator.service;
 
 import org.woodwhales.generator.controller.request.DataBaseRequestBody;
-import org.woodwhales.generator.model.GenerateInfo;
+import org.woodwhales.generator.model.GenerateTableInfos;
 
 /**
  * @projectName: woodwhales-code-generator
@@ -12,12 +12,13 @@ import org.woodwhales.generator.model.GenerateInfo;
 public interface GenerateInfoFactory {
 
     /**
-     * 生成 GenerateInfo
-     * @see GenerateInfo
+     * 生成 GenerateTableInfos
+     * @see GenerateTableInfos
      *
      * @param dataBaseRequestBody
      * @return
      * @throws Exception
      */
-    GenerateInfo build(DataBaseRequestBody dataBaseRequestBody) throws Exception;
+    GenerateTableInfos buildGenerateTableInfos(DataBaseRequestBody dataBaseRequestBody) throws Exception;
+
 }

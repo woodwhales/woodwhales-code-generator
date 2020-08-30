@@ -1,7 +1,7 @@
 package org.woodwhales.generator.controller.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -12,13 +12,8 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class DataBaseRequestBody extends BuildConnectionRequestBody {
-	
-	/**
-	 * 数据库名称
-	 */
-	private String schema;
 	
 	/**
 	 * 包名称

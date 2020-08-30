@@ -19,13 +19,21 @@ import java.io.IOException;
 @Slf4j
 public abstract class BaseFeeMarkerService {
 
+    /**
+     * 模板文件路径
+     * @return
+     */
     protected abstract String filePath();
 
-    protected Configuration getConfiguration(ResourceLoader resourceLoader) {
+    private Configuration initConfiguration() {
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
         configuration.setDefaultEncoding("UTF-8");
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+        return configuration;
+    }
 
+    protected Configuration getConfiguration(ResourceLoader resourceLoader) {
+        Configuration configuration = initConfiguration();
         String locationFilePath = filePath();
         Resource resource = resourceLoader.getResource(locationFilePath);
 
@@ -38,4 +46,6 @@ public abstract class BaseFeeMarkerService {
         }
         return configuration;
     }
+
+
 }

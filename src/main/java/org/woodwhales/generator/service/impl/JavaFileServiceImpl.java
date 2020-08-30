@@ -8,8 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.woodwhales.generator.entity.DataBaseInfo;
 import org.woodwhales.generator.entity.TableInfo;
-import org.woodwhales.generator.model.GenerateInfo;
+import org.woodwhales.generator.model.GenerateTableInfos;
 import org.woodwhales.generator.service.FreeMarkerService;
 
 import javax.annotation.PostConstruct;
@@ -40,22 +41,24 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
 	}
 
 	@Override
-	public boolean process(GenerateInfo generateInfo) throws Exception {
-		if(!generateInfo.getGenerateCode()) {
+	public boolean process(GenerateTableInfos generateTableInfos) throws Exception {
+		DataBaseInfo dataBaseInfo = generateTableInfos.getDataBaseInfo();
+		if(!dataBaseInfo.getGenerateCode()) {
 			return true;
 		}
 
 		HashMap<String, Object> dataModel = new HashMap<>(16);
-		dataModel.put("settings", generateInfo.getDataBaseInfo());
-		dataModel.put("packageName", generateInfo.getPackageName());
-		String targetFilePath = generateInfo.getJavaFile().getAbsolutePath();
+		dataModel.put("settings", dataBaseInfo);
+		dataModel.put("packageName", dataBaseInfo.getPackageName());
+		String targetFilePath = generateTableInfos.getJavaFile().getAbsolutePath();
 
-		final Boolean isCoverOldFile = generateInfo.getOverCode();
+		final Boolean isCoverOldFile = dataBaseInfo.getOverCode();
 
-		for (TableInfo tableInfo : generateInfo.getTables()) {
+		for (TableInfo tableInfo : generateTableInfos.getTables()) {
 			dataModel.put("table", tableInfo);
-
-			entityProcess(dataModel, targetFilePath, tableInfo.getName(), isCoverOldFile, generateInfo);
+			// 生成entity
+			entityProcess(dataModel, targetFilePath, tableInfo.getName(), generateTableInfos);
+			// 生成mapper
 			process(dataModel, targetFilePath, "mapper", tableInfo.getName()+"Mapper", isCoverOldFile);
 
 			if(tableInfo.getKeys().size() > 0) {
@@ -70,29 +73,33 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
 				dataModel.put("primaryKeyType", null);
 			}
 
+			// 生成controller
 			process(dataModel, targetFilePath, "controller", tableInfo.getName()+"Controller", isCoverOldFile);
+			// 生成service
 			process(dataModel, targetFilePath, "service", tableInfo.getName()+"Service", isCoverOldFile);
+			// 生成service.impl
 			process(dataModel, targetFilePath, "service.impl", tableInfo.getName()+"ServiceImpl", isCoverOldFile);
 		}
 		return true;
 	}
 
 	private boolean entityProcess(HashMap<String, Object> dataModel, String targetFilePath,
-								  String fileName, Boolean isCoverOldFile, GenerateInfo generateInfo) throws Exception {
+								  String fileName, GenerateTableInfos generateTableInfos) throws Exception {
 
-		if(generateInfo.hasSuperClass()) {
-			dataModel.put("hasSuperClass", generateInfo.hasSuperClass());
-			dataModel.put("superClass", generateInfo.getSuperClass());
-			dataModel.put("superClassSimpleName", generateInfo.getSuperClassSimpleName());
+		if(generateTableInfos.hasSuperClass()) {
+			dataModel.put("hasSuperClass", generateTableInfos.hasSuperClass());
+			dataModel.put("superClass", generateTableInfos.getDataBaseInfo().getSuperClass());
+			dataModel.put("superClassSimpleName", generateTableInfos.getSuperClassSimpleName());
 		}
 
-		if(generateInfo.hasInterfaceList()) {
-			dataModel.put("hasInterfaceList", generateInfo.hasInterfaceList());
-			dataModel.put("interfaceSimpleNameListString", generateInfo.getInterfaceSimpleNameListString());
-			dataModel.put("interfaceList", generateInfo.getInterfaceList());
+		if(generateTableInfos.hasInterfaceList()) {
+			dataModel.put("hasInterfaceList", generateTableInfos.hasInterfaceList());
+			dataModel.put("interfaceSimpleNameListString", generateTableInfos.getInterfaceSimpleNameListString());
+			dataModel.put("interfaceList", generateTableInfos.getDataBaseInfo().getInterfaceList());
 		}
 
-		return process(dataModel, targetFilePath, "entity", fileName, isCoverOldFile);
+		Boolean overCode = generateTableInfos.getDataBaseInfo().getOverCode();
+		return process(dataModel, targetFilePath, "entity", fileName, overCode);
 	}
 
 	private boolean process(HashMap<String, Object> dataModel, String targetFilePath,

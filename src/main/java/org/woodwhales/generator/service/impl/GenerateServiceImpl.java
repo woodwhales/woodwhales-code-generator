@@ -2,8 +2,11 @@ package org.woodwhales.generator.service.impl;
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.woodwhales.generator.controller.request.GenerateTemplateRequestBody;
+import org.woodwhales.generator.entity.Column;
 import org.woodwhales.generator.entity.DataBaseInfo;
 import org.woodwhales.generator.entity.TableInfo;
 import org.woodwhales.generator.service.ConnectionFactory;
@@ -12,7 +15,9 @@ import org.woodwhales.generator.service.GenerateService;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -67,7 +72,7 @@ public class GenerateServiceImpl implements GenerateService {
 				}
 			} else {
 				Connection connection = connectionFactory.buildConnection(dataBaseInfo);
-				List<TableInfo> tableInfos = connectionFactory.listTables(connection, schema);
+				List<TableInfo> tableInfos = connectionFactory.listTables(connection, schema, dataBaseInfoKey);
 				dataBaseInfoCache.cacheTableInfoList(dataBaseInfoKey, tableInfos);
 				return getTableInfoListByDbNameList(tableInfos, dbNameList);
 			}
@@ -77,17 +82,47 @@ public class GenerateServiceImpl implements GenerateService {
 				return cacheTableInfoList;
 			} else {
 				Connection connection = connectionFactory.buildConnection(dataBaseInfo);
-				List<TableInfo> tableInfos = connectionFactory.listTables(connection, schema);
+				List<TableInfo> tableInfos = connectionFactory.listTables(connection, schema, dataBaseInfoKey);
 				dataBaseInfoCache.cacheTableInfoList(dataBaseInfoKey, tableInfos);
 				return tableInfos;
 			}
 		}
 	}
 
+	@Override
+	public TableInfo getTableInfo(String tableKey) {
+		TableInfo tableInfoFromCache = dataBaseInfoCache.getTableInfo(tableKey);
+		if(Objects.isNull(tableInfoFromCache)) {
+			return null;
+		}
+
+		TableInfo tableInfo = new TableInfo(tableInfoFromCache.getDbName(), tableInfoFromCache.getTableKey());
+		BeanUtils.copyProperties(tableInfoFromCache, tableInfo);
+		return tableInfo;
+	}
+
+	@Override
+	public TableInfo getTableInfo(GenerateTemplateRequestBody requestBody) {
+		TableInfo tableInfo = getTableInfo(requestBody.getTableKey());
+		if(Objects.isNull(tableInfo)) {
+			return null;
+		}
+
+		Preconditions.checkArgument(CollectionUtils.isNotEmpty(requestBody.getColumnNameList()), "字段列表不允许为空");
+
+		Map<String, Column> columnMap = tableInfo.getColumns()
+												.stream()
+												.collect(Collectors.toMap(Column::getDbName, Function.identity()));
+
+		List<Column> columns = requestBody.getColumnNameList().stream().map(columnMap::get).collect(Collectors.toList());
+		tableInfo.setColumns(columns);
+		return tableInfo;
+	}
+
 	private List<TableInfo> getTableInfoListByDbNameList(List<TableInfo> tableInfos, List<String> dbNameList) {
 		return tableInfos.stream()
-						.filter(tableInfo -> dbNameList.contains(tableInfo.getDbName()))
-						.collect(Collectors.toList());
+				.filter(tableInfo -> dbNameList.contains(tableInfo.getDbName()))
+				.collect(Collectors.toList());
 	}
 
 }

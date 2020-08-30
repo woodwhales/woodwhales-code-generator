@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -17,20 +16,261 @@
             <legend>数据库表信息</legend>
         </fieldset>
     </div>
+    <div class="layui-row">
+        <a th:href="@{/}" class="layui-btn layui-bg-gray layui-btn layui-btn-xs">返回</a>
+    </div>
+    <div class="layui-row">
+        <input id="tableKeyId" th:value="${tableKeyId}" hidden="true">
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">表名</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-form-mid layui-word-aux" id="tableName"></div>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">类名</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-form-mid layui-word-aux" id="name"></div>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">注释</label>
+                    <div class="layui-input-inline">
+                        <div class="layui-form-mid layui-word-aux" id="comment"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">模板</label>
+                <div class="layui-input-block">
+                    <textarea name="freemarkerTemplate" lay-verify="required" placeholder="请输入freemarker模板" class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <fieldset class="layui-elem-field">
+                <legend>自定义键值对</legend>
+                <div class="layui-field-box">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">k-v键值对</label>
+                        <div class="layui-input-block">
+                            <div class="layui-input-inline">
+                                <input type="text" autocomplete="off" id="kvMap-keyId" placeholder="请输入key" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="text" autocomplete="off" id="kvMap-valueId" placeholder="请输入value" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline">
+                                <button type="button" class="layui-btn layui-bg-cyan" id="addKey"><i class="layui-icon">&#xe624;</i></button>
+                                <button type="button" class="layui-btn layui-bg-red" id="clearKey"><i class="layui-icon">&#xe640;</i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block" id="keyValueDivId"></div>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="submitBtn">提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary" id="restBtn">重置</button>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text" id="outPutDivId" hidden="true">
+                <label class="layui-form-label">输出</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-textarea" id="outPut"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
 
+    <table id="tableInfoId" lay-filter="tableInfoId"></table>
     <div class="layui-row" style="height: 44px; background-color: #009688; line-height: 44px; color: #FFF; margin-bottom: 30px; border-radius: 2px;">
         &nbsp;&nbsp;&nbsp;&nbsp;© <a href="https://woodwhales.cn/" style="color: #FFF;" target="_blank">woodwhales.cn</a> - woodwhales's blog
     </div>
 </div>
+</div>
+</body>
 <script th:src="@{/webjars/layui/layui.js}"></script>
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script type="text/javascript" th:inline="none">
-    layui.use(['form', 'layer', 'table'], function(){
+    let delKey = function(key) {
+        delKeyValueMap(key);
+    }
+
+    layui.use(['form', 'layer', 'table', 'layedit', 'util'], function(){
         var form = layui.form,
             layer = layui.layer,
+            util = layui.util,
             table = layui.table;
+
+        util.fixbar({
+            bar1: '<i class="layui-icon" style="font-size: 30px;">&#xe60b;</i>',
+            bar2: false
+            ,click: function(type){
+                if(type === 'bar1') {
+                    layer.open({
+                        type: 2,
+                        area: ['300px', '350px'],
+                        fixed: false, //不固定
+                        offset: 'r',
+                        shade: 0,
+                        maxmin: false,
+                        content: '/tips'
+                    });
+                }
+            }
+        });
+
+        $('#restBtn').click(function () {
+            $('#outPutDivId').hide();
+        });
+
+        let keyValueArray = new Array();
+
+        $('#clearKey').click(function () {
+            keyValueArray.splice(0, keyValueArray.length);
+            $('#kvMap-keyId').val('');
+            $('#kvMap-valueId').val('');
+            $('#keyValueDivId').html('');
+        });
+
+        $('#addKey').click(function () {
+            let key = $('#kvMap-keyId').val();
+            let value = $('#kvMap-valueId').val();
+
+            if(key === '' || key === undefined) {
+                layer.msg('当前 key 不允许为空', {icon: 5});
+                return false;
+            }
+
+            // 保存map
+            let keyValueMap = new Map(keyValueArray);
+            if(keyValueMap.has(key)) {
+                layer.msg('当前 key = ' + key + ' 已存在', {icon: 5});
+                return false;
+            } else {
+                let kv = new Array();
+                kv.push(key);
+                kv.push(value);
+                keyValueArray.push(kv);
+            }
+
+            // 设置div
+            showKeyValueDiv(keyValueArray);
+        });
+
+        function showKeyValueDiv(keyValueArray) {
+            let divArray = new Array();
+            $.each(keyValueArray, function (index, item) {
+                divArray.push('<div class="tag-class">' +
+                    '{ "key" : ' + item[0] + ', "value" : ' + item[1] +'}' +
+                    '<a class="tag-close" onclick=delKey('+ index +')>' +
+                    '<i class="layui-icon layui-icon-close"></i>' +
+                    '</a></div>');
+            })
+
+            $('#keyValueDivId').html(divArray.join(''));
+        }
+
+        window.delKeyValueMap = function(index) {
+            keyValueArray.splice(index, 1);
+            showKeyValueDiv(keyValueArray);
+        }
+
+        $(function() {
+            let data = {};
+            data.tableKey = $('#tableKeyId').val();
+            $.ajax({
+                url:'/generate/getTableInfo',
+                type:'post',
+                dataType:'json',
+                contentType:"application/json",
+                async:true,
+                cache:false,
+                data:JSON.stringify(data),
+                success:function(res) {
+                    if(res.code === '0000') {
+                        $('#tableName').html(res.data.dbName);
+                        $('#name').html(res.data.name);
+                        $('#comment').html(res.data.comment);
+                        let tableColumns = res.data.columns;
+
+                        table.render({
+                            elem: '#tableInfoId'
+                            ,cols: [[
+                                {type:'checkbox'}
+                                ,{field: 'dbName', title: '字段名称'}
+                                ,{field: 'name', title: '属性名称'}
+                                ,{field: 'dbType', title: '字段类型'}
+                                ,{field: 'type', title: '属性类型'}
+                                ,{field: 'comment', title: '注释'}
+                                ,{field: 'columnSize', title: '大小'}
+                                ,{field: 'nullAble', title: '允许为NULL', templet: function (data) {
+                                        return data.primaryKey ? '允许' : '不允许';
+                                    }}
+                                ,{field: 'defaultValue', title: '默认值'}
+                                ,{field: 'primaryKey', title: '是否主键', templet: function (data) {
+                                        return data.primaryKey ? '是' : '否';
+                                }}
+                            ]]
+                            ,data: tableColumns
+                        });
+                    } else {
+                        layer.alert('暂无数据', {icon: 7} ,function(){
+                            location.href = '/';
+                        });
+                    }
+                },
+                error:function(res) {
+                    layer.msg('网络异常', {icon: 5});
+                }
+            });
+        });
+
+        form.on('submit(submitBtn)', function(data) {
+            let checkStatus = table.checkStatus('tableInfoId');
+
+            if(checkStatus.data.length == 0) {
+                layer.msg('请选择要生成的字段信息', {icon: 5});
+                return false;
+            }
+
+            let columnNameList = new Array();
+            $.each(checkStatus.data,function(index, value) {
+                columnNameList.push(value.dbName);
+            });
+
+            data.field.columnNameList = columnNameList;
+            data.field.tableKey = $('#tableKeyId').val();
+
+            $.ajax({
+                url:'/generate/template',
+                type:'post',
+                dataType:'json',
+                contentType:"application/json",
+                async:true,
+                cache:false,
+                data:JSON.stringify(data.field),
+                success:function(res) {
+                    if(res.code == '0000') {
+                        $('#outPutDivId').show();
+                        $('#outPut').val(res.data);
+                        layer.msg('生成成功', {icon: 1});
+                    } else {
+                        layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
+                    }
+                },
+                error:function(res) {
+                    layer.msg('网络异常', {icon: 5});
+                }
+            });
+            return false;
+        });
+
     });
 
 </script>
-</body>
 </html>

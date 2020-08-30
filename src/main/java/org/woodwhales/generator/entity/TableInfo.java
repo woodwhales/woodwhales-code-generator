@@ -1,17 +1,23 @@
 package org.woodwhales.generator.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.google.common.base.Preconditions;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.woodwhales.generator.constant.MyConstant;
 
 import java.util.List;
 
+/**
+ * @author woodwhales
+ */
 @Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class TableInfo {
+
+	/**
+	 * 表主键
+	 */
+	private String tableKey;
 
 	/**
 	 * 原表名
@@ -42,5 +48,12 @@ public class TableInfo {
 	 * 字段集合
 	 */
 	private List<Column> columns;
-	
+
+	public TableInfo(String dbName, String dataBaseInfoKey) {
+		Preconditions.checkArgument(StringUtils.isNotBlank(dbName), "数据库表名不允许为空");
+		Preconditions.checkArgument(StringUtils.isNotBlank(dataBaseInfoKey), "数据库连接信息缓存key不允许为空");
+		this.dbName = dbName;
+		this.tableKey = DigestUtils.sha256Hex(dataBaseInfoKey + MyConstant.hexTxt + this.dbName);
+	}
+
 }

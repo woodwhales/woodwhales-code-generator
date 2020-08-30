@@ -8,7 +8,7 @@ import org.woodwhales.generator.controller.request.DataBaseRequestBody;
 import org.woodwhales.generator.entity.DataBaseInfo;
 import org.woodwhales.generator.entity.TableInfo;
 import org.woodwhales.generator.exception.GenerateException;
-import org.woodwhales.generator.model.GenerateInfo;
+import org.woodwhales.generator.model.GenerateTableInfos;
 import org.woodwhales.generator.service.GenerateInfoFactory;
 import org.woodwhales.generator.service.GenerateService;
 
@@ -29,26 +29,17 @@ public class GenerateInfoFactoryImpl implements GenerateInfoFactory {
     private GenerateService generateService;
 
     @Override
-    public GenerateInfo build(DataBaseRequestBody requestBody) throws Exception {
+    public GenerateTableInfos buildGenerateTableInfos(DataBaseRequestBody requestBody) throws Exception {
         // 检查目标文件目录是否为合法文件夹
         String generateDir = requestBody.getGenerateDir();
         File baseDir = checkBaseDirPath(generateDir);
 
         DataBaseInfo dataBaseInfo = DataBaseInfo.convert(requestBody);
 
+        // 获取数据库表结构信息
         List<TableInfo> tables = generateService.listTables(dataBaseInfo, true);
 
-        String packageName = requestBody.getPackageName();
-        final Boolean overCode = requestBody.getOverCode();
-        final Boolean overMarkdown = requestBody.getOverMarkdown();
-        final Boolean generateCode = requestBody.getGenerateCode();
-        final Boolean generateMarkdown = requestBody.getGenerateMarkdown();
-        final String superClass = requestBody.getSuperClass();
-        final List<String> interfaceList = requestBody.getInterfaceList();
-
-        return new GenerateInfo(baseDir.getAbsolutePath(), packageName,
-                dataBaseInfo, tables, overCode, overMarkdown,
-                generateCode, generateMarkdown, superClass, interfaceList);
+        return new GenerateTableInfos(baseDir.getAbsolutePath(), dataBaseInfo, tables);
     }
 
     /**

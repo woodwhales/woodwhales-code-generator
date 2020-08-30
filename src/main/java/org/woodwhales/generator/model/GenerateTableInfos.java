@@ -1,5 +1,6 @@
 package org.woodwhales.generator.model;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
@@ -10,6 +11,7 @@ import org.woodwhales.generator.exception.GenerateException;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -19,66 +21,38 @@ import java.util.stream.Collectors;
  * @description:
  */
 @Slf4j
-public class GenerateInfo {
+@Getter
+public class GenerateTableInfos {
 
+    /**
+     * markdown文件生成路径
+     */
     private File markdownFile;
 
+    /**
+     * java代码生成根路径
+     * {项目根路径}/src/main/java/
+     */
     private File javaFile;
 
     /**
-     * 是否覆盖markdown
+     * 数据库连接信息
      */
-    private Boolean overMarkdown;
-
-    /**
-     * 是否覆盖markdown
-     */
-    private Boolean overCode;
-
-    /**
-     * 是否生成代码
-     */
-    private Boolean generateCode;
-
-    /**
-     * 是否生成数据库表结构设计文档
-     */
-    private Boolean generateMarkdown;
-
-    private String packageName;
-
     private DataBaseInfo dataBaseInfo;
 
+    /**
+     * 数据库表结构信息结果集
+     */
     private List<TableInfo> tables;
 
-    /**
-     * 父类
-     */
-    private String superClass;
-
-    /**
-     * 接口
-     */
-    private List<String> interfaceList;
-
-    public GenerateInfo(String baseDirPath, String packageName, DataBaseInfo dataBaseInfo,
-                        List<TableInfo> tables, Boolean overCode, Boolean overMarkdown,
-                        Boolean generateCode, Boolean generateMarkdown,
-                        String superClass, List<String> interfaceList) {
-        this.packageName = packageName;
+    public GenerateTableInfos(String baseDirPath, DataBaseInfo dataBaseInfo, List<TableInfo> tables) {
+        Objects.requireNonNull(dataBaseInfo, "数据库链接信息对象不允许为空");
         this.dataBaseInfo = dataBaseInfo;
         this.tables = tables;
-        this.overCode = overCode;
-        this.overMarkdown = overMarkdown;
-        this.generateCode = generateCode;
-        this.generateMarkdown = generateMarkdown;
-        this.superClass = superClass;
-        this.interfaceList = interfaceList;
         // 设置 markdown 生成目录
         this.markdownFile = new File(baseDirPath);
         // 设置 java代码 生成目录
-        this.javaFile = getTargetFile(baseDirPath, packageName);
-
+        this.javaFile = getTargetFile(baseDirPath, this.dataBaseInfo.getPackageName());
     }
 
     /**
@@ -109,73 +83,29 @@ public class GenerateInfo {
         return targetDirFile;
     }
 
-    public File getMarkdownFile() {
-        return markdownFile;
-    }
-
-    public File getJavaFile() {
-        return javaFile;
-    }
-
-    public Boolean getOverMarkdown() {
-        return overMarkdown;
-    }
-
-    public Boolean getOverCode() {
-        return overCode;
-    }
-
-    public Boolean getGenerateCode() {
-        return generateCode;
-    }
-
-    public Boolean getGenerateMarkdown() {
-        return generateMarkdown;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public DataBaseInfo getDataBaseInfo() {
-        return dataBaseInfo;
-    }
-
-    public List<TableInfo> getTables() {
-        return tables;
-    }
-
-    public String getSuperClass() {
-        return superClass;
-    }
-
     public String getSuperClassSimpleName() {
         if (hasSuperClass()) {
-            return StringUtils.substringAfterLast(this.superClass, ".");
+            return StringUtils.substringAfterLast(this.dataBaseInfo.getSuperClass(), ".");
         }
         return null;
     }
 
     public boolean hasSuperClass() {
-        return StringUtils.isNotBlank(this.superClass);
+        return StringUtils.isNotBlank(this.dataBaseInfo.getSuperClass());
     }
 
     public boolean hasInterfaceList() {
-        return CollectionUtils.isNotEmpty(this.interfaceList);
+        return CollectionUtils.isNotEmpty(this.dataBaseInfo.getInterfaceList());
     }
 
     public String getInterfaceSimpleNameListString() {
         if (hasInterfaceList()) {
-            List<String> interfaceSimpleNameList = this.interfaceList.stream()
+            List<String> interfaceSimpleNameList = this.dataBaseInfo.getInterfaceList().stream()
                     .map(interfaceName -> StringUtils.substringAfterLast(interfaceName, "."))
                     .collect(Collectors.toList());
             return StringUtils.join(interfaceSimpleNameList, ", ");
         }
 
         return StringUtils.EMPTY;
-    }
-
-    public List<String> getInterfaceList() {
-        return interfaceList;
     }
 }

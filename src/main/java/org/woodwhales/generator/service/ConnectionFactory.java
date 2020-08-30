@@ -49,8 +49,11 @@ public interface ConnectionFactory {
 
     /**
      * 获取所有数据库表信息
-     * @param connection 数据库链接
+     * @param connection
+     * @param schema
+     * @param dataBaseInfoKey
      * @return
+     * @throws SQLException
      */
-    List<TableInfo> listTables(Connection connection, String schema) throws SQLException;
+    List<TableInfo> listTables(Connection connection, String schema, String dataBaseInfoKey) throws SQLException;
 }

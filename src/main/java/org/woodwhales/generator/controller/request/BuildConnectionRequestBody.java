@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author woodwhales on 2020-08-28
@@ -16,7 +17,7 @@ public class BuildConnectionRequestBody {
     @NotBlank(message = "ip字段为空")
     private String ip;
 
-    @NotBlank(message = "port字段为空")
+    @NotNull(message = "port字段为空")
     private Integer port;
 
     @NotBlank(message = "username字段为空")
@@ -31,6 +32,14 @@ public class BuildConnectionRequestBody {
     @NotBlank(message = "驱动类名为空")
     private String driveClassName;
 
+    /**
+     * oracel 数据库的 sid
+     */
     private String sid;
+
+    /**
+     * 数据库名称
+     */
+    private String schema;
 
 }

@@ -1,10 +1,13 @@
 package org.woodwhales.generator.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.woodwhales.generator.controller.response.RespVO;
+
+import javax.validation.UnexpectedTypeException;
 
 @Slf4j
 @RestControllerAdvice
@@ -23,4 +26,20 @@ public class ControllerExceptionHandler {
 		log.error("cause by : {}", exception.getMessage(), exception);
 		return RespVO.error(exception.getMessage());
 	}
+
+
+	@ResponseBody
+	@ExceptionHandler(value = UnexpectedTypeException.class)
+	public RespVO handle(UnexpectedTypeException exception) {
+		log.error("cause by : {}", exception.getMessage(), exception);
+		return RespVO.error(exception.getMessage());
+	}
+
+	@ResponseBody
+	@ExceptionHandler(value = MethodArgumentNotValidException.class)
+	public RespVO handle(MethodArgumentNotValidException exception) {
+		log.error("cause by : {}", exception.getMessage(), exception);
+		return RespVO.error(exception.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+	}
+
 }

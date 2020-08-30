@@ -147,7 +147,7 @@
 <script th:src="@{/js/my.js}"></script>
 <script type="text/javascript" th:inline="none">
   layui.use(['form', 'layer', 'table'], function(){
-	var form = layui.form,
+    var form = layui.form,
 	layer = layui.layer,
 	table = layui.table
 	;
@@ -234,8 +234,8 @@
 
     function showTagList(interfaceList) {
       let tempArray = new Array();
-      $.each(interfaceList,function(index, value) {
-        tempArray.push('<div class="tag-class">'+ value +'&nbsp;<a class="tag-close" onclick=closeTag('+index+')>' +
+      $.each(interfaceList, function(index, item) {
+        tempArray.push('<div class="tag-class">'+ item +'&nbsp;<a class="tag-close" onclick=closeTag('+index+')>' +
                 '<i class="layui-icon layui-icon-close"></i></a></div>');
       });
       $('#interfaceListDivId').html(tempArray.join(""))
@@ -281,7 +281,7 @@
 
       if('提交' === $('#btnId').html()) {
         $.ajax({
-          url:'/generate/buildTableInfo',
+          url:'/generate/buildTableInfos',
           type:'post',
           dataType:'json',
           contentType:"application/json",
@@ -292,11 +292,13 @@
             if(res.code == '0000') {
               table.render({
                 elem: '#tableInfosId' //指定原始表格元素选择器（推荐id选择器）
-                , limit: Number.MAX_VALUE
+                ,limit: Number.MAX_VALUE
                 ,cellMinWidth: 80
                 ,cols: [[
                   {type:'checkbox'}
-                  ,{field: 'dbName', title: '数据库名称'}
+                  ,{field: 'dbName', title: '数据库名称', templet: function (data) {
+                      return '<a href="/detail?tableKey='+data.tableKey+'">'+data.dbName+'</a>';
+                    }}
                   ,{field: 'name', title: 'Class名'}
                   ,{field: 'comment', title: '注释'}
                   ,{field: 'keys', title: '主键', templet:function(data) {
@@ -336,7 +338,7 @@
       if('生成' === $('#btnId').html()) {
 
         // 判断是否选择要生成的表格数据
-        var checkStatus = table.checkStatus('tableInfosId');
+        let checkStatus = table.checkStatus('tableInfosId');
 
         if(checkStatus.data.length == 0) {
           layer.msg('请选择要生成的数据库表', {icon: 5});

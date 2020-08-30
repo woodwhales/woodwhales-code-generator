@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.woodwhales.generator.entity.DataBaseInfo;
-import org.woodwhales.generator.model.GenerateInfo;
+import org.woodwhales.generator.model.GenerateTableInfos;
 import org.woodwhales.generator.service.FreeMarkerService;
 
 import javax.annotation.PostConstruct;
@@ -43,23 +43,23 @@ public class MarkdownServiceImpl extends BaseFeeMarkerService implements FreeMar
     }
 
     @Override
-    public boolean process(GenerateInfo generateInfo) throws Exception {
+    public boolean process(GenerateTableInfos generateTableInfos) throws Exception {
 
-        if(!generateInfo.getGenerateMarkdown()) {
+        DataBaseInfo dataBaseInfo = generateTableInfos.getDataBaseInfo();
+        if(!dataBaseInfo.getGenerateMarkdown()) {
             return true;
         }
 
         Template template = configuration.getTemplate("markdown.ftl");
 
-        String targetFilePath = generateInfo.getMarkdownFile().getAbsolutePath();
+        String targetFilePath = generateTableInfos.getMarkdownFile().getAbsolutePath();
 
-        DataBaseInfo dataBaseInfo = generateInfo.getDataBaseInfo();
         String schema = dataBaseInfo.getSchema();
         String fileName = schema + "数据库表结构设计.md";
 
-        final Boolean isCoverOldFile = generateInfo.getOverMarkdown();
+        final Boolean isCoverOldFile = dataBaseInfo.getOverMarkdown();
         HashMap<String, Object> dataModel = new HashMap<>(16);
-        dataModel.put("tables", generateInfo.getTables());
+        dataModel.put("tables", generateTableInfos.getTables());
         dataModel.put("schema", dataBaseInfo.getSchema());
 
         try(FileWriter fw = new FileWriter(new File(targetFilePath + File.separator + fileName), !isCoverOldFile)) {

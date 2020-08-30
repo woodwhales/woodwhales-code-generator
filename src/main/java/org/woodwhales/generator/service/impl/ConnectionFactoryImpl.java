@@ -94,8 +94,9 @@ public class ConnectionFactoryImpl implements ConnectionFactory {
     }
 
     @Override
-    public List<TableInfo> listTables(Connection connection, String schema) throws SQLException {
+    public List<TableInfo> listTables(Connection connection, String schema, String dataBaseInfoKey) throws SQLException {
         Objects.requireNonNull(connection, "数据库链接不允许为空");
+        Preconditions.checkArgument(StringUtils.isNotBlank(dataBaseInfoKey), "数据库连接信息缓存key不允许为空");
 
         ResultSet resultSet = null;
         List<TableInfo> tableInfos = null;
@@ -108,10 +109,8 @@ public class ConnectionFactoryImpl implements ConnectionFactory {
             tableInfos = new ArrayList<>();
             while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
-                TableInfo tableInfo = TableInfo.builder()
-                        .dbName(tableName)
-                        .comment(resultSet.getString("REMARKS"))
-                        .build();
+                TableInfo tableInfo = new TableInfo(tableName, dataBaseInfoKey);
+                tableInfo.setComment(resultSet.getString("REMARKS"));
 
                 // 格式化表名
                 String tempTableName = StringTools.substringAfter(tableName, tableConfig.getPrefix());
