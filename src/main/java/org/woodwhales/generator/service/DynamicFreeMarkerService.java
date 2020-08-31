@@ -2,6 +2,8 @@ package org.woodwhales.generator.service;
 
 import org.woodwhales.generator.entity.TableInfo;
 
+import java.util.Map;
+
 /**
  * @projectName: woodwhales-code-generator
  * @author: woodwhales
@@ -14,9 +16,10 @@ public interface DynamicFreeMarkerService {
      * 动态生成模板
      * @param freemarker
      * @param tableInfo
+     * @param customKeyValueMap
      * @return
      * @throws Exception
      */
-    String dynamicProcess(String freemarker, TableInfo tableInfo) throws Exception;
+    String dynamicProcess(String freemarker, TableInfo tableInfo, Map<String, Object> customKeyValueMap) throws Exception;
 
 }

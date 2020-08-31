@@ -7,6 +7,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.woodwhales.generator.entity.TableInfo;
@@ -37,7 +38,7 @@ public class DynamicFreeMarkerServiceImpl implements DynamicFreeMarkerService {
     }
 
     @Override
-    public String dynamicProcess(String freemarkerTemplate, TableInfo tableInfo) throws Exception {
+    public String dynamicProcess(String freemarkerTemplate, TableInfo tableInfo, Map<String, Object> customKeyValueMap) throws Exception {
         Preconditions.checkArgument(StringUtils.isNotBlank(freemarkerTemplate), "freemarker模板不能为空");
         Preconditions.checkArgument(Objects.nonNull(tableInfo), "数据库表结构信息不能为空");
         Preconditions.checkArgument(CollectionUtils.isNotEmpty(tableInfo.getColumns()), "数据库表结构字段信息不能为空");
@@ -52,17 +53,20 @@ public class DynamicFreeMarkerServiceImpl implements DynamicFreeMarkerService {
             throw new GenerateException("模板语法不正确");
         }
 
-        Map<String, Object> dataModel = getDataModel(tableInfo);
+        Map<String, Object> dataModel = getDataModel(tableInfo, customKeyValueMap);
 
         template.process(dataModel, stringWriter);
         return stringWriter.toString();
     }
 
-    private Map<String, Object> getDataModel(TableInfo tableInfo) {
+    private Map<String, Object> getDataModel(TableInfo tableInfo, Map<String, Object> customKeyValueMap) {
         HashMap<String, Object> dataModel = new HashMap<>(16);
         dataModel.put("columns", tableInfo.getColumns());
         dataModel.put("dbName", tableInfo.getDbName());
         dataModel.put("name", tableInfo.getName());
+        if(MapUtils.isNotEmpty(customKeyValueMap)) {
+            customKeyValueMap.entrySet().forEach(entry -> dataModel.put(entry.getKey(), entry.getValue()));
+        }
         return dataModel;
     }
 }

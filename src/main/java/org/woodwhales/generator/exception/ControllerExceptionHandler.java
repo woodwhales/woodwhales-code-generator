@@ -1,5 +1,6 @@
 package org.woodwhales.generator.exception;
 
+import freemarker.core.InvalidReferenceException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -42,4 +43,10 @@ public class ControllerExceptionHandler {
 		return RespVO.error(exception.getBindingResult().getAllErrors().get(0).getDefaultMessage());
 	}
 
+	@ResponseBody
+	@ExceptionHandler(value = InvalidReferenceException.class)
+	public RespVO handle(InvalidReferenceException exception) {
+		log.error("cause by : {}", exception.getMessage(), exception);
+		return RespVO.error("模板解析失败");
+	}
 }

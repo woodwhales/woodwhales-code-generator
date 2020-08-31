@@ -22,6 +22,7 @@ import org.woodwhales.generator.service.GenerateInfoFactory;
 import org.woodwhales.generator.service.GenerateService;
 
 import javax.validation.Valid;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -111,7 +112,9 @@ public class GeneratorController {
 	public RespVO template(@Valid @RequestBody GenerateTemplateRequestBody requestBody) throws Exception {
 		TableInfo tableInfo = generateService.getTableInfo(requestBody);
 		String freemarkerTemplate = requestBody.getFreemarkerTemplate();
-		String outPut = dynamicFreeMarkerService.dynamicProcess(freemarkerTemplate, tableInfo);
+		Map<String, Object> customKeyValueMap = requestBody.getCustomKeyValueMap();
+
+		String outPut = dynamicFreeMarkerService.dynamicProcess(freemarkerTemplate, tableInfo, customKeyValueMap);
 		if(StringUtils.isBlank(outPut)) {
 			return RespVO.error("生成失败");
 		}

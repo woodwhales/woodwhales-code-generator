@@ -146,6 +146,24 @@
                 return false;
             }
 
+            let defaultMap = new Map();
+            defaultMap.set('columns', '');
+            defaultMap.set('dbName', '');
+            defaultMap.set('name', '');
+            defaultMap.set('dbType', '');
+            defaultMap.set('type', '');
+            defaultMap.set('comment', '');
+            defaultMap.set('columnSize', '');
+            defaultMap.set('nullAble', '');
+            defaultMap.set('nullableString', '');
+            defaultMap.set('defaultValue', '');
+            defaultMap.set('primaryKey', '');
+
+            if(defaultMap.has(key)) {
+                layer.msg('不允许添加默认key = ' + key, {icon: 5});
+                return false;
+            }
+
             // 保存map
             let keyValueMap = new Map(keyValueArray);
             if(keyValueMap.has(key)) {
@@ -245,6 +263,11 @@
 
             data.field.columnNameList = columnNameList;
             data.field.tableKey = $('#tableKeyId').val();
+
+            let customKeyValueMap = {}
+            keyValueArray.map(item => customKeyValueMap[item[0]] = item[1]);
+
+            data.field.customKeyValueMap = customKeyValueMap;
 
             $.ajax({
                 url:'/generate/template',
