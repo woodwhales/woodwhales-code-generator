@@ -1,4 +1,4 @@
-package org.woodwhales.generator.controller.response;
+package org.woodwhales.common.response;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RespVO<T> {
 
-	private String code;
+	private Integer code;
 	private String msg;
 	private T data;
 
@@ -24,23 +24,23 @@ public class RespVO<T> {
 	}
 
 	public static RespVO success() {
-		return new RespVO("0000", "success", StringUtils.EMPTY);
+		return new RespVO(0, "success", StringUtils.EMPTY);
 	}
 	
 	public static <T> RespVO<T> success(T data) {
-		return new RespVO("0000", "success", data);
+		return new RespVO(0, "success", data);
 	}
 	
 	public static RespVO error() {
-		return new RespVO("-1", "error", StringUtils.EMPTY);
+		return new RespVO(-1, "error", StringUtils.EMPTY);
 	}
 	
-	public static RespVO error(String code, String msg) {
+	public static RespVO error(Integer code, String msg) {
 		return new RespVO(code, msg, StringUtils.EMPTY);
 	}
 	
 	public static RespVO error(String msg) {
-		return new RespVO("-1", msg, StringUtils.EMPTY);
+		return new RespVO(-1, msg, StringUtils.EMPTY);
 	}
 	
 }

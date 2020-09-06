@@ -1,8 +1,10 @@
 package org.woodwhales.generator.service.impl;
 
 import com.google.common.base.Preconditions;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.woodwhales.generator.constant.MyConstant;
 import org.woodwhales.generator.entity.TableInfo;
 import org.woodwhales.generator.service.DataBaseInfoCache;
 
@@ -23,6 +25,19 @@ public class DataBaseInfoCacheImpl implements DataBaseInfoCache {
 
     private Map<String, TableInfo> tableInfoCache = new HashMap<>(32);
 
+    private Map<String, String> dataBaseKeyCache = new HashMap<>(16);
+
+    @Override
+    public String getDataBaseKey(String encryptedDataBaseInfoKey) {
+        return dataBaseKeyCache.get(encryptedDataBaseInfoKey);
+    }
+
+    @Override
+    public String getEncryptedDataBaseKey(String dataBaseInfoKey) {
+        Preconditions.checkArgument(StringUtils.isNotBlank(dataBaseInfoKey), "数据库连接key不允许为空");
+        return DigestUtils.sha256Hex(dataBaseInfoKey + MyConstant.hexTxt);
+    }
+
     @Override
     public void clearCache(String dataBaseInfoKey) {
         // 数据库连接成功之后，清空缓存
@@ -39,6 +54,8 @@ public class DataBaseInfoCacheImpl implements DataBaseInfoCache {
                 });
 
                 tableInfosCacheIterator.remove();
+                // 删除数据库key映射缓存
+                dataBaseKeyCache.remove(getEncryptedDataBaseKey(dataBaseInfoKey));
             }
         }
     }
@@ -48,6 +65,8 @@ public class DataBaseInfoCacheImpl implements DataBaseInfoCache {
         Preconditions.checkArgument(StringUtils.isNotBlank(dataBaseInfoKey), "要缓存的key不允许为空");
         Objects.requireNonNull(tableInfos, "要缓存的数据库表信息不允许为空");
         tableInfosCache.put(dataBaseInfoKey, tableInfos);
+        // 缓存数据库key映射
+        dataBaseKeyCache.put(getEncryptedDataBaseKey(dataBaseInfoKey), dataBaseInfoKey);
         tableInfos.stream().forEach(tableInfo -> {
             tableInfoCache.put(tableInfo.getTableKey(), tableInfo);
         });

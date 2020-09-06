@@ -43,4 +43,11 @@ public interface GenerateService {
 	 * @return
 	 */
 	TableInfo getTableInfo(GenerateTemplateRequestBody requestBody);
+
+	/**
+	 * 根据加密的数据库key查询数据库表信息
+	 * @param encryptedDataBaseKey
+	 * @return
+	 */
+	List<TableInfo> listTables(String encryptedDataBaseKey);
 }

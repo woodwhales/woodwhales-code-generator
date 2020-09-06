@@ -134,8 +134,13 @@
   <legend>数据库表展示</legend>
 </fieldset>
 
+<a class="layui-btn layui-btn-warm layui-btn-fluid" id="addNavigationConfig">添加配置</a>
 <table id="tableInfosId" lay-filter="tableInfosId"></table>
 </div>
+
+<script type="text/html" id="operationBar">
+  <a class="layui-btn layui-btn-xs" href="/addListPageConfig?tableKey={{d.tableKey}}">添加</a>
+</script>
 
 <div class="layui-row" style="height: 44px; background-color: #009688; line-height: 44px; color: #FFF; margin-bottom: 30px; border-radius: 2px;">
 &nbsp;&nbsp;&nbsp;&nbsp;© <a href="https://woodwhales.cn/" style="color: #FFF;" target="_blank">woodwhales.cn</a> - woodwhales's blog
@@ -254,7 +259,7 @@
           cache:false,
           data:JSON.stringify(data.field),
           success:function(res) {
-            if(res.code == '0000') {
+            if(res.code === 0) {
               layer.msg('生成成功', {icon: 1});
               // 更新按钮为提交
               updateBtnToSubmit();
@@ -289,7 +294,7 @@
           cache:false,
           data:JSON.stringify(data.field),
           success:function(res) {
-            if(res.code == '0000') {
+            if(res.code === 0) {
               table.render({
                 elem: '#tableInfosId' //指定原始表格元素选择器（推荐id选择器）
                 ,limit: Number.MAX_VALUE
@@ -304,8 +309,9 @@
                   ,{field: 'keys', title: '主键', templet:function(data) {
                       return data.keys.join(',');
                     }}
+                  ,{fixed: 'right', title: '添加配置', toolbar: '#operationBar'}
                 ]]
-                ,data: res.data
+                ,data: res.data.tableInfos
               });
 
               pageNameAndPathIdShow();
@@ -321,6 +327,9 @@
               tableInfoLabelIdShow();
               tableInfosDivShow();
               updateBtnToGenerate();
+              let dataBaseInfoKey = res.data.dataBaseInfoKey;
+              $('#addNavigationConfig').attr("href","/addNavigationConfig?dataBaseInfoKey=" + dataBaseInfoKey);
+
               return false;
             } else {
               tableInfoLabelIdHide();
@@ -340,7 +349,7 @@
         // 判断是否选择要生成的表格数据
         let checkStatus = table.checkStatus('tableInfosId');
 
-        if(checkStatus.data.length == 0) {
+        if(checkStatus.data.length === 0) {
           layer.msg('请选择要生成的数据库表', {icon: 5});
           return false;
         }
@@ -363,7 +372,7 @@
           cache:false,
           data:JSON.stringify(data.field),
           success:function(res) {
-            if(res.code == '0000') {
+            if(res.code === 0) {
               layer.msg('生成成功', {icon: 1});
             } else {
               layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});

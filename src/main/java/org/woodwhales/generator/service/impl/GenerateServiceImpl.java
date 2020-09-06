@@ -63,7 +63,10 @@ public class GenerateServiceImpl implements GenerateService {
 			final List<String> dbNameList = dataBaseInfo.getDbNameList();
 			final Boolean selectAll = dataBaseInfo.getSelectAll();
 			// 不是全选，dbNameList不允许为空
-			Preconditions.checkArgument(!selectAll && CollectionUtils.isNotEmpty(dbNameList), "未选择要生成的数据库表");
+			if(!selectAll) {
+				Preconditions.checkArgument(CollectionUtils.isNotEmpty(dbNameList), "未选择要生成的数据库表");
+			}
+
 			if (Objects.nonNull(cacheTableInfoList)) {
 				if(selectAll) {
 					return cacheTableInfoList;
@@ -117,6 +120,12 @@ public class GenerateServiceImpl implements GenerateService {
 		List<Column> columns = requestBody.getColumnNameList().stream().map(columnMap::get).collect(Collectors.toList());
 		tableInfo.setColumns(columns);
 		return tableInfo;
+	}
+
+	@Override
+	public List<TableInfo> listTables(String encryptedDataBaseKey) {
+		String dataBaseKey = dataBaseInfoCache.getDataBaseKey(encryptedDataBaseKey);
+		return dataBaseInfoCache.getTableInfoList(dataBaseKey);
 	}
 
 	private List<TableInfo> getTableInfoListByDbNameList(List<TableInfo> tableInfos, List<String> dbNameList) {

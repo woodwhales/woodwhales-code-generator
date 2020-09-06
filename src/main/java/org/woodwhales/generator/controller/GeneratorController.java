@@ -12,16 +12,15 @@ import org.woodwhales.generator.controller.request.BuildConnectionRequestBody;
 import org.woodwhales.generator.controller.request.DataBaseRequestBody;
 import org.woodwhales.generator.controller.request.DataBaseTableRequestBody;
 import org.woodwhales.generator.controller.request.GenerateTemplateRequestBody;
-import org.woodwhales.generator.controller.response.RespVO;
+import org.woodwhales.common.response.RespVO;
 import org.woodwhales.generator.entity.DataBaseInfo;
 import org.woodwhales.generator.entity.TableInfo;
 import org.woodwhales.generator.model.GenerateTableInfos;
-import org.woodwhales.generator.service.DynamicFreeMarkerService;
-import org.woodwhales.generator.service.FreeMarkerService;
-import org.woodwhales.generator.service.GenerateInfoFactory;
-import org.woodwhales.generator.service.GenerateService;
+import org.woodwhales.generator.service.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -30,7 +29,7 @@ import java.util.Objects;
  * @author woodwhales
  */
 @Slf4j
-@RestController
+@RestController()
 @RequestMapping("/generate")
 public class GeneratorController {
 	
@@ -50,6 +49,9 @@ public class GeneratorController {
 
 	@Autowired
 	private GenerateInfoFactory generateInfoFactory;
+
+	@Autowired
+	private DataBaseInfoCache dataBaseInfoCache;
 
 	/**
 	 * 通过数据基本链接信息，获取数据库的元信息
@@ -74,7 +76,16 @@ public class GeneratorController {
 	public RespVO buildTableInfo(@Valid @RequestBody DataBaseRequestBody dataBaseRequestBody) throws Exception {
 		log.info("[buildTableInfos].dataBaseRequestBody = {}", dataBaseRequestBody);
 		DataBaseInfo dataBaseInfo = DataBaseInfo.convert(dataBaseRequestBody);
-		return RespVO.success(generateService.listTables(dataBaseInfo, false));
+
+		List<TableInfo> tableInfos = generateService.listTables(dataBaseInfo, false);
+		Map<String, Object> result = new HashMap<>(2);
+		result.put("tableInfos", tableInfos);
+
+		// 添加加密的数据库key
+		String dataBaseInfoKey = dataBaseInfo.getDataBaseInfoKey();
+		String encryptedDataBaseKey = dataBaseInfoCache.getEncryptedDataBaseKey(dataBaseInfoKey);
+		result.put("dataBaseInfoKey", encryptedDataBaseKey);
+		return RespVO.success(result);
 	}
 
 	/**

@@ -22,32 +22,37 @@
     <div class="layui-row">
         <input id="tableKeyId" th:value="${tableKeyId}" hidden="true">
         <form class="layui-form" action="">
-            <div class="layui-form-item">
-                <div class="layui-inline">
-                    <label class="layui-form-label">表名</label>
-                    <div class="layui-input-inline">
-                        <div class="layui-form-mid layui-word-aux" id="tableName"></div>
+            <fieldset class="layui-elem-field">
+                <legend>自定义模板</legend>
+                <div class="layui-field-box">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">表名</label>
+                            <div class="layui-input-inline">
+                                <div class="layui-form-mid layui-word-aux" id="tableName"></div>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">类名</label>
+                            <div class="layui-input-inline">
+                                <div class="layui-form-mid layui-word-aux" id="name"></div>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">注释</label>
+                            <div class="layui-input-inline">
+                                <div class="layui-form-mid layui-word-aux" id="comment"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">模板</label>
+                        <div class="layui-input-block">
+                            <textarea name="freemarkerTemplate" lay-verify="required" placeholder="请输入freemarker模板" class="layui-textarea"></textarea>
+                        </div>
                     </div>
                 </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">类名</label>
-                    <div class="layui-input-inline">
-                        <div class="layui-form-mid layui-word-aux" id="name"></div>
-                    </div>
-                </div>
-                <div class="layui-inline">
-                    <label class="layui-form-label">注释</label>
-                    <div class="layui-input-inline">
-                        <div class="layui-form-mid layui-word-aux" id="comment"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="layui-form-item layui-form-text">
-                <label class="layui-form-label">模板</label>
-                <div class="layui-input-block">
-                    <textarea name="freemarkerTemplate" lay-verify="required" placeholder="请输入freemarker模板" class="layui-textarea"></textarea>
-                </div>
-            </div>
+            </fieldset>
             <fieldset class="layui-elem-field">
                 <legend>自定义键值对</legend>
                 <div class="layui-field-box">
@@ -210,7 +215,7 @@
                 cache:false,
                 data:JSON.stringify(data),
                 success:function(res) {
-                    if(res.code === '0000') {
+                    if(res.code === 0) {
                         $('#tableName').html(res.data.dbName);
                         $('#name').html(res.data.name);
                         $('#comment').html(res.data.comment);
@@ -251,7 +256,7 @@
         form.on('submit(submitBtn)', function(data) {
             let checkStatus = table.checkStatus('tableInfoId');
 
-            if(checkStatus.data.length == 0) {
+            if(checkStatus.data.length === 0) {
                 layer.msg('请选择要生成的字段信息', {icon: 5});
                 return false;
             }
@@ -278,7 +283,7 @@
                 cache:false,
                 data:JSON.stringify(data.field),
                 success:function(res) {
-                    if(res.code == '0000') {
+                    if(res.code === 0) {
                         $('#outPutDivId').show();
                         $('#outPut').val(res.data);
                         layer.msg('生成成功', {icon: 1});

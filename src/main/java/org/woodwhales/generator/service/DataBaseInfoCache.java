@@ -42,4 +42,18 @@ public interface DataBaseInfoCache {
      * @return
      */
     TableInfo getTableInfo(String tableKey);
+
+    /**
+     * 根据加密的数据库key获取原始数据库key
+     * @param encryptedDataBaseInfoKey
+     * @return
+     */
+    String getDataBaseKey(String encryptedDataBaseInfoKey);
+
+    /**
+     * 获取加密的数据库key
+     * @param dataBaseInfoKey
+     * @return
+     */
+    String getEncryptedDataBaseKey(String dataBaseInfoKey);
 }

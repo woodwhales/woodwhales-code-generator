@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>woodwhales-code-generator</title>
+    <link rel="stylesheet" th:href="@{/webjars/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/mycss.css}" >
+</head>
+<body>
+<div class="layui-container">
+    <div class="layui-header">
+        <div class="layui-logo">woodwhales-code-generator</div>
+    </div>
+<table class="layui-hide" id="tableConfigId"></table>
+<div class="layui-row" style="height: 44px; background-color: #009688; line-height: 44px; color: #FFF; margin-bottom: 30px; border-radius: 2px;">
+    &nbsp;&nbsp;&nbsp;&nbsp;© <a href="https://woodwhales.cn/" style="color: #FFF;" target="_blank">woodwhales.cn</a> - woodwhales's blog
+</div>
+</div>
+</body>
+<script th:src="@{/webjars/layui/layui.js}"></script>
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:inline="none">
+    layui.use('table', function(){
+        var table = layui.table;
+
+        table.render({
+            elem: '#tableConfigId'
+            ,url:'/codeTemplate/list/'
+            ,cols: [[
+                {field:'codeNavigationConfig.configName', title: 'ID'}
+            ]]
+        });
+    });
+</script>
+</html>
