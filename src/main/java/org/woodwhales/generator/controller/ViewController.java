@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.woodwhales.generator.entity.TableInfo;
 import org.woodwhales.generator.service.GenerateService;
 import org.woodwhales.plugin.controller.vo.CodeNavigationConfigSimpleInfoVO;
+import org.woodwhales.plugin.model.CodeTemplateConfig;
 import org.woodwhales.plugin.service.CodeNavigationConfigService;
 import org.woodwhales.plugin.service.CodeTemplateConfigService;
 
@@ -84,5 +85,12 @@ public class ViewController {
 	@GetMapping("/codeTemplate/")
 	public String codeTemplate() {
 		return "code-template";
+	}
+
+	@GetMapping("/codeTemplate/detail/")
+	public String codeTemplateDetail(@RequestParam("id") Integer codeListConfigId, Model model) {
+		CodeTemplateConfig codeTemplateConfig = codeTemplateConfigService.getCodeTemplateByCodeNavigationConfigById(codeListConfigId);
+		model.addAttribute("codeTemplateConfig", codeTemplateConfig);
+		return "code-template-detail";
 	}
 }

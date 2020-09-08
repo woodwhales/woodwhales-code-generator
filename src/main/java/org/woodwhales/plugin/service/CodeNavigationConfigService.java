@@ -35,8 +35,8 @@ public interface CodeNavigationConfigService {
 
     /**
      * 根据主键查询配置信息
-     * @param odeNavigationConfigById
+     * @param codeNavigationConfigById
      * @return
      */
-    CodeNavigationConfig getCodeNavigationConfigById(Integer odeNavigationConfigById);
+    CodeNavigationConfig getCodeNavigationConfigById(Integer codeNavigationConfigById);
 }

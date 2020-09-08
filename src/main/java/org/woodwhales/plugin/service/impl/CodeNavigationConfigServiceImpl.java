@@ -61,9 +61,9 @@ public class CodeNavigationConfigServiceImpl implements CodeNavigationConfigServ
     }
 
     @Override
-    public CodeNavigationConfig getCodeNavigationConfigById(Integer odeNavigationConfigById) {
+    public CodeNavigationConfig getCodeNavigationConfigById(Integer codeNavigationConfigById) {
         LambdaQueryWrapper<CodeNavigationConfig> wrapper = Wrappers.<CodeNavigationConfig>lambdaQuery()
-                .eq(CodeNavigationConfig::getId, 0)
+                .eq(CodeNavigationConfig::getId, codeNavigationConfigById)
                 .eq(CodeNavigationConfig::getStatus, 0);
         return codeNavigationConfigMapper.selectOne(wrapper);
     }

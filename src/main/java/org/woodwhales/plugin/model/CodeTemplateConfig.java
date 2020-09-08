@@ -3,8 +3,10 @@ package org.woodwhales.plugin.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.woodwhales.plugin.entity.CodeListPageConfig;
-import org.woodwhales.plugin.entity.CodeNavigationConfig;
+import org.woodwhales.plugin.controller.vo.CodeListPageConfigVO;
+import org.woodwhales.plugin.controller.vo.CodeNavigationConfigVO;
+
+import java.util.List;
 
 /**
  * @projectName: woodwhales-code-generator
@@ -20,10 +22,10 @@ public class CodeTemplateConfig {
     /**
      * 菜单配置
      */
-    private CodeNavigationConfig codeNavigationConfig;
+    private CodeNavigationConfigVO codeNavigationConfig;
 
     /**
      * 列表配置
      */
-    private CodeListPageConfig codeListPageConfig;
+    private List<CodeListPageConfigVO> codeListPageConfigList;
 }

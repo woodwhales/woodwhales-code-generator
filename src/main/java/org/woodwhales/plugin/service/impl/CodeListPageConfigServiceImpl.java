@@ -48,9 +48,9 @@ public class CodeListPageConfigServiceImpl implements CodeListPageConfigService 
     }
 
     @Override
-    public List<CodeListPageConfig> getCodeListPageConfigListByCodeNavigationConfigIdList(List<Integer> codeNavigationConfigIdList) {
+    public List<CodeListPageConfig> getCodeListPageConfigListByCodeNavigationConfigId(Integer codeNavigationConfigId) {
         LambdaQueryWrapper<CodeListPageConfig> wrapper = Wrappers.<CodeListPageConfig>lambdaQuery()
-                .in(CodeListPageConfig::getCodeNavigationConfigId, codeNavigationConfigIdList)
+                .eq(CodeListPageConfig::getCodeNavigationConfigId, codeNavigationConfigId)
                 .eq(CodeListPageConfig::getStatus, 0);
         return codeListPageConfigMapper.selectList(wrapper);
     }

@@ -1,8 +1,10 @@
 package org.woodwhales.plugin.service.impl;
-
-import org.apache.commons.collections4.CollectionUtils;
+import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.woodwhales.common.response.PageRespVO;
+import org.woodwhales.plugin.controller.vo.CodeListPageConfigVO;
+import org.woodwhales.plugin.controller.vo.CodeNavigationConfigVO;
 import org.woodwhales.plugin.entity.CodeListPageConfig;
 import org.woodwhales.plugin.entity.CodeNavigationConfig;
 import org.woodwhales.plugin.model.CodeTemplateConfig;
@@ -10,10 +12,7 @@ import org.woodwhales.plugin.service.CodeListPageConfigService;
 import org.woodwhales.plugin.service.CodeNavigationConfigService;
 import org.woodwhales.plugin.service.CodeTemplateConfigService;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -32,41 +31,25 @@ public class CodeTemplateConfigServiceImpl implements CodeTemplateConfigService 
     private CodeNavigationConfigService codeNavigationConfigService;
 
     @Override
-    public CodeTemplateConfig getCodeTemplateConfig(Integer codeListConfigId) {
-        CodeListPageConfig codeListPageConfig = codeListPageConfigService.getCodeListPageConfigById(codeListConfigId);
-        Integer codeNavigationConfigId = codeListPageConfig.getCodeNavigationConfigId();
-        CodeNavigationConfig codeNavigationConfig = codeNavigationConfigService.getCodeNavigationConfigById(codeNavigationConfigId);
-        return new CodeTemplateConfig(codeNavigationConfig, codeListPageConfig);
+    public CodeTemplateConfig getCodeTemplateByCodeNavigationConfigById(Integer codeNavigationConfigById) {
+        CodeNavigationConfig codeNavigationConfig = codeNavigationConfigService.getCodeNavigationConfigById(codeNavigationConfigById);
+
+        CodeNavigationConfigVO codeNavigationConfigVO = CodeNavigationConfigVO.newInstance(codeNavigationConfig);
+
+        Preconditions.checkNotNull(codeNavigationConfig, "codeNavigationConfig不允许为空");
+        List<CodeListPageConfig> codeListPageConfigList = codeListPageConfigService.getCodeListPageConfigListByCodeNavigationConfigId(codeNavigationConfigById);
+
+        List<CodeListPageConfigVO> codeListPageConfigVOList = codeListPageConfigList.stream()
+                                                            .map(CodeListPageConfigVO::build)
+                                                            .collect(Collectors.toList());
+
+        return new CodeTemplateConfig(codeNavigationConfigVO, codeListPageConfigVOList);
     }
 
     @Override
-    public List<CodeTemplateConfig> listCodeTemplate() {
-
+    public PageRespVO<CodeNavigationConfig> pageCodeTemplate() {
         List<CodeNavigationConfig> codeNavigationConfigList = codeNavigationConfigService.listCodeNavigationConfig();
-
-        List<Integer> codeNavigationConfigIdList = codeNavigationConfigList.stream()
-                                                                            .map(CodeNavigationConfig::getId)
-                                                                            .collect(Collectors.toList());
-
-        List<CodeListPageConfig> codeListPageConfigList = codeListPageConfigService.getCodeListPageConfigListByCodeNavigationConfigIdList(codeNavigationConfigIdList);
-        if(CollectionUtils.isEmpty(codeListPageConfigList)) {
-            return Collections.emptyList();
-        }
-
-        Map<Integer, CodeNavigationConfig> codeNavigationConfigMap = codeNavigationConfigList.stream()
-                .collect(Collectors.toMap(CodeNavigationConfig::getId, Function.identity()));
-
-        return codeListPageConfigList.stream()
-                .map(codeListPageConfig -> this.buildCodeTemplateConfig(codeListPageConfig, codeNavigationConfigMap))
-                .collect(Collectors.toList());
-
-    }
-
-    private CodeTemplateConfig buildCodeTemplateConfig(CodeListPageConfig codeListPageConfig, Map<Integer, CodeNavigationConfig> codeNavigationConfigMap) {
-        CodeTemplateConfig codeTemplateConfig = new CodeTemplateConfig();
-        codeTemplateConfig.setCodeListPageConfig(codeListPageConfig);
-        codeTemplateConfig.setCodeNavigationConfig(codeNavigationConfigMap.get(codeListPageConfig.getCodeNavigationConfigId()));
-        return codeTemplateConfig;
+        return PageRespVO.success(codeNavigationConfigList);
     }
 
 }

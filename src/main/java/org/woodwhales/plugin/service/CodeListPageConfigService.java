@@ -28,9 +28,9 @@ public interface CodeListPageConfigService {
     CodeListPageConfig getCodeListPageConfigById(Integer codeListPageConfigId);
 
     /**
-     * 根据 codeNavigationConfigIdList 查询 CodeListPageConfig 列表
-     * @param codeNavigationConfigIdList
+     * 根据 codeNavigationConfigId 查询 CodeListPageConfig 列表
+     * @param codeNavigationConfigId
      * @return
      */
-    List<CodeListPageConfig> getCodeListPageConfigListByCodeNavigationConfigIdList(List<Integer> codeNavigationConfigIdList);
+    List<CodeListPageConfig> getCodeListPageConfigListByCodeNavigationConfigId(Integer codeNavigationConfigId);
 }

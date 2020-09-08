@@ -32,8 +32,7 @@ CREATE TABLE IF NOT EXISTS `code_list_page_config` (
 -- Dumping data for table woodwhales_code_generator.code_list_page_config: ~2 rows (大约)
 /*!40000 ALTER TABLE `code_list_page_config` DISABLE KEYS */;
 INSERT INTO `code_list_page_config` (`id`, `config_name`, `description`, `code_navigation_config_id`, `config_content`, `status`, `gmt_created`, `gmt_modified`) VALUES
-	(1, '模板1', '111', 1, '', 0, '2020-09-05 14:51:33', '2020-09-05 14:51:34'),
-	(2, '模板2', '222', 1, '', 0, '2020-09-05 16:19:49', '2020-09-05 16:19:49');
+	(3, '新闻表配置', '新闻表配置备注', 1, '{"navName":"新闻表","searchInput":[{"name":"id","id":"id","placeholder":"请输入id","sort":1},{"name":"code","id":"code","placeholder":"请输入code","sort":2},{"name":"newsType","id":"newsType","placeholder":"请输入newsType","sort":3}],"tableConfig":{"requestUrl":"news/","cols":[{"field":"id","title":"主键","width":0,"sort":1},{"field":"code","title":"新闻编号","width":0,"sort":2},{"field":"title","title":"新闻标题名","width":0,"sort":3},{"field":"newsType","title":"新闻类型：1-国内新闻，2-国外新闻","width":0,"sort":4},{"field":"content","title":"新闻内容","width":0,"sort":5},{"field":"publishTime","title":"新闻发布时间","width":0,"sort":6},{"field":"fromMedia","title":"媒体","width":0,"sort":7},{"field":"fromUrl","title":"源文链接","width":0,"sort":8},{"field":"gmtCreated","title":"创建时间","width":0,"sort":9},{"field":"gmtModified","title":"更新时间","width":0,"sort":10}]}}', 0, '2020-09-08 23:14:50', '2020-09-08 23:14:50');
 /*!40000 ALTER TABLE `code_list_page_config` ENABLE KEYS */;
 
 -- Dumping structure for table woodwhales_code_generator.code_navigation_config
@@ -48,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `code_navigation_config` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='导航配置表';
 
--- Dumping data for table woodwhales_code_generator.code_navigation_config: ~0 rows (大约)
+-- Dumping data for table woodwhales_code_generator.code_navigation_config: ~1 rows (大约)
 /*!40000 ALTER TABLE `code_navigation_config` DISABLE KEYS */;
 INSERT INTO `code_navigation_config` (`id`, `config_name`, `description`, `config_content`, `status`, `gmt_created`, `gmt_modified`) VALUES
 	(1, '菜单名称', '菜单备注', '[{"tab":{"addTabTitle":"权限","addTabUrl":"2/2"},"cite":{"name":"权限"},"sort":2},{"tab":{"addTabTitle":"权限","addTabUrl":"2/2"},"cite":{"name":"权限"},"sort":2}]', 0, '2020-09-06 21:30:20', '2020-09-06 21:30:20');
