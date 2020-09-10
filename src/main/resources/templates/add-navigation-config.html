@@ -56,16 +56,29 @@
                             <input type="checkbox" name="tableName" lay-skin="primary" th:title="${tableInfo.name}" th:value="${tableInfo.name}">
                         </div>
                         <div class="layui-col-md3">
-                            <input type="text" autocomplete="off" th:id="'citeName_'+${tableInfo.name}" class="layui-input" placeholder="请输入cite名称">
+                            <input type="text" autocomplete="off" th:id="'citeName_'+${tableInfo.name}" class="layui-input" placeholder="请输入cite名称"
+                                  th:value="${tableInfo.dbName}" >
                         </div>
                         <div class="layui-col-md3">
-                            <input type="text" autocomplete="off" th:id="'tabTitle_'+${tableInfo.name}" class="layui-input" placeholder="请输入tab名称">
+                            <input type="text" autocomplete="off" th:id="'tabTitle_'+${tableInfo.name}" class="layui-input" placeholder="请输入tab名称"
+                                   th:value="${tableInfo.comment}">
                         </div>
                         <div class="layui-col-md2">
-                            <input type="text" autocomplete="off" th:id="'tabUrl_'+${tableInfo.name}" class="layui-input" placeholder="请输入tab链接">
+                            <input type="text" autocomplete="off" th:id="'tabUrl_'+${tableInfo.name}" class="layui-input" placeholder="请输入tab链接"
+                                   th:value="'/' + ${#strings.unCapitalize(tableInfo.name)} + '/list/'">
                         </div>
                         <div class="layui-col-md1">
                             <input type="text" autocomplete="off" th:id="'tabSort_'+${tableInfo.name}" class="layui-input" placeholder="请输入tab sort" th:value="${tableInfoStat.count}">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-input-block">
+                    <div class="layui-row">
+                        <div class="layui-col-md6">
+                            <a class="layui-btn layui-btn-normal layui-btn-fluid layui-btn-sm" id="selectAllBtn">全选</a>
+                        </div>
+                        <div class="layui-col-md6">
+                            <a class="layui-btn layui-btn-danger layui-btn-fluid layui-btn-sm" id="unSelectAllBtn">反选</a>
                         </div>
                     </div>
                 </div>
