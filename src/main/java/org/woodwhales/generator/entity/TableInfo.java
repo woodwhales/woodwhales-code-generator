@@ -30,6 +30,12 @@ public class TableInfo {
 	private String name;
 
 	/**
+	 * 处理后的表名首字母小写
+	 * 用于javaBean的属性名
+	 */
+	private String propertyName;
+
+	/**
 	 * 注释
 	 */
 	private String comment;

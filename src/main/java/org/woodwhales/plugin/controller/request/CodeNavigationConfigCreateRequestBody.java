@@ -35,11 +35,11 @@ public class CodeNavigationConfigCreateRequestBody implements CodeTemplateConfig
      * 导航配置信息
      */
     @NotNull(message = "导航配置信息不允许为空")
-    private List<NavigationConfig> navigationConfig;
+    private List<NavigationConfig> navigationConfigs;
 
     @Override
     public String getConfigJson() {
-        Preconditions.checkNotNull(navigationConfig, "导航配置信息不允许为空");
-        return new Gson().toJson(navigationConfig);
+        Preconditions.checkNotNull(navigationConfigs, "导航配置信息不允许为空");
+        return new Gson().toJson(navigationConfigs);
     }
 }

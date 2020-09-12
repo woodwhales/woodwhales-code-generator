@@ -8,9 +8,8 @@
 </head>
 <body>
 <div class="layui-container">
-    <div class="layui-header">
-        <div class="layui-logo">woodwhales-code-generator</div>
-    </div>
+    <div th:replace="~{common/common::header}"></div>
+
     <div class="layui-row">
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
             <legend>配置信息详情</legend>
@@ -32,6 +31,30 @@
         <label class="layui-form-label">配置备注</label>
         <div class="layui-form-mid layui-word-aux" th:text="${codeTemplateConfig.codeNavigationConfig.description}"></div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">菜单配置</label>
+        <div class="layui-input-block">
+            <table class="layui-table">
+                <thead>
+                <tr>
+                    <th>tab名称</th>
+                    <th>tab链接</th>
+                    <th>cite名称</th>
+                    <th>sort</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="navigationConfig : ${codeTemplateConfig.codeNavigationConfig.navigationConfigs}">
+                    <td th:text="${navigationConfig.tab.addTabTitle}"></td>
+                    <td th:text="${navigationConfig.tab.addTabUrl}"></td>
+                    <td th:text="${navigationConfig.cite.name}"></td>
+                    <td th:text="${#numbers.formatInteger(navigationConfig.sort, 0)}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <div class="layui-row">
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
             <legend>列表信息</legend>
@@ -40,7 +63,66 @@
     <div class="layui-collapse">
         <div class="layui-colla-item" th:each="codeListPageConfig : ${codeTemplateConfig.codeListPageConfigList}">
             <h2 class="layui-colla-title" th:text="${codeListPageConfig.configName}"></h2>
-            <div class="layui-colla-content" th:text="${codeListPageConfig.configContent}"></div>
+            <div class="layui-colla-content">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">配置备注</label>
+                    <div class="layui-form-mid layui-word-aux" th:text="${codeListPageConfig.description}"></div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">搜索框配置</label>
+                    <div class="layui-input-block">
+                        <table class="layui-table">
+                            <thead>
+                            <tr>
+                                <th>name</th>
+                                <th>id</th>
+                                <th>placeholder</th>
+                                <th>sort</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="searchInput : ${codeListPageConfig.listPageConfigs.searchInputs}">
+                                <td th:text="${searchInput.name}"></td>
+                                <td th:text="${searchInput.id}"></td>
+                                <td th:text="${searchInput.placeholder}"></td>
+                                <td th:text="${#numbers.formatInteger(searchInput.sort, 0)}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">请求地址</label>
+                    <div class="layui-form-mid layui-word-aux" th:text="${codeListPageConfig.listPageConfigs.tableConfig.requestUrl}"></div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">字段配置</label>
+                    <div class="layui-input-block">
+                        <table class="layui-table">
+                            <thead>
+                            <tr>
+                                <th>field</th>
+                                <th>title</th>
+                                <th>width</th>
+                                <th>sort</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="col : ${codeListPageConfig.listPageConfigs.tableConfig.cols}">
+                                <td th:text="${col.field}"></td>
+                                <td th:text="${col.title}"></td>
+                                <td th:text="${col.width != null} ? ${#numbers.formatInteger(col.width, 0)} : ''"></td>
+                                <td th:text="${#numbers.formatInteger(col.sort, 0)}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="layui-row">
@@ -49,17 +131,18 @@
             <div class="layui-form-mid layui-word-aux"></div>
         </div>
     </div>
-    <div class="layui-row" style="height: 44px; background-color: #009688; line-height: 44px; color: #FFF; margin-bottom: 30px; border-radius: 2px;">
-        &nbsp;&nbsp;&nbsp;&nbsp;© <a href="https://woodwhales.cn/" style="color: #FFF;" target="_blank">woodwhales.cn</a> - woodwhales's blog
-    </div>
+    <div th:replace="~{common/common::footer}"></div>
 </div>
 </body>
 <script th:src="@{/webjars/layui/layui.js}"></script>
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script type="text/javascript" th:inline="none">
-    layui.use(['element', 'layer'], function(){
-        var table = layui.table,
-            element = layui.element;
+    layui.use(['form', 'layer', 'table', 'layedit', 'util', 'element'], function(){
+        var form = layui.form,
+            layer = layui.layer,
+            util = layui.util,
+            element = layer.element,
+            table = layui.table;
 
     });
 </script>

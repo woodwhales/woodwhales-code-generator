@@ -6,7 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.woodwhales.plugin.controller.request.template.ListPageConfig;
+import org.woodwhales.plugin.controller.request.template.SearchInput;
 import org.woodwhales.plugin.entity.CodeListPageConfig;
+
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 /**
  * @projectName: woodwhales-code-generator
@@ -26,12 +30,20 @@ public class CodeListPageConfigVO {
 
     private String configContent;
 
-    private ListPageConfig listPageConfig;
+    private ListPageConfig listPageConfigs;
 
     public static CodeListPageConfigVO build(CodeListPageConfig codeListPageConfig) {
         CodeListPageConfigVO codeListPageConfigVO = new CodeListPageConfigVO();
         BeanUtils.copyProperties(codeListPageConfig, codeListPageConfigVO);
-        codeListPageConfigVO.setListPageConfig(new Gson().fromJson(codeListPageConfig.getConfigContent(), new TypeToken<ListPageConfig>() {}.getType()));
+        ListPageConfig listPageConfigs = new Gson().fromJson(codeListPageConfig.getConfigContent(), new TypeToken<ListPageConfig>() {
+        }.getType());
+
+        listPageConfigs.setSearchInputs(listPageConfigs.getSearchInputs()
+                                                    .stream()
+                                                    .sorted(Comparator.comparing(SearchInput::getSort))
+                                                    .collect(Collectors.toList()));
+
+        codeListPageConfigVO.setListPageConfigs(listPageConfigs);
         return codeListPageConfigVO;
     }
 }

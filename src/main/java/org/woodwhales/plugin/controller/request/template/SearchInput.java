@@ -10,6 +10,6 @@ public class SearchInput {
     private String name;
     private String id;
     private String placeholder;
-    private int sort;
+    private Integer sort;
 
 }

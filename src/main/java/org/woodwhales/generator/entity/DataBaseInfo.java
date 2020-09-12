@@ -12,6 +12,8 @@ import org.woodwhales.generator.controller.request.BuildConnectionRequestBody;
 import java.util.List;
 import java.util.Properties;
 
+import static org.apache.commons.lang3.StringUtils.trimToEmpty;
+
 /**
  * 数据库链接配置数据对象
  * @author woodwhales
@@ -120,6 +122,8 @@ public class DataBaseInfo {
 	public static DataBaseInfo convert(BuildConnectionRequestBody requestBody) {
 		DataBaseInfo dataBaseInfo = new DataBaseInfo();
 		BeanUtils.copyProperties(requestBody, dataBaseInfo);
+		dataBaseInfo.setUsername(trimToEmpty(requestBody.getUsername()));
+		dataBaseInfo.setPassword(trimToEmpty(dataBaseInfo.getPassword()));
 		return dataBaseInfo;
 	}
 	

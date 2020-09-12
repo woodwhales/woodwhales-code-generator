@@ -71,7 +71,7 @@ public class StringTools {
 	 * @param str
 	 * @return
 	 */
-	public static String upperWithOutFisrtChar(String str) {
+	public static String upperWithOutFirstChar(String str) {
 		if(StringUtils.isBlank(str)) {
 			return StringUtils.EMPTY;
 		}

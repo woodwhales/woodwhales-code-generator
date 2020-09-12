@@ -8,18 +8,25 @@
 </head>
 <body>
 <div class="layui-container">
-    <div class="layui-header">
-        <div class="layui-logo">woodwhales-code-generator</div>
-    </div>
+    <div th:replace="~{common/common::header}"></div>
+
     <div class="layui-row">
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-            <legend>添加模板配置 - 导航栏配置</legend>
+            <legend>添加模板配置 - 列表页配置</legend>
         </fieldset>
     </div>
     <div class="layui-row">
         <a th:href="@{/}" class="layui-btn layui-bg-gray layui-btn layui-btn-xs">返回</a>
     </div>
+    <div class="layui-row" style="margin-top: 15px;">
+        <blockquote class="layui-elem-quote">
+            表名：<span th:text="${tableDbName}"></span></br>
+            主键：<span th:each="tablePrimaryKey : ${tablePrimaryKeys}" th:text="${tablePrimaryKey} + ' '"></span></br>
+            注释：<span th:text="${tableComment}"></span></br>
+        </blockquote>
+    </div>
     <div class="layui-row">
+        <input id="tableKey" th:value="${tableKey}" hidden="true">
         <form class="layui-form" action="">
             <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
                 <legend>基础配置信息</legend>
@@ -52,7 +59,7 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">页面名称</label>
                 <div class="layui-input-block">
-                    <input type="text" name="navName" id="navName" lay-verify="required" autocomplete="off" placeholder="请输入页面名称" class="layui-input" th:value="${tableInfo.comment}">
+                    <input type="text" name="navName" id="navName" lay-verify="required" autocomplete="off" placeholder="请输入页面名称" class="layui-input" th:value="${tableComment}">
                 </div>
             </div>
 
@@ -65,7 +72,7 @@
                     <div class="layui-input-block">
                         <select name="searchInputName" id="searchInputName" lay-filter="searchInputName-filter">
                             <option value="">请选择搜索框name</option>
-                            <option th:each="column : ${tableInfo.columns}" th:value="${column.name}" th:text="${column.dbName}"></option>
+                            <option th:each="column : ${columns}" th:value="${column.name}" th:text="${column.dbName}"></option>
                         </select>
                     </div>
                 </div>
@@ -107,56 +114,39 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">表格链接</label>
                 <div class="layui-input-block">
-                    <input type="text" name="requestUrl" id="requestUrl" autocomplete="off" class="layui-input" th:value="${#strings.unCapitalize(tableInfo.name)}+'/'">
+                    <input type="text" name="requestUrl" id="requestUrl" autocomplete="off" class="layui-input" th:value="${tableUrl}">
                 </div>
             </div>
             <div class="layui-form-item">
+                <label class="layui-form-label">列表配置</label>
                 <div class="layui-input-block">
-                    <div class="layui-row">
-                        <div class="layui-col-md3">变量</div>
-                        <div class="layui-col-md3">标题</div>
-                        <div class="layui-col-md3">宽度</div>
-                        <div class="layui-col-md3">排序</div>
-                    </div>
-                </div>
-                <div class="layui-input-block" th:each="column, columnStat : ${tableInfo.columns}">
-                    <div class="layui-row">
-                        <div class="layui-col-md3">
-                            <input type="checkbox" name="colsField" lay-skin="primary" th:title="${column.name}" th:value="${column.name}">
-                        </div>
-                        <div class="layui-col-md3">
-                            <input type="text" autocomplete="off" th:id="'colsTitle_'+${column.name}" class="layui-input" placeholder="请输入title" th:value="${column.comment}">
-                        </div>
-                        <div class="layui-col-md3">
-                            <input type="text" autocomplete="off" th:id="'colsWidth_'+${column.name}" class="layui-input" placeholder="请输入width">
-                        </div>
-                        <div class="layui-col-md3">
-                            <input type="text" autocomplete="off" th:id="'colsSort_'+${column.name}" class="layui-input" placeholder="请输入sort" th:value="${columnStat.count}">
-                        </div>
-                    </div>
+                    <table class="layui-table" id="configTable"></table>
                 </div>
             </div>
             <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="submitBtn">创建</button>
-                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-md6">
+                        <button type="submit" class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="submitBtn">创建</button>
+                    </div>
+                    <div class="layui-col-md6">
+                        <button type="reset" class="layui-btn layui-btn-primary layui-btn-fluid">重置</button>
+                    </div>
                 </div>
             </div>
         </form>
     </div>
-    <div class="layui-row" style="height: 44px; background-color: #009688; line-height: 44px; color: #FFF; margin-bottom: 30px; border-radius: 2px;">
-        &nbsp;&nbsp;&nbsp;&nbsp;© <a href="https://woodwhales.cn/" style="color: #FFF;" target="_blank">woodwhales.cn</a> - woodwhales's blog
-    </div>
+    <div th:replace="~{common/common::footer}"></div>
 </div>
 </body>
 <script th:src="@{/webjars/layui/layui.js}"></script>
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script type="text/javascript" th:inline="none">
 
-    layui.use(['form', 'layer', 'table', 'layedit', 'util'], function(){
+    layui.use(['form', 'layer', 'table', 'layedit', 'util', 'element'], function(){
         var form = layui.form,
             layer = layui.layer,
             util = layui.util,
+            element = layer.element,
             table = layui.table;
 
         let searchInputArray = new Array();
@@ -213,8 +203,9 @@
                 return false;
             }
 
-            if($('[name="colsField"]:checked').length == 0) {
-                layer.msg("请选择至少一条表格页配置");
+            let checkStatus = table.checkStatus('configTable');
+            if(checkStatus.data.length === 0) {
+                layer.msg('请选择至少一条表格页配置', {icon: 5});
                 return false;
             }
 
@@ -222,26 +213,21 @@
             let navName = data.field.navName;
             let requestUrl = data.field.requestUrl;
             listPageConfig.navName = navName;
-            listPageConfig.searchInput = searchInputArray;
+            listPageConfig.searchInputs = searchInputArray;
             listPageConfig.tableConfig = {};
             listPageConfig.tableConfig.requestUrl = requestUrl;
 
-            let cols = new Array();
-            $('[name="colsField"]:checked').each(function() {
-                let colsName = $(this).val();
-                let colsField = colsName;
-                let colsTitle = $('#colsTitle_'+colsName).val();
-                let colsWidth = $('#colsWidth_'+colsName).val();
-                let colsSort = $('#colsSort_'+colsName).val();
+            let colsArray = checkStatus.data;
+            let navigationConfigItem = new Array();
+            colsArray.map(function(item, index) {
                 let colsItem = {};
-                colsItem.field = colsField;
-                colsItem.title = colsTitle;
-                colsItem.width = colsWidth;
-                colsItem.sort = colsSort;
-                cols.push(colsItem);
+                colsItem.field = item.colsField;
+                colsItem.title = item.colsTitle;
+                colsItem.width = item.colsWidth;
+                colsItem.sort = item.sort;
+                navigationConfigItem.push(colsItem);
             });
-
-            listPageConfig.tableConfig.cols = cols;
+            listPageConfig.tableConfig.cols = navigationConfigItem;
 
             postBody.codeNavigationConfigId = data.field.codeNavigationConfigId
             postBody.configName = data.field.configName;
@@ -269,6 +255,20 @@
             });
 
             return false;
+        });
+
+        table.render({
+            elem: '#configTable'
+            ,url:'/generate/listTableInfo?tableKey=' + $('#tableKey').val()
+            ,cols: [[
+                {type:'checkbox'},
+                {field:'dbColsField', title: '数据库字段名', edit: 'text'},
+                {field:'colsField', title: '变量', edit: 'text'},
+                {field:'colsTitle', title: '标题', edit: 'text'},
+                {field:'colsWidth', title: '宽度', edit: 'text'},
+                {field:'sort', title: 'tab排序', edit: 'text'}
+            ]]
+            ,page: false
         });
 
     });

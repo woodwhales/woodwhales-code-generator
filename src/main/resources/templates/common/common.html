@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>woodwhales-code-generator</title>
+    <link rel="stylesheet" th:href="@{/webjars/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/mycss.css}" >
+</head>
+<body>
+
+<div th:fragment="header">
+    <div class="layui-row">
+        <ul class="layui-nav">
+            <a href="/" style="line-height: 6px; vertical-align: middle;">
+                <span style="color: #F0F0F0; line-height: 60px; vertical-align: middle; margin-right: 6px; font-weight: bold;">CODE-GENERATOR</span>
+            </a>
+            <li class="layui-nav-item">
+                <a href="/">首 页</a>
+            </li>
+            <li class="layui-nav-item">
+                <a href="/codeTemplate/">配置页</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div th:fragment="footer">
+    <div class="layui-row layui-bg-cyan" style="height: 60px; background-color: #009688; line-height: 60px; color: #FFF; margin-bottom: 30px; border-radius: 2px;">
+        &nbsp;&nbsp;&nbsp;&nbsp;© <a href="https://woodwhales.cn/" style="color: #FFF;" target="_blank">woodwhales.cn</a> - woodwhales's blog
+    </div>
+</div>
+
+</body>
+</html>

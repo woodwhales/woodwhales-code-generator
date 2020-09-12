@@ -9,6 +9,6 @@ public class Cols {
 
     private String field;
     private String title;
-    private int width;
-    private int sort;
+    private Integer width;
+    private Integer sort;
 }

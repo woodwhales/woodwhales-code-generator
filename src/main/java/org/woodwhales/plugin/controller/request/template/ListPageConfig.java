@@ -13,7 +13,7 @@ public class ListPageConfig {
     @NotBlank(message = "导航栏名称不允许为空")
     private String navName;
 
-    private List<SearchInput> searchInput;
+    private List<SearchInput> searchInputs;
 
     private TableConfig tableConfig;
 }

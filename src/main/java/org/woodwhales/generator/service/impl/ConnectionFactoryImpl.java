@@ -99,7 +99,7 @@ public class ConnectionFactoryImpl implements ConnectionFactory {
         Preconditions.checkArgument(StringUtils.isNotBlank(dataBaseInfoKey), "数据库连接信息缓存key不允许为空");
 
         ResultSet resultSet = null;
-        List<TableInfo> tableInfos = null;
+        List<TableInfo> tableInfos;
 
         try {
             final String catalog = connection.getCatalog();
@@ -115,6 +115,9 @@ public class ConnectionFactoryImpl implements ConnectionFactory {
                 // 格式化表名
                 String tempTableName = StringTools.substringAfter(tableName, tableConfig.getPrefix());
                 tableInfo.setName(StringTools.upper(tempTableName));
+
+                // 格式化表名首字母小写
+                tableInfo.setPropertyName(StringTools.upperWithOutFirstChar(tempTableName));
 
                 // setKeys
                 List<String> primaryKeys = getPrimaryKey(metaData, catalog, schema, tableName);
@@ -181,7 +184,7 @@ public class ConnectionFactoryImpl implements ConnectionFactory {
 
             // 将数据库表的字段类型转成 java 变量类型
             column.setType(convertType(columnName, column.getDbType()));
-            column.setName(StringTools.upperWithOutFisrtChar(columnName));
+            column.setName(StringTools.upperWithOutFirstChar(columnName));
             column.setPrimaryKey(checkPrimaryKey(columnName, tableInfo.getKeys()));
 
             columns.add(column);

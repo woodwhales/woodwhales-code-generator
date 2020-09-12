@@ -4,25 +4,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.woodwhales.common.response.PageRespVO;
+import org.woodwhales.common.response.RespVO;
 import org.woodwhales.generator.controller.request.BuildConnectionRequestBody;
 import org.woodwhales.generator.controller.request.DataBaseRequestBody;
 import org.woodwhales.generator.controller.request.DataBaseTableRequestBody;
 import org.woodwhales.generator.controller.request.GenerateTemplateRequestBody;
-import org.woodwhales.common.response.RespVO;
+import org.woodwhales.generator.controller.vo.ColsConfigVO;
+import org.woodwhales.generator.controller.vo.NavigationConfigVO;
+import org.woodwhales.generator.entity.Column;
 import org.woodwhales.generator.entity.DataBaseInfo;
 import org.woodwhales.generator.entity.TableInfo;
 import org.woodwhales.generator.model.GenerateTableInfos;
 import org.woodwhales.generator.service.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import javax.validation.constraints.NotBlank;
+import java.util.*;
 
 /**
  * 生成代码相关接口
@@ -133,5 +132,35 @@ public class GeneratorController {
 		return RespVO.success(outPut);
 	}
 
+	@GetMapping("/listTableInfos")
+	public PageRespVO<NavigationConfigVO> listTableInfos(@NotBlank @RequestParam("dataBaseInfoKey") String encryptedDataBaseInfoKey) {
+		List<TableInfo> tableInfos = generateService.listTables(encryptedDataBaseInfoKey);
 
+		int index = 1;
+		List<NavigationConfigVO> navigationConfigVOList = new ArrayList<>(tableInfos.size());
+		for (TableInfo tableInfo : tableInfos) {
+			navigationConfigVOList.add(new NavigationConfigVO(tableInfo.getDbName(),
+					tableInfo.getDbName(),
+					tableInfo.getDbName(),
+					"/view/" + tableInfo.getPropertyName() + "/",
+					index++));
+		}
+
+		return PageRespVO.success(navigationConfigVOList);
+	}
+
+	@GetMapping("/listTableInfo")
+	public PageRespVO<ColsConfigVO> listTableInfo(@NotBlank @RequestParam("tableKey") String tableKey) {
+		TableInfo tableInfo = generateService.getTableInfo(tableKey);
+		List<Column> columns = tableInfo.getColumns();
+
+		int index = 1;
+		List<ColsConfigVO> colsConfigVOList = new ArrayList<>(columns.size());
+		for (Column column : columns) {
+			colsConfigVOList.add(new ColsConfigVO(column.getDbName(), column.getName(),
+					column.getComment(), null, index++));
+		}
+
+		return PageRespVO.success(colsConfigVOList);
+	}
 }

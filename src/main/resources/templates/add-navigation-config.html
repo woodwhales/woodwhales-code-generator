@@ -8,9 +8,8 @@
 </head>
 <body>
 <div class="layui-container">
-    <div class="layui-header">
-        <div class="layui-logo">woodwhales-code-generator</div>
-    </div>
+    <div th:replace="~{common/common::header}"></div>
+
     <div class="layui-row">
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
             <legend>添加模板配置 - 导航栏配置</legend>
@@ -20,10 +19,8 @@
         <a th:href="@{/}" class="layui-btn layui-bg-gray layui-btn layui-btn-xs">返回</a>
     </div>
     <div class="layui-row">
+        <input id="dataBaseInfoKey" th:value="${dataBaseInfoKey}" hidden="true">
         <form class="layui-form" action="">
-            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                <legend>基础配置信息</legend>
-            </fieldset>
             <div class="layui-form-item">
                 <label class="layui-form-label">配置名称</label>
                 <div class="layui-input-block">
@@ -36,105 +33,66 @@
                     <textarea name="description" id="description" placeholder="请输入配置备注" class="layui-textarea"></textarea>
                 </div>
             </div>
-
-            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                <legend>菜单项配置</legend>
-            </fieldset>
             <div class="layui-form-item">
+                <label class="layui-form-label">菜单配置</label>
                 <div class="layui-input-block">
-                    <div class="layui-row">
-                        <div class="layui-col-md2">数据库表名</div>
-                        <div class="layui-col-md3">cite名称</div>
-                        <div class="layui-col-md3">tab名称</div>
-                        <div class="layui-col-md2">tab链接</div>
-                        <div class="layui-col-md2">tab排序</div>
-                    </div>
-                </div>
-                <div class="layui-input-block" th:each="tableInfo, tableInfoStat : ${tableInfos}">
-                    <div class="layui-row">
-                        <div class="layui-col-md3">
-                            <input type="checkbox" name="tableName" lay-skin="primary" th:title="${tableInfo.name}" th:value="${tableInfo.name}">
-                        </div>
-                        <div class="layui-col-md3">
-                            <input type="text" autocomplete="off" th:id="'citeName_'+${tableInfo.name}" class="layui-input" placeholder="请输入cite名称"
-                                  th:value="${tableInfo.dbName}" >
-                        </div>
-                        <div class="layui-col-md3">
-                            <input type="text" autocomplete="off" th:id="'tabTitle_'+${tableInfo.name}" class="layui-input" placeholder="请输入tab名称"
-                                   th:value="${tableInfo.comment}">
-                        </div>
-                        <div class="layui-col-md2">
-                            <input type="text" autocomplete="off" th:id="'tabUrl_'+${tableInfo.name}" class="layui-input" placeholder="请输入tab链接"
-                                   th:value="'/' + ${#strings.unCapitalize(tableInfo.name)} + '/list/'">
-                        </div>
-                        <div class="layui-col-md1">
-                            <input type="text" autocomplete="off" th:id="'tabSort_'+${tableInfo.name}" class="layui-input" placeholder="请输入tab sort" th:value="${tableInfoStat.count}">
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-input-block">
-                    <div class="layui-row">
-                        <div class="layui-col-md6">
-                            <a class="layui-btn layui-btn-normal layui-btn-fluid layui-btn-sm" id="selectAllBtn">全选</a>
-                        </div>
-                        <div class="layui-col-md6">
-                            <a class="layui-btn layui-btn-danger layui-btn-fluid layui-btn-sm" id="unSelectAllBtn">反选</a>
-                        </div>
-                    </div>
+                    <table class="layui-table" id="configTable"></table>
                 </div>
             </div>
             <div class="layui-form-item">
-                <div class="layui-input-block">
-                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="submitBtn">创建</button>
-                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-md6">
+                        <button type="submit" class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="submitBtn">创建</button>
+                    </div>
+                    <div class="layui-col-md6">
+                        <button type="reset" class="layui-btn layui-btn-primary layui-btn-fluid">重置</button>
+                    </div>
                 </div>
             </div>
         </form>
     </div>
-    <div class="layui-row" style="height: 44px; background-color: #009688; line-height: 44px; color: #FFF; margin-bottom: 30px; border-radius: 2px;">
-        &nbsp;&nbsp;&nbsp;&nbsp;© <a href="https://woodwhales.cn/" style="color: #FFF;" target="_blank">woodwhales.cn</a> - woodwhales's blog
-    </div>
+    <div th:replace="~{common/common::footer}"></div>
 </div>
 </body>
 <script th:src="@{/webjars/layui/layui.js}"></script>
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script type="text/javascript" th:inline="none">
-    layui.use(['form', 'layer', 'table', 'layedit', 'util'], function(){
+    layui.use(['form', 'layer', 'table', 'layedit', 'util', 'element'], function(){
         var form = layui.form,
             layer = layui.layer,
             util = layui.util,
+            element = layer.element,
             table = layui.table;
 
         let postBody = {};
         form.on('submit(submitBtn)', function(data) {
-            if($('[name="tableName"]:checked').length == 0) {
-                layer.msg("请选择至少一条菜单配置");
+
+            let checkStatus = table.checkStatus('configTable');
+            if(checkStatus.data.length === 0) {
+                layer.msg('请选择要生成的配置', {icon: 5});
                 return false;
             }
 
-            let navigationConfig = new Array();
+            let navigationConfigArray = checkStatus.data;
+
             postBody.configName = data.field.configName;
             postBody.description = data.field.description;
-
-            let navigationConfigItem = {};
-            $('[name="tableName"]:checked').each(function() {
-                let tableName = $(this).val();
+            let navigationConfigItem = new Array();
+            navigationConfigArray.map(function(item, index) {
+                let navigationConfig = {};
                 let tab = {};
-                tab.addTabTitle = $("#citeName_"+tableName).val();
-                tab.addTabUrl = $("#tabUrl_"+tableName).val();
-                navigationConfigItem.tab = tab;
+                tab.addTabTitle = item.addTabTitle;
+                tab.addTabUrl = item.addTabUrl;
+                navigationConfig.tab = tab;
 
                 let cite = {};
-                cite.name = $("#citeName_"+tableName).val();
-                navigationConfigItem.cite = cite;
+                cite.name = item.citeName;
+                navigationConfig.cite = cite;
 
-                navigationConfigItem.sort = $("#tabSort_"+tableName).val();
-                navigationConfig.push(navigationConfigItem);
+                navigationConfig.sort = item.sort
+                navigationConfigItem.push(navigationConfig);
             });
-
-            postBody.navigationConfig = navigationConfig;
-
-            console.log(JSON.stringify(postBody));
+            postBody.navigationConfigs = navigationConfigItem;
 
             $.ajax({
                 url:'/plugin/codeNavigationConfig/create/',
@@ -157,6 +115,20 @@
             });
 
             return false;
+        });
+
+        table.render({
+            elem: '#configTable'
+            ,url:'/generate/listTableInfos?dataBaseInfoKey=' + $('#dataBaseInfoKey').val()
+            ,cols: [[
+                {type:'checkbox'},
+                {field:'tableName', title: '数据库表名', edit: 'text'},
+                {field:'citeName', title: 'cite名称', edit: 'text'},
+                {field:'addTabTitle', title: 'tab名称', edit: 'text'},
+                {field:'addTabUrl', title: 'tab链接', edit: 'text'},
+                {field:'sort', title: 'tab排序', edit: 'text'}
+            ]]
+            ,page: false
         });
     });
 </script>

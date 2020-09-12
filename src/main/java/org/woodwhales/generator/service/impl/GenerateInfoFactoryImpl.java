@@ -1,6 +1,7 @@
 package org.woodwhales.generator.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import org.woodwhales.generator.service.GenerateService;
 
 import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @projectName: woodwhales-code-generator
@@ -35,6 +37,11 @@ public class GenerateInfoFactoryImpl implements GenerateInfoFactory {
         File baseDir = checkBaseDirPath(generateDir);
 
         DataBaseInfo dataBaseInfo = DataBaseInfo.convert(requestBody);
+
+        List<String> interfaceList = requestBody.getInterfaceList();
+        if(CollectionUtils.isNotEmpty(interfaceList)) {
+            dataBaseInfo.setInterfaceList(interfaceList.stream().distinct().collect(Collectors.toList()));
+        }
 
         // 获取数据库表结构信息
         List<TableInfo> tables = generateService.listTables(dataBaseInfo, true);

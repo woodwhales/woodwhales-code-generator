@@ -7,7 +7,6 @@ package org.woodwhales.plugin.controller.vo;
  * @description:
  */
 
-import com.google.gson.reflect.TypeToken;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -29,13 +28,13 @@ public class CodeNavigationConfigVO {
 
     private String configContent;
 
-    List<NavigationConfig> navigationConfig;
+    List<NavigationConfig> navigationConfigs;
 
     public static CodeNavigationConfigVO newInstance(CodeNavigationConfig codeNavigationConfig) {
         CodeNavigationConfigVO codeNavigationConfigVO = new CodeNavigationConfigVO();
         BeanUtils.copyProperties(codeNavigationConfig, codeNavigationConfigVO);
         String configContent = codeNavigationConfig.getConfigContent();
-        codeNavigationConfigVO.setNavigationConfig(GsonUtil.fromJson(configContent));
+        codeNavigationConfigVO.setNavigationConfigs(GsonUtil.fromJson(configContent));
         return codeNavigationConfigVO;
     }
 }

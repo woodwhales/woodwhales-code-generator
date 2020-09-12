@@ -65,7 +65,14 @@ public class ViewController {
 		if(Objects.isNull(tableInfo)) {
 			return "redirect:/";
 		}
-		model.addAttribute("tableInfo", tableInfo);
+
+		model.addAttribute("tableKey", tableKey);
+		model.addAttribute("tableDbName", tableInfo.getDbName());
+		model.addAttribute("tablePrimaryKeys", tableInfo.getKeys());
+		model.addAttribute("columns", tableInfo.getColumns());
+		model.addAttribute("tableName", tableInfo.getPropertyName());
+		model.addAttribute("tableComment", tableInfo.getComment());
+		model.addAttribute("tableUrl", "/" + tableInfo.getPropertyName() + "/");
 
 		List<CodeNavigationConfigSimpleInfoVO> codeNavigationConfigSimpleInfoVOList = codeNavigationConfigService.listSimpleInfo();
 		model.addAttribute("codeNavigationConfigs", codeNavigationConfigSimpleInfoVOList);
@@ -78,7 +85,7 @@ public class ViewController {
 		if(CollectionUtils.isEmpty(tableInfos)) {
 			return "redirect:/";
 		}
-		model.addAttribute("tableInfos", tableInfos);
+		model.addAttribute("dataBaseInfoKey", encryptedDataBaseInfoKey);
 		return "add-navigation-config";
 	}
 

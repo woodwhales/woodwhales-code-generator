@@ -17,8 +17,11 @@ public class StringToolsTest {
 	
 	@Test
 	public void testUpperWithOutFisrtChar() {
-		assertEquals("abcName", StringTools.upperWithOutFisrtChar("abc_name_"));
-		assertEquals("BcdName", StringTools.upperWithOutFisrtChar("_bcd_name_"));
+		assertEquals("abcName", StringTools.upperWithOutFirstChar("abc_name_"));
+		assertEquals("BcdName", StringTools.upperWithOutFirstChar("_bcd_name_"));
+
+		assertEquals("BCdName", StringTools.upperWithOutFirstChar("_b_cdName"));
+		assertEquals("BCdName", StringTools.upperWithOutFirstChar("-b-cdName"));
 
 	}
 
