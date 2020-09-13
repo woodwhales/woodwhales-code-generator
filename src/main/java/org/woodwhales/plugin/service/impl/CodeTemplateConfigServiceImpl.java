@@ -8,6 +8,7 @@ import org.woodwhales.plugin.controller.vo.CodeNavigationConfigVO;
 import org.woodwhales.plugin.entity.CodeListPageConfig;
 import org.woodwhales.plugin.entity.CodeNavigationConfig;
 import org.woodwhales.plugin.model.CodeTemplateConfig;
+import org.woodwhales.plugin.model.CodeTemplateConfigDetail;
 import org.woodwhales.plugin.service.CodeListPageConfigService;
 import org.woodwhales.plugin.service.CodeNavigationConfigService;
 import org.woodwhales.plugin.service.CodeTemplateConfigService;
@@ -45,21 +46,30 @@ public class CodeTemplateConfigServiceImpl implements CodeTemplateConfigService 
     }
 
     @Override
+    public CodeTemplateConfigDetail getCodeTemplateConfigDetailByCodeListPageConfigId(Integer codeListPageConfigId) {
+        CodeListPageConfig codeListPageConfig = getCodeListPageConfigByCodeListPageConfigId(codeListPageConfigId);
+        Integer codeNavigationConfigId = codeListPageConfig.getCodeNavigationConfigId();
+        CodeNavigationConfigVO codeNavigationConfigVO = getCodeNavigationConfigVOByNavigationConfigById(codeNavigationConfigId);
+        CodeListPageConfigVO codeListPageConfigVO = CodeListPageConfigVO.build(codeListPageConfig);
+        return new CodeTemplateConfigDetail(codeNavigationConfigVO, codeListPageConfigVO);
+    }
+
+    @Override
     public CodeNavigationConfigVO getCodeNavigationConfigVOByNavigationConfigById(Integer codeNavigationConfigId) {
-        CodeNavigationConfig codeNavigationConfig = codeNavigationConfigService.getCodeNavigationConfigById(codeNavigationConfigId);
-
-        Preconditions.checkNotNull(codeNavigationConfig, "codeNavigationConfig不允许为空");
-
+        CodeNavigationConfig codeNavigationConfig = getCodeNavigationConfigByCodeNavigationConfigId(codeNavigationConfigId);
         CodeNavigationConfigVO codeNavigationConfigVO = CodeNavigationConfigVO.newInstance(codeNavigationConfig);
         return codeNavigationConfigVO;
     }
 
+    private CodeNavigationConfig getCodeNavigationConfigByCodeNavigationConfigId(Integer codeNavigationConfigId) {
+        CodeNavigationConfig codeNavigationConfig = codeNavigationConfigService.getCodeNavigationConfigById(codeNavigationConfigId);
+        Preconditions.checkNotNull(codeNavigationConfig, "codeNavigationConfig不允许为空");
+        return  codeNavigationConfig;
+    }
+
     @Override
     public CodeListPageConfigVO getCodeListPageConfigVOByCodeListPageConfigId(Integer codeListPageConfigId) {
-        CodeListPageConfig codeListPageConfig = codeListPageConfigService.getCodeListPageConfigById(codeListPageConfigId);
-
-        Preconditions.checkNotNull(codeListPageConfig, "codeNavigationConfig不允许为空");
-
+        CodeListPageConfig codeListPageConfig = getCodeListPageConfigByCodeListPageConfigId(codeListPageConfigId);
         CodeListPageConfigVO codeListPageConfigVO = CodeListPageConfigVO.build(codeListPageConfig);
         return codeListPageConfigVO;
     }
@@ -68,6 +78,18 @@ public class CodeTemplateConfigServiceImpl implements CodeTemplateConfigService 
     public PageRespVO<CodeNavigationConfig> pageCodeTemplate() {
         List<CodeNavigationConfig> codeNavigationConfigList = codeNavigationConfigService.listCodeNavigationConfig();
         return PageRespVO.success(codeNavigationConfigList);
+    }
+
+    private CodeListPageConfig getCodeListPageConfigByCodeListPageConfigId(Integer codeListPageConfigId) {
+        CodeListPageConfig codeListPageConfig = codeListPageConfigService.getCodeListPageConfigById(codeListPageConfigId);
+        Preconditions.checkNotNull(codeListPageConfig, "codeNavigationConfig不允许为空");
+        return codeListPageConfig;
+    }
+
+    @Override
+    public CodeNavigationConfigVO getCodeNavigationConfigVOByCodeListPageConfigId(Integer codeListPageConfigId) {
+        CodeListPageConfig codeListPageConfig = getCodeListPageConfigByCodeListPageConfigId(codeListPageConfigId);
+        return getCodeNavigationConfigVOByNavigationConfigById(codeListPageConfig.getCodeNavigationConfigId());
     }
 
 }

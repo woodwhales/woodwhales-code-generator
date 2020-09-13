@@ -9,9 +9,9 @@ import org.woodwhales.common.response.RespVO;
 import org.woodwhales.generator.util.GsonUtil;
 import org.woodwhales.plugin.controller.request.freemarker.CodeListPageConfigRequestBody;
 import org.woodwhales.plugin.controller.request.freemarker.CodeNavigationConfigRequestBody;
-import org.woodwhales.plugin.controller.vo.CodeListPageConfigVO;
 import org.woodwhales.plugin.controller.vo.CodeNavigationConfigVO;
 import org.woodwhales.plugin.entity.CodeNavigationConfig;
+import org.woodwhales.plugin.model.CodeTemplateConfigDetail;
 import org.woodwhales.plugin.service.CodeTemplateConfigService;
 
 /**
@@ -47,7 +47,7 @@ public class CodeTemplateController {
     public RespVO generateTable(@Validated @RequestBody CodeListPageConfigRequestBody requestBody) {
         log.info("requestBody = {}", GsonUtil.toJson(requestBody));
         final Integer codeListPageConfigId = requestBody.getCodeListPageConfigId();
-        CodeListPageConfigVO codeListPageConfigVO = codeTemplateConfigService.getCodeListPageConfigVOByCodeListPageConfigId(codeListPageConfigId);
+        CodeTemplateConfigDetail codeTemplateConfigDetail = codeTemplateConfigService.getCodeTemplateConfigDetailByCodeListPageConfigId(codeListPageConfigId);
 
         boolean success = false;
         return RespVO.resp(success);
