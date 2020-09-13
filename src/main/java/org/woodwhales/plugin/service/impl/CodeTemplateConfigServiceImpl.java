@@ -31,19 +31,37 @@ public class CodeTemplateConfigServiceImpl implements CodeTemplateConfigService 
     private CodeNavigationConfigService codeNavigationConfigService;
 
     @Override
-    public CodeTemplateConfig getCodeTemplateByCodeNavigationConfigById(Integer codeNavigationConfigById) {
-        CodeNavigationConfig codeNavigationConfig = codeNavigationConfigService.getCodeNavigationConfigById(codeNavigationConfigById);
+    public CodeTemplateConfig getCodeTemplateByCodeNavigationConfigById(Integer codeNavigationConfigId) {
 
-        CodeNavigationConfigVO codeNavigationConfigVO = CodeNavigationConfigVO.newInstance(codeNavigationConfig);
+        CodeNavigationConfigVO codeNavigationConfigVO = getCodeNavigationConfigVOByNavigationConfigById(codeNavigationConfigId);
 
-        Preconditions.checkNotNull(codeNavigationConfig, "codeNavigationConfig不允许为空");
-        List<CodeListPageConfig> codeListPageConfigList = codeListPageConfigService.getCodeListPageConfigListByCodeNavigationConfigId(codeNavigationConfigById);
+        List<CodeListPageConfig> codeListPageConfigList = codeListPageConfigService.getCodeListPageConfigListByCodeNavigationConfigId(codeNavigationConfigId);
 
         List<CodeListPageConfigVO> codeListPageConfigVOList = codeListPageConfigList.stream()
                                                             .map(CodeListPageConfigVO::build)
                                                             .collect(Collectors.toList());
 
         return new CodeTemplateConfig(codeNavigationConfigVO, codeListPageConfigVOList);
+    }
+
+    @Override
+    public CodeNavigationConfigVO getCodeNavigationConfigVOByNavigationConfigById(Integer codeNavigationConfigId) {
+        CodeNavigationConfig codeNavigationConfig = codeNavigationConfigService.getCodeNavigationConfigById(codeNavigationConfigId);
+
+        Preconditions.checkNotNull(codeNavigationConfig, "codeNavigationConfig不允许为空");
+
+        CodeNavigationConfigVO codeNavigationConfigVO = CodeNavigationConfigVO.newInstance(codeNavigationConfig);
+        return codeNavigationConfigVO;
+    }
+
+    @Override
+    public CodeListPageConfigVO getCodeListPageConfigVOByCodeListPageConfigId(Integer codeListPageConfigId) {
+        CodeListPageConfig codeListPageConfig = codeListPageConfigService.getCodeListPageConfigById(codeListPageConfigId);
+
+        Preconditions.checkNotNull(codeListPageConfig, "codeNavigationConfig不允许为空");
+
+        CodeListPageConfigVO codeListPageConfigVO = CodeListPageConfigVO.build(codeListPageConfig);
+        return codeListPageConfigVO;
     }
 
     @Override

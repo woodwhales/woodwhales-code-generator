@@ -14,4 +14,8 @@ public class GsonUtil {
     public static <T> T fromJson(String json) {
         return new Gson().fromJson(json, new TypeToken<T> (){}.getType());
     }
+
+    public static String toJson(Object object) {
+        return new Gson().toJson(object);
+    }
 }

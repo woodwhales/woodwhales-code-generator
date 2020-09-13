@@ -1,6 +1,8 @@
 package org.woodwhales.plugin.service;
 
 import org.woodwhales.common.response.PageRespVO;
+import org.woodwhales.plugin.controller.vo.CodeListPageConfigVO;
+import org.woodwhales.plugin.controller.vo.CodeNavigationConfigVO;
 import org.woodwhales.plugin.entity.CodeNavigationConfig;
 import org.woodwhales.plugin.model.CodeTemplateConfig;
 
@@ -12,7 +14,11 @@ import org.woodwhales.plugin.model.CodeTemplateConfig;
  */
 public interface CodeTemplateConfigService {
 
-    CodeTemplateConfig getCodeTemplateByCodeNavigationConfigById(Integer codeNavigationConfigById);
+    CodeTemplateConfig getCodeTemplateByCodeNavigationConfigById(Integer codeNavigationConfigId);
+
+    CodeNavigationConfigVO getCodeNavigationConfigVOByNavigationConfigById(Integer codeNavigationConfigId);
+
+    CodeListPageConfigVO getCodeListPageConfigVOByCodeListPageConfigId(Integer codeListPageConfigId);
 
     PageRespVO<CodeNavigationConfig> pageCodeTemplate();
 }
