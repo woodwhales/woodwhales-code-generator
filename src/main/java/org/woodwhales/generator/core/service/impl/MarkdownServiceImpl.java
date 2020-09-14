@@ -1,16 +1,12 @@
 package org.woodwhales.generator.core.service.impl;
 
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.woodwhales.generator.core.entity.DataBaseInfo;
 import org.woodwhales.generator.core.model.GenerateTableInfos;
 import org.woodwhales.generator.core.service.FreeMarkerService;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -48,12 +44,6 @@ public class MarkdownServiceImpl extends BaseFeeMarkerService implements FreeMar
         dataModel.put("tables", generateTableInfos.getTables());
         dataModel.put("schema", dataBaseInfo.getSchema());
 
-        try(FileWriter fw = new FileWriter(new File(targetFilePath + File.separator + fileName), !isCoverOldFile)) {
-            template.process(dataModel, fw);
-        } catch (IOException | TemplateException e) {
-            log.error("生成文件异常，cause = {}", e.getCause().getMessage());
-            return false;
-        }
-        return true;
+        return process(template, targetFilePath, fileName, dataModel, isCoverOldFile);
     }
 }

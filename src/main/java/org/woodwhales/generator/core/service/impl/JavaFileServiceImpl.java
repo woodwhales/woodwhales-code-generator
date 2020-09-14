@@ -11,8 +11,6 @@ import org.woodwhales.generator.core.model.GenerateTableInfos;
 import org.woodwhales.generator.core.service.FreeMarkerService;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -95,16 +93,10 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
 			sb.append(File.separator);
 			sb.append(str);
 		}
-		String modelPath = sb.toString();
-		FileUtils.forceMkdir(new File(modelPath));
-		// 是否覆盖原来的文件
-		try(FileWriter fw = new FileWriter(new File(modelPath + File.separator + fileName +".java"), !isCoverOldFile)) {
-			template.process(dataModel, fw);
-		} catch (IOException e) {
-			log.error("生成文件异常，cause = {}", e.getCause().getMessage());
-			return false;
-		}
-		return true;
+		String markdownFileDir = sb.toString();
+		FileUtils.forceMkdir(new File(markdownFileDir));
+
+		return process(template, markdownFileDir, fileName +".java", dataModel, isCoverOldFile);
 	}
 
 	@Override
