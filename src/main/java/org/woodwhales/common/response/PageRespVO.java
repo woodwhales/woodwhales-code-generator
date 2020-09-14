@@ -1,6 +1,7 @@
 package org.woodwhales.common.response;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -15,6 +16,7 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class PageRespVO<T> extends RespVO {
 
     private Integer count;
