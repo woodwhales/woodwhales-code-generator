@@ -20,11 +20,6 @@ import java.util.HashMap;
 public class MarkdownServiceImpl extends BaseFeeMarkerService implements FreeMarkerService {
 
     @Override
-    protected String filePath() {
-        return "classpath:template/markdown";
-    }
-
-    @Override
     public boolean process(GenerateTableInfos generateTableInfos) throws Exception {
 
         DataBaseInfo dataBaseInfo = generateTableInfos.getDataBaseInfo();
@@ -45,5 +40,10 @@ public class MarkdownServiceImpl extends BaseFeeMarkerService implements FreeMar
         dataModel.put("schema", dataBaseInfo.getSchema());
 
         return process(template, targetFilePath, fileName, dataModel, isCoverOldFile);
+    }
+
+    @Override
+    protected String templateFilePath() {
+        return "/template/markdown";
     }
 }

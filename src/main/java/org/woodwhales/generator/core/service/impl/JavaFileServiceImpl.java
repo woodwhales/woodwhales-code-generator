@@ -100,7 +100,7 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
 	}
 
 	@Override
-	protected String filePath() {
-		return "classpath:template";
+	protected String templateFilePath() {
+		return "/template";
 	}
 }

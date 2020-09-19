@@ -1,14 +1,10 @@
 package org.woodwhales.generator.core.service.impl;
 
-import freemarker.cache.FileTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -27,41 +23,21 @@ public abstract class BaseFeeMarkerService {
 
     protected Configuration configuration;
 
-    @Autowired
-    protected ResourceLoader resourceLoader;
-
-    /**
-     * 创建配置类
-     */
-    @PostConstruct
-    public void init() {
-        configuration = getConfiguration(resourceLoader);
-    }
-
-    /**
-     * 模板文件路径
-     * @return
-     */
-    protected abstract String filePath();
-
     private Configuration initConfiguration() {
-        log.info("className => {}", this.getClass());
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
         configuration.setDefaultEncoding("UTF-8");
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         return configuration;
     }
 
-    protected Configuration getConfiguration(ResourceLoader resourceLoader) {
-        Configuration configuration = initConfiguration();
-        String locationFilePath = filePath();
-        Resource resource = resourceLoader.getResource(locationFilePath);
+    protected abstract String templateFilePath();
 
+    @PostConstruct
+    protected Configuration getConfiguration() {
+        configuration = initConfiguration();
         try {
-            File file = resource.getFile();
-            FileTemplateLoader templateLoader = new FileTemplateLoader(file);
-            configuration.setTemplateLoader(templateLoader);
-        } catch (IOException e) {
+            configuration.setClassForTemplateLoading(BaseFeeMarkerService.class, templateFilePath());
+        } catch (Exception e) {
             log.error("load template process is failed, {}", e);
         }
         return configuration;
@@ -95,6 +71,7 @@ public abstract class BaseFeeMarkerService {
             log.error("生成文件异常，cause = {}", e.getCause().getMessage());
             return false;
         }
+
         return true;
     }
 

@@ -46,7 +46,7 @@ public class CodeTemplateFreeMarkerServiceImpl extends BaseFeeMarkerService impl
     }
 
     @Override
-    protected String filePath() {
-        return "classpath:template/custom";
+    protected String templateFilePath() {
+        return "/template/custom";
     }
 }
