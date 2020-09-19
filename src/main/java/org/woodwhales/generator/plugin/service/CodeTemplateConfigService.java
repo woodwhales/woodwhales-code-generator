@@ -1,11 +1,11 @@
 package org.woodwhales.generator.plugin.service;
 
-import org.woodwhales.common.response.PageRespVO;
+import org.woodwhales.common.model.vo.PageRespVO;
 import org.woodwhales.generator.plugin.controller.vo.CodeListPageConfigVO;
 import org.woodwhales.generator.plugin.controller.vo.CodeNavigationConfigVO;
-import org.woodwhales.generator.plugin.model.CodeTemplateConfigDetail;
 import org.woodwhales.generator.plugin.entity.CodeNavigationConfig;
 import org.woodwhales.generator.plugin.model.CodeTemplateConfig;
+import org.woodwhales.generator.plugin.model.CodeTemplateConfigDetail;
 
 /**
  * @projectName: woodwhales-code-generator

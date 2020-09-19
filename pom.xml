@@ -130,16 +130,27 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>org.woodwhales.common</groupId>
+			<artifactId>woodwhales-common</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>${pom.basedir}/src/main/resources/lib/woodwhales-common-1.0.0.jar</systemPath>
+		</dependency>
 	</dependencies>
 
 	<build>
-
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<includeSystemScope>true</includeSystemScope>
+				</configuration>
 			</plugin>
 		</plugins>
+
 	</build>
 
 	<repositories>

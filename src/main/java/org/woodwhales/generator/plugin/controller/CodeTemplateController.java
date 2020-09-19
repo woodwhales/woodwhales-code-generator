@@ -4,14 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.woodwhales.common.response.PageRespVO;
-import org.woodwhales.common.response.RespVO;
+import org.woodwhales.common.model.vo.PageRespVO;
+import org.woodwhales.common.model.vo.RespVO;
 import org.woodwhales.generator.core.util.GsonUtil;
 import org.woodwhales.generator.plugin.controller.request.freemarker.CodeListPageConfigRequestBody;
 import org.woodwhales.generator.plugin.controller.request.freemarker.CodeNavigationConfigRequestBody;
 import org.woodwhales.generator.plugin.controller.vo.CodeNavigationConfigVO;
-import org.woodwhales.generator.plugin.model.CodeTemplateConfigDetail;
 import org.woodwhales.generator.plugin.entity.CodeNavigationConfig;
+import org.woodwhales.generator.plugin.model.CodeTemplateConfigDetail;
 import org.woodwhales.generator.plugin.service.CodeTemplateConfigService;
 
 /**
