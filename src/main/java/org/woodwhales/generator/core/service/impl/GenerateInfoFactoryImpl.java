@@ -46,7 +46,7 @@ public class GenerateInfoFactoryImpl implements GenerateInfoFactory {
         // 获取数据库表结构信息
         List<TableInfo> tables = generateService.listTables(dataBaseInfo, true);
 
-        return new GenerateTableInfos(baseDir.getAbsolutePath(), dataBaseInfo, tables);
+        return new GenerateTableInfos(generateDir, baseDir.getAbsolutePath(), dataBaseInfo, tables);
     }
 
     /**

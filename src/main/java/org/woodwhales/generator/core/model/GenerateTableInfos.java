@@ -45,12 +45,21 @@ public class GenerateTableInfos {
      */
     private List<TableInfo> tables;
 
-    public GenerateTableInfos(String baseDirPath, DataBaseInfo dataBaseInfo, List<TableInfo> tables) {
+    /**
+     *
+     *
+     * @param generateDir 项目根目录
+     * @param baseDirPath 项目的java源码目录：xxx项目/src/main/java/
+     * @param dataBaseInfo 数据库连接信息
+     * @param tables 数据库表信息集合
+     */
+    public GenerateTableInfos(String generateDir, String baseDirPath,
+                              DataBaseInfo dataBaseInfo, List<TableInfo> tables) {
         Objects.requireNonNull(dataBaseInfo, "数据库链接信息对象不允许为空");
         this.dataBaseInfo = dataBaseInfo;
         this.tables = tables;
         // 设置 markdown 生成目录
-        this.markdownFile = new File(baseDirPath);
+        this.markdownFile = new File(generateDir);
         // 设置 java代码 生成目录
         this.javaFile = getTargetFile(baseDirPath, this.dataBaseInfo.getPackageName());
     }
