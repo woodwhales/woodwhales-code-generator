@@ -33,13 +33,13 @@ public class ViewController {
 
 	@GetMapping({"/", "/index"})
 	public String index() {
-		return "index";
+		return "code-generator/index";
 	}
 
 	@GetMapping("/detail")
 	public String detail(@NotBlank(message = "数据表主键不允许为空") String tableKey, Model model) {
 		model.addAttribute("tableKeyId", tableKey);
-		return "detail";
+		return "code-generator/detail";
 	}
 
 	@GetMapping("/tips")
@@ -55,7 +55,7 @@ public class ViewController {
 				"nullableString\tnullAble 的字符串形式\n" +
 				"defaultValue\t默认值\n" +
 				"primaryKey\t\t是否为主键");
-		return "tips";
+		return "code-generator/tips";
 	}
 
 	@GetMapping("/addListPageConfig")
@@ -76,7 +76,7 @@ public class ViewController {
 
 		List<CodeNavigationConfigSimpleInfoVO> codeNavigationConfigSimpleInfoVOList = codeNavigationConfigService.listSimpleInfo();
 		model.addAttribute("codeNavigationConfigs", codeNavigationConfigSimpleInfoVOList);
-		return "add-list-page-config";
+		return "code-generator/add-list-page-config";
 	}
 
 	@GetMapping("/addNavigationConfig")
@@ -86,18 +86,18 @@ public class ViewController {
 			return "redirect:/";
 		}
 		model.addAttribute("dataBaseInfoKey", encryptedDataBaseInfoKey);
-		return "add-navigation-config";
+		return "code-generator/add-navigation-config";
 	}
 
 	@GetMapping("/codeTemplate/")
 	public String codeTemplate() {
-		return "code-template";
+		return "code-generator/code-template";
 	}
 
 	@GetMapping("/codeTemplate/detail/")
 	public String codeTemplateDetail(@RequestParam("id") Integer codeListConfigId, Model model) {
 		CodeTemplateConfig codeTemplateConfig = codeTemplateConfigService.getCodeTemplateByCodeNavigationConfigById(codeListConfigId);
 		model.addAttribute("codeTemplateConfig", codeTemplateConfig);
-		return "code-template-detail";
+		return "code-generator/code-template-detail";
 	}
 }

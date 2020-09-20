@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>woodwhales-code-generator</title>
+    <link rel="stylesheet" th:href="@{/webjars/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/code-generator/my-css/mycss.css}" >
+</head>
+<body>
+<div class="layui-container">
+    <div th:replace="~{code-generator/my-common/common::header}"></div>
+
+    <div class="layui-row">
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend>添加模板配置 - 导航栏配置</legend>
+        </fieldset>
+    </div>
+    <div class="layui-row">
+        <a th:href="@{/}" class="layui-btn layui-bg-gray layui-btn layui-btn-xs">返回</a>
+    </div>
+    <div class="layui-row">
+        <input id="dataBaseInfoKey" th:value="${dataBaseInfoKey}" hidden="true">
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">配置名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="configName" id="configName" lay-verify="required" autocomplete="off" placeholder="请输入配置名称" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">配置备注</label>
+                <div class="layui-input-block">
+                    <textarea name="description" id="description" placeholder="请输入配置备注" class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">菜单配置</label>
+                <div class="layui-input-block">
+                    <table class="layui-table" id="configTable"></table>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-md6">
+                        <button type="submit" class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="submitBtn">创建</button>
+                    </div>
+                    <div class="layui-col-md6">
+                        <button type="reset" class="layui-btn layui-btn-primary layui-btn-fluid">重置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div th:replace="~{code-generator/my-common/common::footer}"></div>
+</div>
+</body>
+<script th:src="@{/webjars/layui/layui.js}"></script>
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:inline="none">
+    layui.use(['form', 'layer', 'table', 'layedit', 'util', 'element'], function(){
+        var form = layui.form,
+            layer = layui.layer,
+            util = layui.util,
+            element = layer.element,
+            table = layui.table;
+
+        let postBody = {};
+        form.on('submit(submitBtn)', function(data) {
+
+            let checkStatus = table.checkStatus('configTable');
+            if(checkStatus.data.length === 0) {
+                layer.msg('请选择要生成的配置', {icon: 5});
+                return false;
+            }
+
+            let navigationConfigArray = checkStatus.data;
+
+            postBody.configName = data.field.configName;
+            postBody.description = data.field.description;
+            let navigationConfigItem = new Array();
+            navigationConfigArray.map(function(item, index) {
+                let navigationConfig = {};
+                let tab = {};
+                tab.addTabTitle = item.addTabTitle;
+                tab.addTabUrl = item.addTabUrl;
+                navigationConfig.tab = tab;
+
+                let cite = {};
+                cite.name = item.citeName;
+                navigationConfig.cite = cite;
+
+                navigationConfig.sort = item.sort
+                navigationConfigItem.push(navigationConfig);
+            });
+            postBody.navigationConfigs = navigationConfigItem;
+
+            $.ajax({
+                url:'/plugin/codeNavigationConfig/create/',
+                type:'post',
+                dataType:'json',
+                contentType:"application/json",
+                async:true,
+                cache:false,
+                data:JSON.stringify(postBody),
+                success:function(res) {
+                    if(res.code === 0) {
+                        layer.msg('操作成功', {icon: 1});
+                    } else {
+                        layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
+                    }
+                },
+                error:function(res) {
+                    layer.msg('网络异常', {icon: 5});
+                }
+            });
+
+            return false;
+        });
+
+        table.render({
+            elem: '#configTable'
+            ,url:'/generate/listTableInfos?dataBaseInfoKey=' + $('#dataBaseInfoKey').val()
+            ,cols: [[
+                {type:'checkbox'},
+                {field:'tableName', title: '数据库表名', edit: 'text'},
+                {field:'citeName', title: 'cite名称', edit: 'text'},
+                {field:'addTabTitle', title: 'tab名称', edit: 'text'},
+                {field:'addTabUrl', title: 'tab链接', edit: 'text'},
+                {field:'sort', title: 'tab排序', edit: 'text'}
+            ]]
+            ,page: false
+        });
+    });
+</script>
+</html>
