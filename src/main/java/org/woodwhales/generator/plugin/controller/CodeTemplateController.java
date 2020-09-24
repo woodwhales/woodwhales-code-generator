@@ -43,24 +43,34 @@ public class CodeTemplateController {
         return codeTemplateConfigService.pageCodeTemplate();
     }
 
+    /**
+     * 生成模板
+     * @param requestBody
+     * @return
+     * @throws Exception
+     */
     @PostMapping("/generateMenu")
     public RespVO generateMenu(@Validated @RequestBody CodeNavigationConfigRequestBody requestBody) throws Exception {
         log.info("requestBody = {}", GsonUtil.toJson(requestBody));
         final Integer codeNavigationConfigId = requestBody.getCodeNavigationConfigId();
         CodeNavigationConfigVO codeNavigationConfigVO = codeTemplateConfigService.getCodeNavigationConfigVOByNavigationConfigById(codeNavigationConfigId);
         CodeTemplateConfigDetail codeTemplateConfigDetail = new CodeTemplateConfigDetail(codeNavigationConfigVO, null);
-        // 生成模板
         log.info("codeTemplateConfigDetail => {}", GsonUtil.toJson(codeTemplateConfigDetail));
         boolean success = codeNavigationFreeMarkerService.process(codeTemplateConfigDetail);
         return RespVO.resp(success);
     }
 
+    /**
+     * 生成模板
+     * @param requestBody
+     * @return
+     * @throws Exception
+     */
     @PostMapping("/generateTable")
     public RespVO generateTable(@Validated @RequestBody CodeListPageConfigRequestBody requestBody) throws Exception {
         log.info("requestBody = {}", GsonUtil.toJson(requestBody));
         final Integer codeListPageConfigId = requestBody.getCodeListPageConfigId();
         CodeTemplateConfigDetail codeTemplateConfigDetail = codeTemplateConfigService.getCodeTemplateConfigDetailByCodeListPageConfigId(codeListPageConfigId);
-        // 生成模板
         log.info("codeTemplateConfigDetail => {}", GsonUtil.toJson(codeTemplateConfigDetail));
         boolean success = codeListPageFreeMarkerService.process(codeTemplateConfigDetail);
         return RespVO.resp(success);
