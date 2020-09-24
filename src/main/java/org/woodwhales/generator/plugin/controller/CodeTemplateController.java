@@ -17,10 +17,9 @@ import org.woodwhales.generator.plugin.service.CodeTemplateConfigService;
 import org.woodwhales.generator.plugin.service.CodeTemplateFreeMarkerService;
 
 /**
- * @projectName: woodwhales-code-generator
- * @author: woodwhales
- * @date: 20.9.6 22:53
- * @description:
+ * 项目名称：woodwhales-code-generator
+ * @author woodwhales
+ * @date 2020-09-06 22:53:00
  */
 @Slf4j
 @RestController
@@ -45,9 +44,9 @@ public class CodeTemplateController {
 
     /**
      * 生成模板
-     * @param requestBody
-     * @return
-     * @throws Exception
+     * @param requestBody 菜单请求体
+     * @return 响应体
+     * @throws Exception 异常
      */
     @PostMapping("/generateMenu")
     public RespVO generateMenu(@Validated @RequestBody CodeNavigationConfigRequestBody requestBody) throws Exception {
@@ -62,9 +61,9 @@ public class CodeTemplateController {
 
     /**
      * 生成模板
-     * @param requestBody
-     * @return
-     * @throws Exception
+     * @param requestBody 列表请求体
+     * @return 响应体
+     * @throws Exception 异常
      */
     @PostMapping("/generateTable")
     public RespVO generateTable(@Validated @RequestBody CodeListPageConfigRequestBody requestBody) throws Exception {
