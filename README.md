@@ -1,4 +1,7 @@
 # woodwhales-code-generator
+
+[![](https://img.shields.io/badge/Author-woodwhales-green.svg)](https://woodwhales.cn/) ![](https://img.shields.io/badge/License-GPL%203.0-orange.svg)
+
 woodwhales-code-generator 代码生成工具
 
 > 代码生成工具，数据库表结构设计文档生成器
