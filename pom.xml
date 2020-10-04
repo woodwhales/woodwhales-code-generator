@@ -128,7 +128,9 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-dependencies</artifactId>
-			<optional>true</optional>
+			<version>2.3.4.RELEASE</version>
+			<type>pom</type>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
