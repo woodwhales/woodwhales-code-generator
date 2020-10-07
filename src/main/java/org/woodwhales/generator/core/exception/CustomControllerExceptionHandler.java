@@ -19,8 +19,7 @@ import javax.validation.UnexpectedTypeException;
  */
 @Slf4j
 @ControllerAdvice(assignableTypes = {
-        CustomViewController.class,
-        CustomBusinessController.class
+        CustomViewController.class
 })
 public class CustomControllerExceptionHandler {
 
