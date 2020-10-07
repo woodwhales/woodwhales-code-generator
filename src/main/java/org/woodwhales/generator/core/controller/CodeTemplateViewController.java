@@ -19,8 +19,11 @@ import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @author woodwhales
+ */
 @Controller
-public class ViewController {
+public class CodeTemplateViewController {
 
 	@Autowired
 	private GenerateService generateService;

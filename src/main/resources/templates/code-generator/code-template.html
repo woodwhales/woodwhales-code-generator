@@ -18,6 +18,7 @@
 <table class="layui-hide" id="tableConfigId"></table>
 <script type="text/html" id="detailBar">
     <a class="layui-btn layui-btn-xs" href="/codeTemplate/detail/?id={{d.id}}">详情</a>
+    <a class="layui-btn layui-btn-xs" href="/custom/index/?menuId={{d.id}}">业务</a>
 </script>
 <div th:replace="~{code-generator/my-common/common::footer}"></div>
 </div>
@@ -41,7 +42,7 @@
                 {field:'description', title: '备注'},
                 {field:'gmtCreated', width: 160, title: '创建时间'},
                 {field:'gmtModified', width: 160, title: '更新时间'},
-                {fixed: 'right', title: '操作', width: 70, toolbar: '#detailBar'}
+                {fixed: 'right', title: '操作', width: 140, toolbar: '#detailBar'}
             ]]
         });
     });

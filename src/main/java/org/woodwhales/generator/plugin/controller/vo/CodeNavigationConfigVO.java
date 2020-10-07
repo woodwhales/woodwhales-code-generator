@@ -34,7 +34,8 @@ public class CodeNavigationConfigVO {
         CodeNavigationConfigVO codeNavigationConfigVO = new CodeNavigationConfigVO();
         BeanUtils.copyProperties(codeNavigationConfig, codeNavigationConfigVO);
         String configContent = codeNavigationConfig.getConfigContent();
-        codeNavigationConfigVO.setNavigationConfigs(GsonUtil.fromJson(configContent));
+        List<NavigationConfig> navigationConfigs = GsonUtil.fromJson(configContent);
+        codeNavigationConfigVO.setNavigationConfigs(navigationConfigs);
         return codeNavigationConfigVO;
     }
 }

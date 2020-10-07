@@ -11,14 +11,14 @@
 <div th:fragment="header">
     <div class="layui-row">
         <ul class="layui-nav">
-            <a href="/" style="line-height: 6px; vertical-align: middle;">
+            <a th:href="@{/}" style="line-height: 6px; vertical-align: middle;">
                 <span style="color: #F0F0F0; line-height: 60px; vertical-align: middle; margin-right: 6px; font-weight: bold;">CODE-GENERATOR</span>
             </a>
             <li class="layui-nav-item">
-                <a href="/">首 页</a>
+                <a th:href="@{/}">首 页</a>
             </li>
             <li class="layui-nav-item">
-                <a href="/codeTemplate/">配置页</a>
+                <a th:href="@{/codeTemplate/}">配置页</a>
             </li>
         </ul>
     </div>
