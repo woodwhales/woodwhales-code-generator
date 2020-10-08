@@ -6,7 +6,14 @@ woodwhales-code-generator 代码生成工具
 
 > 代码生成工具，数据库表结构设计文档生成器
 
-技术支持：freemarker
+技术支持：spring boot + mybatis-plus + freemarker + thymeleaf + layui + x-admin
+
+### 功能特性
+
+- 支持 MySQL、Oracle 数据库
+- 通过数据库元信息，可视化生成：对应 Java 代码、数据库表结构设计文档
+- 支持生成可扩展的自定义文档
+- 动态配置，生成业务数据查询通用后台
 
 ### 运行环境要求
 
@@ -16,7 +23,31 @@ JDK版本：JDK 1.8+
 
 启动主程序，浏览器访问：http://127.0.0.1:10326/
 
+### 效果视图
+
+#### 代码生成
+
+- 首页
+
 ![](doc/images/index.png)
+
+- 配置导航栏
+
+![](doc/images/config-01.png)
+
+- 配置列表页
+
+![](doc/images/config-02.png)
+
+#### 业务数据
+
+- 首页
+
+![](doc/images/admin-01.png)
+
+- 业务
+
+![](doc/images/admin-02.png)
 
 > 目录：输入项目根目录即可。
 
