@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface CodeTemplateConfigService {
 
-    CodeTemplateConfig getCodeTemplateByCodeNavigationConfigById(Integer codeNavigationConfigId);
+    CodeTemplateConfig getCodeTemplateByCodeNavigationConfigId(Integer codeNavigationConfigId);
 
     List<CodeListPageConfigVO> getCodeListPageConfigVOListByCodeNavigationConfigId(Integer codeNavigationConfigId);
 
@@ -27,7 +27,9 @@ public interface CodeTemplateConfigService {
 
     CodeListPageConfigVO getCodeListPageConfigVOByCodeListPageConfigId(Integer codeListPageConfigId);
 
-    PageRespVO<CodeNavigationConfig> pageCodeTemplate();
+    PageRespVO<CodeNavigationConfig> listCodeNavigationConfig();
 
     CodeNavigationConfigVO getCodeNavigationConfigVOByCodeListPageConfigId(Integer codeListPageConfigId);
+
+    CodeTemplateConfig getCodeTemplateByCodeListPageConfigId(Integer codeListConfigId);
 }

@@ -13,12 +13,10 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class CustomViewCodeListRequestParam {
 
-    @NotNull(message = "菜单主键不允许为空")
-    private Integer menuId;
+    @NotNull(message = "数据库表名不允许为空")
+    private String dbTableName;
 
-    @NotNull(message = "列表配置主键不允许为空")
-    private Integer codeListPageConfigId;
-
-    private String navName;
+    @NotNull(message = "菜单配置主键不允许为空")
+    private Integer codeNavigationConfigId;
 
 }

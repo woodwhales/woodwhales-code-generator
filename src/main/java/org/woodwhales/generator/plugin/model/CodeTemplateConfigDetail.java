@@ -15,7 +15,7 @@ import org.woodwhales.generator.plugin.controller.vo.CodeNavigationConfigVO;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CodeTemplateConfigDetail {
+public class CodeTemplateConfigDetail extends CodeListPageConfigVO {
 
     /**
      * 菜单配置

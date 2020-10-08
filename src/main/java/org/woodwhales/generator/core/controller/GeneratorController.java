@@ -142,7 +142,7 @@ public class GeneratorController {
 			navigationConfigVOList.add(new NavigationConfigVO(tableInfo.getDbName(),
 					tableInfo.getDbName(),
 					tableInfo.getDbName(),
-					"/view/" + tableInfo.getPropertyName() + "/",
+					"/custom/list/",
 					index++));
 		}
 

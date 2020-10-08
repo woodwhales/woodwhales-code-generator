@@ -40,7 +40,10 @@
                         </a>
                         <ul class="sub-menu">
                             <li th:each="navigationConfig : ${navigation.navigationConfigs}">
-                                <a th:onclick="xadmin.add_tab([[${navigationConfig.tab.addTabTitle}]], [[${navigationConfig.tab.addTabUrl}]],true);">
+                                <a th:onclick="xadmin.add_tab([[${navigationConfig.tab.addTabTitle}]],
+                                [[${navigationConfig.tab.addTabUrl}
+                                + '?codeNavigationConfigId=' + ${codeNavigationConfigId}
+                                + '&dbTableName=' + ${navigationConfig.dbTableName}]], true);">
                                     <i class="iconfont">&#xe6a7;</i>
                                     <cite th:text="${navigationConfig.cite.name}"></cite></a>
                             </li>

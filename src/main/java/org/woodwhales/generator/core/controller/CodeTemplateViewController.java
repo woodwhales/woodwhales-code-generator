@@ -98,8 +98,8 @@ public class CodeTemplateViewController {
 	}
 
 	@GetMapping("/codeTemplate/detail/")
-	public String codeTemplateDetail(@RequestParam("id") Integer codeListConfigId, Model model) {
-		CodeTemplateConfig codeTemplateConfig = codeTemplateConfigService.getCodeTemplateByCodeNavigationConfigById(codeListConfigId);
+	public String codeTemplateDetail(@RequestParam("id") Integer codeListPageConfigId, Model model) {
+		CodeTemplateConfig codeTemplateConfig = codeTemplateConfigService.getCodeTemplateByCodeListPageConfigId(codeListPageConfigId);
 		model.addAttribute("codeTemplateConfig", codeTemplateConfig);
 		return "code-generator/code-template-detail";
 	}

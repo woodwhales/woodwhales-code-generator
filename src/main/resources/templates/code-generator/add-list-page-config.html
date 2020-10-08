@@ -118,6 +118,7 @@
                 </div>
             </div>
             <div class="layui-form-item">
+                <input id="tableDbNameId" name="tableDbName" th:value="${tableDbName}" hidden="true">
                 <label class="layui-form-label">列表配置</label>
                 <div class="layui-input-block">
                     <table class="layui-table" id="configTable"></table>
@@ -209,10 +210,15 @@
                 return false;
             }
 
+            let dbTableName = $("#tableDbNameId").val();
+
             let listPageConfig = {};
             let navName = data.field.navName;
             let requestUrl = data.field.requestUrl;
+
             listPageConfig.navName = navName;
+            listPageConfig.dbTableName = dbTableName;
+
             listPageConfig.searchInputs = searchInputArray;
             listPageConfig.tableConfig = {};
             listPageConfig.tableConfig.requestUrl = requestUrl;
@@ -231,6 +237,7 @@
 
             postBody.codeNavigationConfigId = data.field.codeNavigationConfigId
             postBody.configName = data.field.configName;
+            postBody.dbTableName = dbTableName;
             postBody.description = data.field.description;
             postBody.listPageConfig = listPageConfig;
 

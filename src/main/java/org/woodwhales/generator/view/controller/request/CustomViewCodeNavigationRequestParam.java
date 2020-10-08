@@ -13,6 +13,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class CustomViewCodeNavigationRequestParam {
 
-    @NotNull(message = "菜单主键不允许为空")
+    @NotNull(message = "菜单配置主键不允许为空")
     private Integer menuId;
 }

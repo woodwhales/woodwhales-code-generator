@@ -44,6 +44,11 @@ public class CodeListPageConfig extends CommonField {
     private Integer codeNavigationConfigId;
 
     /**
+     * 数据库表名称
+     */
+    private String dbTableName;
+
+    /**
      * 配置内容：json字符串格式
      */
     @TableField(value = "config_content")

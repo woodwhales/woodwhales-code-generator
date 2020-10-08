@@ -34,13 +34,20 @@ public class CodeTemplateConfigServiceImpl implements CodeTemplateConfigService 
     private CodeNavigationConfigService codeNavigationConfigService;
 
     @Override
-    public CodeTemplateConfig getCodeTemplateByCodeNavigationConfigById(Integer codeNavigationConfigId) {
+    public CodeTemplateConfig getCodeTemplateByCodeNavigationConfigId(Integer codeNavigationConfigId) {
 
         CodeNavigationConfigVO codeNavigationConfigVO = getCodeNavigationConfigVOByNavigationConfigById(codeNavigationConfigId);
 
         List<CodeListPageConfigVO> codeListPageConfigVOList = getCodeListPageConfigVOListByCodeNavigationConfigId(codeNavigationConfigId);
 
         return new CodeTemplateConfig(codeNavigationConfigVO, codeListPageConfigVOList);
+    }
+
+    @Override
+    public CodeTemplateConfig getCodeTemplateByCodeListPageConfigId(Integer codeListPageConfigId) {
+        CodeListPageConfig codeListPageConfig = getCodeListPageConfigByCodeListPageConfigId(codeListPageConfigId);
+        Integer codeNavigationConfigId = codeListPageConfig.getCodeNavigationConfigId();
+        return getCodeTemplateByCodeNavigationConfigId(codeNavigationConfigId);
     }
 
     @Override
@@ -84,9 +91,14 @@ public class CodeTemplateConfigServiceImpl implements CodeTemplateConfigService 
     }
 
     @Override
-    public PageRespVO<CodeNavigationConfig> pageCodeTemplate() {
+    public PageRespVO<CodeNavigationConfig> listCodeNavigationConfig() {
         List<CodeNavigationConfig> codeNavigationConfigList = codeNavigationConfigService.listCodeNavigationConfig();
         return PageRespVO.success(codeNavigationConfigList);
+    }
+
+    public PageRespVO<CodeListPageConfig> listCodeListPageConfig() {
+        List<CodeListPageConfig> codeListPageConfigList = codeListPageConfigService.listCodeListPageConfig();
+        return PageRespVO.success(codeListPageConfigList);
     }
 
     private CodeListPageConfig getCodeListPageConfigByCodeListPageConfigId(Integer codeListPageConfigId) {
@@ -98,7 +110,8 @@ public class CodeTemplateConfigServiceImpl implements CodeTemplateConfigService 
     @Override
     public CodeNavigationConfigVO getCodeNavigationConfigVOByCodeListPageConfigId(Integer codeListPageConfigId) {
         CodeListPageConfig codeListPageConfig = getCodeListPageConfigByCodeListPageConfigId(codeListPageConfigId);
-        return getCodeNavigationConfigVOByNavigationConfigById(codeListPageConfig.getCodeNavigationConfigId());
+        CodeNavigationConfigVO codeNavigationConfigVO = getCodeNavigationConfigVOByNavigationConfigById(codeListPageConfig.getCodeNavigationConfigId());
+        return codeNavigationConfigVO;
     }
 
 }

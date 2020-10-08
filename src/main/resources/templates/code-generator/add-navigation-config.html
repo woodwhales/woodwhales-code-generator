@@ -57,7 +57,7 @@
 <script th:src="@{/webjars/layui/layui.js}"></script>
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script type="text/javascript" th:inline="none">
-    layui.use(['form', 'layer', 'table', 'layedit', 'util', 'element'], function(){
+    layui.use(['form', 'layer', 'table', 'layedit', 'util', 'element'], function() {
         var form = layui.form,
             layer = layui.layer,
             util = layui.util,
@@ -90,6 +90,7 @@
                 navigationConfig.cite = cite;
 
                 navigationConfig.sort = item.sort
+                navigationConfig.dbTableName = item.tableName
                 navigationConfigItem.push(navigationConfig);
             });
             postBody.navigationConfigs = navigationConfigItem;
@@ -122,10 +123,10 @@
             ,url:'/generate/listTableInfos?dataBaseInfoKey=' + $('#dataBaseInfoKey').val()
             ,cols: [[
                 {type:'checkbox'},
-                {field:'tableName', title: '数据库表名', edit: 'text'},
+                {field:'tableName', title: '数据库表名'},
                 {field:'citeName', title: 'cite名称', edit: 'text'},
                 {field:'addTabTitle', title: 'tab名称', edit: 'text'},
-                {field:'addTabUrl', title: 'tab链接', edit: 'text'},
+                {field:'addTabUrl', title: 'tab链接'},
                 {field:'sort', title: 'tab排序', edit: 'text'}
             ]]
             ,page: false

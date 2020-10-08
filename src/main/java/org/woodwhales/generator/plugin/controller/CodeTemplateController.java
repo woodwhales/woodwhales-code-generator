@@ -39,7 +39,7 @@ public class CodeTemplateController {
 
     @GetMapping("/page/")
     public PageRespVO<CodeNavigationConfig> page() {
-        return codeTemplateConfigService.pageCodeTemplate();
+        return codeTemplateConfigService.listCodeNavigationConfig();
     }
 
     /**

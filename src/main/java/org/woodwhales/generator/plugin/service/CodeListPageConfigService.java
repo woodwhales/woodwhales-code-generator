@@ -33,4 +33,10 @@ public interface CodeListPageConfigService {
      * @return
      */
     List<CodeListPageConfig> getCodeListPageConfigListByCodeNavigationConfigId(Integer codeNavigationConfigId);
+
+    /**
+     * 查询列表配置
+     * @return
+     */
+    List<CodeListPageConfig> listCodeListPageConfig();
 }

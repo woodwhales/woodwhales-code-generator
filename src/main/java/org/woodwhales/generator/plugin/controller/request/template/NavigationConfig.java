@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NavigationConfig {
 
+    private String dbTableName;
     private Tab tab;
     private Cite cite;
     private Integer sort;

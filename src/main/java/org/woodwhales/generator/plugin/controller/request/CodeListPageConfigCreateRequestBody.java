@@ -35,6 +35,12 @@ public class CodeListPageConfigCreateRequestBody implements CodeTemplateConfigCo
     private String description;
 
     /**
+     * 数据库表名
+     */
+    @NotBlank(message = "数据库表名不允许为空")
+    private String dbTableName;
+
+    /**
      * 模板配置
      */
     @NotBlank(message = "模板配置不允许为空")

@@ -63,6 +63,10 @@
         return result;
     }
 
+    getTableUrl = function () {
+        return [[${tableConfig.requestUrl}]];
+    }
+
 </script>
 <script th:inline="none">
     layui.use(['table', 'form'], function() {
@@ -71,7 +75,7 @@
 
         table.render({
             elem: '#tableList'
-            ,url: '/leads/'
+            ,url: getTableUrl()
             ,id: 'tableListId'
             ,limit: 20
             ,cols: getColsConfig()

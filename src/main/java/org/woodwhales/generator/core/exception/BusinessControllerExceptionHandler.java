@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.woodwhales.common.model.vo.RespVO;
-import org.woodwhales.generator.view.controller.CustomViewController;
+import org.woodwhales.generator.view.controller.BusinessViewController;
 
 import javax.validation.UnexpectedTypeException;
 
@@ -19,9 +19,9 @@ import javax.validation.UnexpectedTypeException;
  */
 @Slf4j
 @ControllerAdvice(assignableTypes = {
-        CustomViewController.class
+        BusinessViewController.class
 })
-public class CustomControllerExceptionHandler {
+public class BusinessControllerExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = Exception.class)
@@ -49,6 +49,14 @@ public class CustomControllerExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = UnexpectedTypeException.class)
     public ModelAndView handle(UnexpectedTypeException exception) {
+        log.error("cause by : {}", exception.getMessage(), exception);
+        RespVO errorResp = RespVO.error(exception.getMessage());
+        return returnModelAndView(errorResp, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(value = UserRequestException.class)
+    public ModelAndView handle(UserRequestException exception) {
         log.error("cause by : {}", exception.getMessage(), exception);
         RespVO errorResp = RespVO.error(exception.getMessage());
         return returnModelAndView(errorResp, HttpStatus.BAD_REQUEST);
