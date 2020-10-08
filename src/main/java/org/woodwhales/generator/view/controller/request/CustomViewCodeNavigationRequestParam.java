@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @NoArgsConstructor
-public class CustomViewRequestParam {
+public class CustomViewCodeNavigationRequestParam {
 
     @NotNull(message = "菜单主键不允许为空")
     private Integer menuId;

@@ -15,6 +15,7 @@ import org.woodwhales.generator.plugin.service.CodeNavigationConfigService;
 import org.woodwhales.generator.plugin.service.CodeTemplateConfigService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -37,13 +38,20 @@ public class CodeTemplateConfigServiceImpl implements CodeTemplateConfigService 
 
         CodeNavigationConfigVO codeNavigationConfigVO = getCodeNavigationConfigVOByNavigationConfigById(codeNavigationConfigId);
 
+        List<CodeListPageConfigVO> codeListPageConfigVOList = getCodeListPageConfigVOListByCodeNavigationConfigId(codeNavigationConfigId);
+
+        return new CodeTemplateConfig(codeNavigationConfigVO, codeListPageConfigVOList);
+    }
+
+    @Override
+    public List<CodeListPageConfigVO> getCodeListPageConfigVOListByCodeNavigationConfigId(Integer codeNavigationConfigId) {
+        Objects.requireNonNull(codeNavigationConfigId, "菜单配置id不允许为空");
         List<CodeListPageConfig> codeListPageConfigList = codeListPageConfigService.getCodeListPageConfigListByCodeNavigationConfigId(codeNavigationConfigId);
 
         List<CodeListPageConfigVO> codeListPageConfigVOList = codeListPageConfigList.stream()
-                                                            .map(CodeListPageConfigVO::build)
-                                                            .collect(Collectors.toList());
-
-        return new CodeTemplateConfig(codeNavigationConfigVO, codeListPageConfigVOList);
+                .map(CodeListPageConfigVO::build)
+                .collect(Collectors.toList());
+        return codeListPageConfigVOList;
     }
 
     @Override

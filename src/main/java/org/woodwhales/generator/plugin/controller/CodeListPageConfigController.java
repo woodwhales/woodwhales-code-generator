@@ -7,6 +7,9 @@ import org.woodwhales.common.model.vo.RespVO;
 import org.woodwhales.generator.plugin.controller.request.CodeListPageConfigCreateRequestBody;
 import org.woodwhales.generator.plugin.service.CodeListPageConfigService;
 
+/**
+ * @author woodwhales
+ */
 @Slf4j
 @CrossOrigin
 @RestController()

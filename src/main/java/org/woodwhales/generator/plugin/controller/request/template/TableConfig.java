@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
+/**
+ * @author woodwhales
+ */
 @Data
 @NoArgsConstructor
 public class TableConfig {
