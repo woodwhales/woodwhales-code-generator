@@ -11,6 +11,7 @@ import org.woodwhales.generator.core.exception.UserRequestException;
 import org.woodwhales.generator.plugin.controller.vo.CodeListPageConfigVO;
 import org.woodwhales.generator.plugin.controller.vo.CodeNavigationConfigVO;
 import org.woodwhales.generator.plugin.model.CodeTemplateConfig;
+import org.woodwhales.generator.plugin.model.CodeTemplateConfigStatistics;
 import org.woodwhales.generator.plugin.service.CodeTemplateConfigService;
 import org.woodwhales.generator.view.controller.request.CustomViewCodeListRequestParam;
 import org.woodwhales.generator.view.controller.request.CustomViewCodeNavigationRequestParam;
@@ -40,7 +41,10 @@ public class BusinessViewController {
     }
 
     @GetMapping("/welcome")
-    public String welcome() {
+    public String welcome(Model model) {
+        CodeTemplateConfigStatistics codeTemplateConfigStatistics = codeTemplateConfigService.statistics();
+        model.addAttribute("codeNavigationConfigTotal", codeTemplateConfigStatistics.getCodeNavigationConfigTotal());
+        model.addAttribute("codeListPageConfigTotal", codeTemplateConfigStatistics.getCodeListPageConfigTotal());
         return "custom/welcome";
     }
 

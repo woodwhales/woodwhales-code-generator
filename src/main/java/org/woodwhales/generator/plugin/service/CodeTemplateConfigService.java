@@ -6,6 +6,7 @@ import org.woodwhales.generator.plugin.controller.vo.CodeNavigationConfigVO;
 import org.woodwhales.generator.plugin.entity.CodeNavigationConfig;
 import org.woodwhales.generator.plugin.model.CodeTemplateConfig;
 import org.woodwhales.generator.plugin.model.CodeTemplateConfigDetail;
+import org.woodwhales.generator.plugin.model.CodeTemplateConfigStatistics;
 
 import java.util.List;
 
@@ -32,4 +33,6 @@ public interface CodeTemplateConfigService {
     CodeNavigationConfigVO getCodeNavigationConfigVOByCodeListPageConfigId(Integer codeListPageConfigId);
 
     CodeTemplateConfig getCodeTemplateByCodeListPageConfigId(Integer codeListConfigId);
+
+    CodeTemplateConfigStatistics statistics();
 }

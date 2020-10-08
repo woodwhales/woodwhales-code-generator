@@ -39,4 +39,10 @@ public interface CodeListPageConfigService {
      * @return
      */
     List<CodeListPageConfig> listCodeListPageConfig();
+
+    /**
+     * 统计总数
+     * @return
+     */
+    Integer statistics();
 }

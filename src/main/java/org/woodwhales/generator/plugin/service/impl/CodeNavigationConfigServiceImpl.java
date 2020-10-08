@@ -67,4 +67,10 @@ public class CodeNavigationConfigServiceImpl implements CodeNavigationConfigServ
                 .eq(CodeNavigationConfig::getStatus, 0);
         return codeNavigationConfigMapper.selectOne(wrapper);
     }
+
+    @Override
+    public Integer statistics() {
+        LambdaQueryWrapper<CodeNavigationConfig> wrapper = Wrappers.<CodeNavigationConfig>lambdaQuery().eq(CodeNavigationConfig::getStatus, 0);
+        return codeNavigationConfigMapper.selectCount(wrapper);
+    }
 }

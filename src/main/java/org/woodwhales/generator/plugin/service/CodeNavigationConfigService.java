@@ -39,4 +39,10 @@ public interface CodeNavigationConfigService {
      * @return
      */
     CodeNavigationConfig getCodeNavigationConfigById(Integer codeNavigationConfigById);
+
+    /**
+     * 统计总数
+     * @return
+     */
+    Integer statistics();
 }

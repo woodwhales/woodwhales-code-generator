@@ -20,103 +20,23 @@
                         <div class="layui-card-header">数据统计</div>
                         <div class="layui-card-body ">
                             <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
-                                <li class="layui-col-md2 layui-col-xs6">
+                                <li class="layui-col-md6 layui-col-xs6">
                                     <a href="javascript:;" class="x-admin-backlog-body">
-                                        <h3>文章数</h3>
-                                        <p><cite>66</cite></p>
+                                        <h3>菜单配置总数</h3>
+                                        <p><cite th:text="${codeNavigationConfigTotal}">66</cite></p>
                                     </a>
                                 </li>
-                                <li class="layui-col-md2 layui-col-xs6">
+                                <li class="layui-col-md6 layui-col-xs6">
                                     <a href="javascript:;" class="x-admin-backlog-body">
-                                        <h3>会员数</h3>
-                                        <p>
-                                            <cite>12</cite></p>
-                                    </a>
-                                </li>
-                                <li class="layui-col-md2 layui-col-xs6">
-                                    <a href="javascript:;" class="x-admin-backlog-body">
-                                        <h3>回复数</h3>
-                                        <p>
-                                            <cite>99</cite></p>
-                                    </a>
-                                </li>
-                                <li class="layui-col-md2 layui-col-xs6">
-                                    <a href="javascript:;" class="x-admin-backlog-body">
-                                        <h3>商品数</h3>
-                                        <p>
-                                            <cite>67</cite></p>
-                                    </a>
-                                </li>
-                                <li class="layui-col-md2 layui-col-xs6">
-                                    <a href="javascript:;" class="x-admin-backlog-body">
-                                        <h3>文章数</h3>
-                                        <p>
-                                            <cite>67</cite></p>
-                                    </a>
-                                </li>
-                                <li class="layui-col-md2 layui-col-xs6 ">
-                                    <a href="javascript:;" class="x-admin-backlog-body">
-                                        <h3>文章数</h3>
-                                        <p>
-                                            <cite>6766</cite></p>
+                                        <h3>列表配置总数</h3>
+                                        <p><cite th:text="${codeListPageConfigTotal}"></cite></p>
                                     </a>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </div>
-                <div class="layui-col-sm6 layui-col-md3">
-                    <div class="layui-card">
-                        <div class="layui-card-header">下载
-                            <span class="layui-badge layui-bg-cyan layuiadmin-badge">月</span></div>
-                        <div class="layui-card-body  ">
-                            <p class="layuiadmin-big-font">33,555</p>
-                            <p>新下载
-                                <span class="layuiadmin-span-color">10%
-                                    <i class="layui-inline layui-icon layui-icon-face-smile-b"></i></span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-sm6 layui-col-md3">
-                    <div class="layui-card">
-                        <div class="layui-card-header">下载
-                            <span class="layui-badge layui-bg-cyan layuiadmin-badge">月</span></div>
-                        <div class="layui-card-body ">
-                            <p class="layuiadmin-big-font">33,555</p>
-                            <p>新下载
-                                <span class="layuiadmin-span-color">10%
-                                    <i class="layui-inline layui-icon layui-icon-face-smile-b"></i></span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-sm6 layui-col-md3">
-                    <div class="layui-card">
-                        <div class="layui-card-header">下载
-                            <span class="layui-badge layui-bg-cyan layuiadmin-badge">月</span></div>
-                        <div class="layui-card-body ">
-                            <p class="layuiadmin-big-font">33,555</p>
-                            <p>新下载
-                                <span class="layuiadmin-span-color">10%
-                                    <i class="layui-inline layui-icon layui-icon-face-smile-b"></i></span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="layui-col-sm6 layui-col-md3">
-                    <div class="layui-card">
-                        <div class="layui-card-header">下载
-                            <span class="layui-badge layui-bg-cyan layuiadmin-badge">月</span></div>
-                        <div class="layui-card-body ">
-                            <p class="layuiadmin-big-font">33,555</p>
-                            <p>新下载
-                                <span class="layuiadmin-span-color">10%
-                                    <i class="layui-inline layui-icon layui-icon-face-smile-b"></i></span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
+
                 <div class="layui-col-md12">
                     <div class="layui-card">
                         <div class="layui-card-header">开发团队</div>
@@ -124,12 +44,16 @@
                             <table class="layui-table">
                                 <tbody>
                                     <tr>
-                                        <th>版权所有</th>
-                                        <td>woodwhales's blog<a href="http://woodwhales.cn/" target="_blank">木鲸鱼</a></td>
+                                        <th>开发者</th>
+                                        <td><a href="mailto:woodwhales@163.com">woodwhales</a>&nbsp;&nbsp;|&nbsp;&nbsp;木鲸鱼</td>
                                     </tr>
                                     <tr>
-                                        <th>开发者</th>
-                                        <td>woodwhales</td>
+                                        <th>github</th>
+                                        <td><a href="https://github.com/woodwhales" target="_blank">https://github.com/woodwhales</a></td>
+                                    </tr>
+                                    <tr>
+                                        <th>版权所有</th>
+                                        <td><a href="https://woodwhales.cn/" target="_blank">woodwhales's blog</a></td>
                                     </tr>
                                 </tbody>
                             </table>

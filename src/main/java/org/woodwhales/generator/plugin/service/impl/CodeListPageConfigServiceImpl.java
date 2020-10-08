@@ -60,4 +60,10 @@ public class CodeListPageConfigServiceImpl implements CodeListPageConfigService 
         LambdaQueryWrapper<CodeListPageConfig> wrapper = Wrappers.<CodeListPageConfig>lambdaQuery().eq(CodeListPageConfig::getStatus, 0);
         return codeListPageConfigMapper.selectList(wrapper);
     }
+
+    @Override
+    public Integer statistics() {
+        LambdaQueryWrapper<CodeListPageConfig> wrapper = Wrappers.<CodeListPageConfig>lambdaQuery().eq(CodeListPageConfig::getStatus, 0);
+        return codeListPageConfigMapper.selectCount(wrapper);
+    }
 }

@@ -10,6 +10,7 @@ import org.woodwhales.generator.plugin.entity.CodeListPageConfig;
 import org.woodwhales.generator.plugin.entity.CodeNavigationConfig;
 import org.woodwhales.generator.plugin.model.CodeTemplateConfig;
 import org.woodwhales.generator.plugin.model.CodeTemplateConfigDetail;
+import org.woodwhales.generator.plugin.model.CodeTemplateConfigStatistics;
 import org.woodwhales.generator.plugin.service.CodeListPageConfigService;
 import org.woodwhales.generator.plugin.service.CodeNavigationConfigService;
 import org.woodwhales.generator.plugin.service.CodeTemplateConfigService;
@@ -48,6 +49,13 @@ public class CodeTemplateConfigServiceImpl implements CodeTemplateConfigService 
         CodeListPageConfig codeListPageConfig = getCodeListPageConfigByCodeListPageConfigId(codeListPageConfigId);
         Integer codeNavigationConfigId = codeListPageConfig.getCodeNavigationConfigId();
         return getCodeTemplateByCodeNavigationConfigId(codeNavigationConfigId);
+    }
+
+    @Override
+    public CodeTemplateConfigStatistics statistics() {
+        Integer codeListPageConfigTotal = codeListPageConfigService.statistics();
+        Integer codeNavigationConfigTotal = codeNavigationConfigService.statistics();
+        return new CodeTemplateConfigStatistics(codeNavigationConfigTotal, codeListPageConfigTotal);
     }
 
     @Override
