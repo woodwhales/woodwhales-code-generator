@@ -1,14 +1,17 @@
 package org.woodwhales.generator.core.service.impl;
+
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.woodwhales.generator.core.controller.request.GenerateTemplateRequestBody;
 import org.woodwhales.generator.core.entity.Column;
 import org.woodwhales.generator.core.entity.DataBaseInfo;
 import org.woodwhales.generator.core.entity.TableInfo;
+import org.woodwhales.generator.core.enums.DbTypeEnum;
 import org.woodwhales.generator.core.service.ConnectionFactory;
 import org.woodwhales.generator.core.service.DataBaseInfoCache;
 import org.woodwhales.generator.core.service.GenerateService;
@@ -20,6 +23,9 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * @author woodwhales
+ */
 @Slf4j
 @Service
 public class GenerateServiceImpl implements GenerateService {
@@ -28,10 +34,20 @@ public class GenerateServiceImpl implements GenerateService {
 	private DataBaseInfoCache dataBaseInfoCache;
 
 	@Autowired
-	private ConnectionFactory connectionFactory;
+	private ApplicationContext applicationContext;
+
+	private ConnectionFactory getConnectionFactory(final String dbType) {
+		Map<String, ConnectionFactory> connectionFactoryMap = applicationContext.getBeansOfType(ConnectionFactory.class);
+		String serviceName = DbTypeEnum.getServiceName(dbType);
+		ConnectionFactory connectionFactory = connectionFactoryMap.get(serviceName);
+		return connectionFactory;
+	}
 
 	@Override
 	public List<String> listSchema(DataBaseInfo dataBaseInfo) throws Exception {
+		String dbType = dataBaseInfo.getDbType();
+		ConnectionFactory connectionFactory = getConnectionFactory(dbType);
+
 		// 获取数据库链接
 		Connection connection = connectionFactory.buildConnection(dataBaseInfo);
 
@@ -51,7 +67,6 @@ public class GenerateServiceImpl implements GenerateService {
 	 */
 	@Override
 	public List<TableInfo> listTables(DataBaseInfo dataBaseInfo, boolean isProcess) throws Exception {
-
 		// 先从缓存中获取
 		final String dataBaseInfoKey = dataBaseInfo.getDataBaseInfoKey();
 		final String schema = dataBaseInfo.getSchema();
@@ -74,6 +89,8 @@ public class GenerateServiceImpl implements GenerateService {
 					return getTableInfoListByDbNameList(cacheTableInfoList, dbNameList);
 				}
 			} else {
+				String dbType = dataBaseInfo.getDbType();
+				ConnectionFactory connectionFactory = getConnectionFactory(dbType);
 				Connection connection = connectionFactory.buildConnection(dataBaseInfo);
 				List<TableInfo> tableInfos = connectionFactory.listTables(connection, schema, dataBaseInfoKey);
 				dataBaseInfoCache.cacheTableInfoList(dataBaseInfoKey, tableInfos);
@@ -84,6 +101,8 @@ public class GenerateServiceImpl implements GenerateService {
 			if (Objects.nonNull(cacheTableInfoList)) {
 				return cacheTableInfoList;
 			} else {
+				String dbType = dataBaseInfo.getDbType();
+				ConnectionFactory connectionFactory = getConnectionFactory(dbType);
 				Connection connection = connectionFactory.buildConnection(dataBaseInfo);
 				List<TableInfo> tableInfos = connectionFactory.listTables(connection, schema, dataBaseInfoKey);
 				dataBaseInfoCache.cacheTableInfoList(dataBaseInfoKey, tableInfos);

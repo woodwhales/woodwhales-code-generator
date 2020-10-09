@@ -1,26 +1,26 @@
-package org.woodwhales.generator.core.service.impl;
+package org.woodwhales.generator.core.service.impl.connection;
 
 import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.woodwhales.generator.core.config.ColumnConfig;
-import org.woodwhales.generator.core.config.TableConfig;
 import org.woodwhales.generator.core.entity.Column;
-import org.woodwhales.generator.core.entity.DataBaseInfo;
 import org.woodwhales.generator.core.entity.TableInfo;
-import org.woodwhales.generator.core.exception.GenerateException;
 import org.woodwhales.generator.core.service.ConnectionFactory;
 import org.woodwhales.generator.core.util.StringTools;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import static org.woodwhales.generator.core.constant.DbTypeConstant.MYSQL_SERVICE_NAME;
 
 /**
  * @projectName: woodwhales-code-generator
@@ -29,63 +29,19 @@ import java.util.Objects;
  * @description:
  */
 @Slf4j
-@Service
-public class ConnectionFactoryImpl implements ConnectionFactory {
-
-    @Autowired
-    private ColumnConfig columnConfig;
-
-    @Autowired
-    private TableConfig tableConfig;
-
-    /**
-     * 创建数据库链接，如果抛出异常则链接失败
-     * @param dataBaseInfo
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public Connection buildConnection(DataBaseInfo dataBaseInfo) throws Exception {
-        Class.forName(dataBaseInfo.getDriveClassName());
-        Connection connection;
-        try {
-            connection = DriverManager.getConnection(dataBaseInfo.getUrl(), dataBaseInfo.getProperties());
-        } catch (SQLException exception) {
-            log.error("cause by : {}", exception.getMessage(), exception);
-            if (StringUtils.equals("28000", exception.getSQLState()) || exception.getErrorCode() == 1017) {
-                throw new GenerateException("账号或密码不正确！");
-            }
-            throw new GenerateException("数据库链接失败！");
-        }
-
-        return connection;
-    }
-
-    @Override
-    public void closeResource(Connection connection, ResultSet resultSet) throws SQLException {
-        if(Objects.nonNull(resultSet)) {
-            resultSet.close();
-        }
-
-        closeResource(connection);
-    }
-
-    @Override
-    public void closeResource(Connection connection) throws SQLException {
-        if(Objects.nonNull(connection)) {
-            connection.close();
-        }
-    }
+@Service(MYSQL_SERVICE_NAME)
+public class MySqlConnectionFactoryImpl extends BaseConnectionFactory implements ConnectionFactory {
 
     @Override
     public List<String> listSchemas(Connection connection) throws SQLException {
+
         DatabaseMetaData metaData = connection.getMetaData();
 
         ResultSet resultSet = metaData.getCatalogs();
 
         List<String> schemaList = new ArrayList<>();
         while (resultSet.next()) {
-            schemaList.add(resultSet.getString(1));
+            schemaList.add(resultSet.getString("TABLE_CAT"));
         }
 
         closeResource(connection, resultSet);
@@ -108,19 +64,16 @@ public class ConnectionFactoryImpl implements ConnectionFactory {
             resultSet = metaData.getTables(catalog, null, null, new String[] {"TABLE"});
             tableInfos = new ArrayList<>();
             while (resultSet.next()) {
-                String tableName = resultSet.getString("TABLE_NAME");
-                TableInfo tableInfo = new TableInfo(tableName, dataBaseInfoKey);
+                String dbTableName = resultSet.getString("TABLE_NAME");
+
+                TableInfo tableInfo = new TableInfo(dbTableName, dataBaseInfoKey);
+
                 tableInfo.setComment(resultSet.getString("REMARKS"));
 
-                // 格式化表名
-                String tempTableName = StringTools.substringAfter(tableName, tableConfig.getPrefix());
-                tableInfo.setName(StringTools.upper(tempTableName));
-
-                // 格式化表名首字母小写
-                tableInfo.setPropertyName(StringTools.upperWithOutFirstChar(tempTableName));
+                fillNameAndPropertyName(tableInfo, dbTableName);
 
                 // setKeys
-                List<String> primaryKeys = getPrimaryKey(metaData, catalog, schema, tableName);
+                List<String> primaryKeys = getPrimaryKey(metaData, catalog, schema, dbTableName);
                 tableInfo.setKeys(primaryKeys);
 
                 // setColumns
@@ -200,7 +153,7 @@ public class ConnectionFactoryImpl implements ConnectionFactory {
         return keys.contains(columnName);
     }
 
-    private String convertType(String columnName,String dbType) {
+    private String convertType(String columnName, String dbType) {
         Map<String, String> typeMap = columnConfig.getType();
         String type = typeMap.get(dbType);
 
@@ -216,18 +169,6 @@ public class ConnectionFactoryImpl implements ConnectionFactory {
 
         Preconditions.checkArgument(StringUtils.isNotBlank(type), "数据字段[%s]类型[%s]未匹配", columnName, dbType);
         return type;
-    }
-
-    private List<String> getPrimaryKey(DatabaseMetaData metaData, String catalog,
-                                       String schema, String tableName) throws SQLException {
-        ResultSet primaryKeys = metaData.getPrimaryKeys(catalog, schema, tableName);
-
-        List<String> keys = new ArrayList<>();
-        while (primaryKeys.next()) {
-            String keyName = primaryKeys.getString("COLUMN_NAME");
-            keys.add(keyName);
-        }
-        return keys;
     }
 
 }
