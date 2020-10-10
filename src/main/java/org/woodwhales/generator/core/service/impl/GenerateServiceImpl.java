@@ -69,7 +69,6 @@ public class GenerateServiceImpl implements GenerateService {
 	public List<TableInfo> listTables(DataBaseInfo dataBaseInfo, boolean isProcess) throws Exception {
 		// 先从缓存中获取
 		final String dataBaseInfoKey = dataBaseInfo.getDataBaseInfoKey();
-		final String schema = dataBaseInfo.getSchema();
 
 		List<TableInfo> cacheTableInfoList = dataBaseInfoCache.getTableInfoList(dataBaseInfoKey);
 
@@ -89,10 +88,7 @@ public class GenerateServiceImpl implements GenerateService {
 					return getTableInfoListByDbNameList(cacheTableInfoList, dbNameList);
 				}
 			} else {
-				String dbType = dataBaseInfo.getDbType();
-				ConnectionFactory connectionFactory = getConnectionFactory(dbType);
-				Connection connection = connectionFactory.buildConnection(dataBaseInfo);
-				List<TableInfo> tableInfos = connectionFactory.listTables(connection, schema, dataBaseInfoKey);
+				List<TableInfo> tableInfos = getTableInfoList(dataBaseInfo);
 				dataBaseInfoCache.cacheTableInfoList(dataBaseInfoKey, tableInfos);
 				return getTableInfoListByDbNameList(tableInfos, dbNameList);
 			}
@@ -101,14 +97,23 @@ public class GenerateServiceImpl implements GenerateService {
 			if (Objects.nonNull(cacheTableInfoList)) {
 				return cacheTableInfoList;
 			} else {
-				String dbType = dataBaseInfo.getDbType();
-				ConnectionFactory connectionFactory = getConnectionFactory(dbType);
-				Connection connection = connectionFactory.buildConnection(dataBaseInfo);
-				List<TableInfo> tableInfos = connectionFactory.listTables(connection, schema, dataBaseInfoKey);
+				List<TableInfo> tableInfos = getTableInfoList(dataBaseInfo);
 				dataBaseInfoCache.cacheTableInfoList(dataBaseInfoKey, tableInfos);
 				return tableInfos;
 			}
 		}
+	}
+
+	private List<TableInfo> getTableInfoList(DataBaseInfo dataBaseInfo) throws Exception {
+		final String dbType = dataBaseInfo.getDbType();
+		final String schema = dataBaseInfo.getSchema();
+		final String dataBaseInfoKey = dataBaseInfo.getDataBaseInfoKey();
+
+		ConnectionFactory connectionFactory = getConnectionFactory(dbType);
+		Connection connection = connectionFactory.buildConnection(dataBaseInfo);
+		
+		List<TableInfo> tableInfos = connectionFactory.listTables(connection, schema, dataBaseInfoKey);
+		return tableInfos;
 	}
 
 	@Override
