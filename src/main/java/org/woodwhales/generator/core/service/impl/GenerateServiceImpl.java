@@ -111,7 +111,7 @@ public class GenerateServiceImpl implements GenerateService {
 
 		ConnectionFactory connectionFactory = getConnectionFactory(dbType);
 		Connection connection = connectionFactory.buildConnection(dataBaseInfo);
-		
+
 		List<TableInfo> tableInfos = connectionFactory.listTables(connection, schema, dataBaseInfoKey);
 		return tableInfos;
 	}

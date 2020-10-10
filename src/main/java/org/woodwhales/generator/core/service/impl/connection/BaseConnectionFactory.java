@@ -1,5 +1,6 @@
 package org.woodwhales.generator.core.service.impl.connection;
 
+import com.google.common.base.Preconditions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * @author woodwhales
@@ -102,6 +105,13 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
             keys.add(keyName);
         }
         return keys;
+    }
+
+
+    protected void checkArgument(Connection connection, String schema, String dataBaseInfoKey) {
+        Objects.requireNonNull(connection, "数据库链接不允许为空");
+        Preconditions.checkArgument(isNotBlank(dataBaseInfoKey), "数据库连接信息缓存key不允许为空");
+        Preconditions.checkArgument(isNotBlank(schema), "schema不允许为空");
     }
 
 }

@@ -269,6 +269,7 @@
     }
 
     form.on('submit(btnId)', function(data) {
+      let index = layer.load(2);
       replaceSwitchBtnValue(data);
       if('测试' === $('#btnId').html()) {
         emptySchema();
@@ -295,12 +296,21 @@
               $('#schema').attr('lay-verify','required');
               layui.form.render("select");
               schemaDivIdShow();
+              layer.close(index);
             } else {
-              layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
+              layer.close(index);
+              layer.alert(res.msg, {
+                icon: 5,
+                title:'操作失败'
+              });
             }
           },
           error:function(res) {
-            layer.msg('网络异常', {icon: 5});
+            layer.close(index);
+            layer.alert('网络异常', {
+              icon: 5,
+              title:'操作失败'
+            });
           }
         });
         return false;
@@ -341,7 +351,7 @@
               interfaceDivIdShow();
               generateDirAddAttr();
 
-              // 只要选中了生成代码，报名必须选择
+              // 只要选中了生成代码，包名必须选择
               if(data.field.generateCode) {
                 packageNameAddAttr();
               }
@@ -351,16 +361,24 @@
               updateBtnToGenerate();
               let dataBaseInfoKey = res.data.dataBaseInfoKey;
               $('#addNavigationConfig').attr("href","/addNavigationConfig?dataBaseInfoKey=" + dataBaseInfoKey);
-
+              layer.close(index);
               return false;
             } else {
               tableInfoLabelIdHide();
-              layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
+              layer.close(index);
+              layer.alert(res.msg, {
+                icon: 5,
+                title:'操作失败'
+              });
             }
           },
           error:function(res) {
             tableInfoLabelIdHide();
-            layer.msg('网络异常', {icon: 5});
+            layer.close(index);
+            layer.alert('网络异常', {
+              icon: 5,
+              title:'操作失败'
+            });
           }
         });
         return false;
@@ -396,13 +414,22 @@
           data:JSON.stringify(data.field),
           success:function(res) {
             if(res.code === 0) {
+              layer.close(index);
               layer.msg('生成成功', {icon: 1});
             } else {
-              layer.msg('操作失败，异常原因：' + res.msg, {icon: 5});
+              layer.close(index);
+              layer.alert(res.msg, {
+                icon: 5,
+                title:'操作失败'
+              });
             }
           },
           error:function(res) {
-            layer.msg('网络异常', {icon: 5});
+            layer.close(index);
+            layer.alert('网络异常', {
+              icon: 5,
+              title:'操作失败'
+            });
           }
         });
 

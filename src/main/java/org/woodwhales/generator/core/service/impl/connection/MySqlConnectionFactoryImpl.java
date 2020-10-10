@@ -18,7 +18,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static org.woodwhales.generator.core.constant.DbTypeConstant.MYSQL_SERVICE_NAME;
 
@@ -51,8 +50,8 @@ public class MySqlConnectionFactoryImpl extends BaseConnectionFactory implements
 
     @Override
     public List<TableInfo> listTables(Connection connection, String schema, String dataBaseInfoKey) throws SQLException {
-        Objects.requireNonNull(connection, "数据库链接不允许为空");
-        Preconditions.checkArgument(StringUtils.isNotBlank(dataBaseInfoKey), "数据库连接信息缓存key不允许为空");
+
+        checkArgument(connection, schema, dataBaseInfoKey);
 
         ResultSet resultSet = null;
         List<TableInfo> tableInfos;
@@ -61,7 +60,7 @@ public class MySqlConnectionFactoryImpl extends BaseConnectionFactory implements
             final String catalog = connection.getCatalog();
             DatabaseMetaData metaData = connection.getMetaData();
 
-            resultSet = metaData.getTables(catalog, null, null, new String[] {"TABLE"});
+            resultSet = metaData.getTables(catalog, schema, null, new String[] {"TABLE"});
             tableInfos = new ArrayList<>();
             while (resultSet.next()) {
                 String dbTableName = resultSet.getString("TABLE_NAME");
