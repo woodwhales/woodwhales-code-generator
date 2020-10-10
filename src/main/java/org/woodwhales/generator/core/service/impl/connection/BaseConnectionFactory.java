@@ -102,14 +102,17 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
      */
     protected List<String> getPrimaryKey(DatabaseMetaData metaData, String catalog,
                                        String schema, String dbTableName) throws SQLException {
-        ResultSet primaryKeys = metaData.getPrimaryKeys(catalog, schema, dbTableName);
 
-        List<String> keys = new ArrayList<>();
-        while (primaryKeys.next()) {
-            String keyName = primaryKeys.getString("COLUMN_NAME");
-            keys.add(keyName);
+        ResultSet primaryKeysResultSet = metaData.getPrimaryKeys(catalog, schema, dbTableName);
+        List<String> primaryKeys = new ArrayList<>();
+        while (primaryKeysResultSet.next()) {
+            String keyName = primaryKeysResultSet.getString("COLUMN_NAME");
+            primaryKeys.add(keyName);
         }
-        return keys;
+
+        primaryKeysResultSet.close();
+
+        return primaryKeys;
     }
 
 
@@ -124,50 +127,101 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
 
         checkArgument(connection, schema, dataBaseInfoKey);
 
-        ResultSet resultSet = null;
-        List<TableInfo> tableInfos;
+        List<TableInfo> tableInfoList;
 
         StopWatch stopWatch = new StopWatch("获取数据库表信息对象");
 
         try {
-            final String catalog = connection.getCatalog();
             DatabaseMetaData metaData = connection.getMetaData();
+            final String catalog = connection.getCatalog();
 
-            resultSet = metaData.getTables(catalog, schema, null, new String[] {"TABLE"});
-            tableInfos = new ArrayList<>();
-            while (resultSet.next()) {
-                String dbTableName = resultSet.getString("TABLE_NAME");
+            tableInfoList = getTableInfoList(metaData, catalog, schema, dataBaseInfoKey);
+
+            ResultSet columnResultSet;
+            ResultSet primaryKeysResultSet;
+
+            for (TableInfo tableInfo : tableInfoList) {
+                String dbTableName = tableInfo.getDbName();
+
+                log.info("dbTableName => {}", dbTableName);
 
                 stopWatch.start("dbTableName => " + dbTableName);
 
-                TableInfo tableInfo = new TableInfo(dbTableName, dataBaseInfoKey);
-
-                tableInfo.setComment(resultSet.getString("REMARKS"));
-
-                fillNameAndPropertyName(tableInfo, dbTableName);
-
                 // setKeys
-                List<String> primaryKeys = getPrimaryKey(metaData, catalog, schema, dbTableName);
+                primaryKeysResultSet = metaData.getPrimaryKeys(catalog, schema, dbTableName);
+                List<String> primaryKeys = new ArrayList<>();
+                while (primaryKeysResultSet.next()) {
+                    String keyName = primaryKeysResultSet.getString("COLUMN_NAME");
+                    primaryKeys.add(keyName);
+                }
+
                 tableInfo.setKeys(primaryKeys);
 
                 // setColumns
-                List<Column> columns = getColumns(metaData, schema, tableInfo);
+                columnResultSet = metaData.getColumns(schema, null, tableInfo.getDbName(), null);
+                List<Column> columns = new ArrayList<>();
+                while (columnResultSet.next()) {
+                    String columnName = columnResultSet.getString("COLUMN_NAME");
+                    String typeName = columnResultSet.getString("TYPE_NAME");
+                    String remarks = columnResultSet.getString("REMARKS");
+                    String defaultValue = columnResultSet.getString("COLUMN_DEF");
+                    int columnSize = columnResultSet.getInt("COLUMN_SIZE");
+                    boolean nullable = BooleanUtils.toBoolean(columnResultSet.getInt("NULLABLE"));
+                    String nullableString = BooleanUtils.toString(nullable, "是", "否");
+
+                    Column column = Column.builder()
+                            .dbName(columnName)
+                            .dbType(typeName)
+                            .nullAble(nullable)
+                            .nullableString(nullableString)
+                            .columnSize(columnSize)
+                            .defaultValue(defaultValue)
+                            .comment(remarks).build();
+
+                    // 将数据库表的字段类型转成 java 变量类型
+                    column.setType(convertType(columnName, column.getDbType()));
+                    column.setName(StringTools.upperWithOutFirstChar(columnName));
+                    column.setPrimaryKey(checkPrimaryKey(columnName, tableInfo.getKeys()));
+
+                    columns.add(column);
+                }
                 tableInfo.setColumns(columns);
 
                 // setKeyTypes
                 List<String> primaryKeyTypes = getPrimaryKeyTypes(primaryKeys, columns);
                 tableInfo.setKeyTypes(primaryKeyTypes);
 
-                tableInfos.add(tableInfo);
+                columnResultSet.close();
+                primaryKeysResultSet.close();
 
                 stopWatch.stop();
             }
         } finally {
-            closeResource(connection, resultSet);
+            closeResource(connection);
             log.info(stopWatch.prettyPrint());
         }
 
-        return tableInfos;
+        return tableInfoList;
+    }
+
+    private List<TableInfo> getTableInfoList(DatabaseMetaData metaData, String catalog,
+                                             String schema, String dataBaseInfoKey) throws SQLException {
+        List<TableInfo> tableInfoList = new ArrayList<>();
+        ResultSet tableResultSet = metaData.getTables(catalog, schema, null, new String[] {"TABLE"});
+
+        while (tableResultSet.next()) {
+            String dbTableName = tableResultSet.getString("TABLE_NAME");
+            String comment = tableResultSet.getString("REMARKS");
+
+            TableInfo tableInfo = new TableInfo(dbTableName, dataBaseInfoKey);
+            fillNameAndPropertyName(tableInfo, dbTableName);
+
+            tableInfo.setComment(comment);
+            tableInfoList.add(tableInfo);
+        }
+
+        tableResultSet.close();
+        return tableInfoList;
     }
 
     private List<String> getPrimaryKeyTypes(List<String> primaryKeys, List<Column> columns) {
@@ -192,15 +246,15 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
      * @throws Exception
      */
     private List<Column> getColumns(DatabaseMetaData metaData, String schema, TableInfo tableInfo) throws SQLException {
-        ResultSet resultSet = metaData.getColumns(schema, null, tableInfo.getDbName(), null);
+        ResultSet columnResultSet = metaData.getColumns(schema, null, tableInfo.getDbName(), null);
         List<Column> columns = new ArrayList<>();
-        while (resultSet.next()) {
-            String columnName = resultSet.getString("COLUMN_NAME");
-            String typeName = resultSet.getString("TYPE_NAME");
-            String remarks = resultSet.getString("REMARKS");
-            String defaultValue = resultSet.getString("COLUMN_DEF");
-            int columnSize = resultSet.getInt("COLUMN_SIZE");
-            boolean nullable = BooleanUtils.toBoolean(resultSet.getInt("NULLABLE"));
+        while (columnResultSet.next()) {
+            String columnName = columnResultSet.getString("COLUMN_NAME");
+            String typeName = columnResultSet.getString("TYPE_NAME");
+            String remarks = columnResultSet.getString("REMARKS");
+            String defaultValue = columnResultSet.getString("COLUMN_DEF");
+            int columnSize = columnResultSet.getInt("COLUMN_SIZE");
+            boolean nullable = BooleanUtils.toBoolean(columnResultSet.getInt("NULLABLE"));
             String nullableString = BooleanUtils.toString(nullable, "是", "否");
 
             Column column = Column.builder()
@@ -219,6 +273,8 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
 
             columns.add(column);
         }
+
+        columnResultSet.close();
 
         return columns;
     }
