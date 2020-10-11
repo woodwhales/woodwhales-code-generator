@@ -32,6 +32,8 @@ public interface ConnectionFactory {
      */
     void closeResource(Connection connection, ResultSet resultSet) throws SQLException;
 
+    void closeResource(ResultSet resultSet) throws SQLException;
+
     /**
      * 关闭数据库链接资源
      * @param connection 数据库链接
