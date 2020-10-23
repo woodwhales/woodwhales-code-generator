@@ -75,7 +75,7 @@ public class CodeTemplateViewController {
 		model.addAttribute("columns", tableInfo.getColumns());
 		model.addAttribute("tableName", tableInfo.getPropertyName());
 		model.addAttribute("tableComment", tableInfo.getComment());
-		model.addAttribute("tableUrl", "/" + tableInfo.getPropertyName() + "/");
+		model.addAttribute("tableUrl", "/" + tableInfo.getDbName() + "/" + tableInfo.getPropertyName() + "/");
 
 		List<CodeNavigationConfigSimpleInfoVO> codeNavigationConfigSimpleInfoVOList = codeNavigationConfigService.listSimpleInfo();
 		model.addAttribute("codeNavigationConfigs", codeNavigationConfigSimpleInfoVOList);
