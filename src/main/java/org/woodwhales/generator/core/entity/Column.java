@@ -1,10 +1,10 @@
 package org.woodwhales.generator.core.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+/**
+ * @author woodwhales
+ */
 @Data
 @Builder
 @NoArgsConstructor

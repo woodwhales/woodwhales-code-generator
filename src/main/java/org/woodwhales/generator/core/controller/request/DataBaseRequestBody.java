@@ -41,6 +41,16 @@ public class DataBaseRequestBody extends BuildConnectionRequestBody {
 	private Boolean generateCode;
 
 	/**
+	 * 是否生成controller
+	 */
+	private Boolean generateController;
+
+	/**
+	 * 是否生成service
+	 */
+	private Boolean generateService;
+
+	/**
 	 * 是否覆盖markdown
 	 */
 	private Boolean overCode;
@@ -64,5 +74,10 @@ public class DataBaseRequestBody extends BuildConnectionRequestBody {
 	 * 接口
 	 */
 	private List<String> interfaceList;
+
+	/**
+	 * 作者名称
+	 */
+	private String author;
 
 }

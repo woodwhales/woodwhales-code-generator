@@ -14,6 +14,14 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * ${table.name}ServiceImpl
+<#if settings.author??>
+ *
+ * @author ${settings.author} on ${settings.now}
+</#if>
+ *
+ */
 @Slf4j
 @Service
 @Transactional

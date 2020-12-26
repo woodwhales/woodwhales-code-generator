@@ -54,12 +54,17 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
 				dataModel.put("primaryKeyType", null);
 			}
 
-			// 生成controller
-			process(dataModel, targetFilePath, "controller", tableInfo.getName()+"Controller", isCoverOldFile);
-			// 生成service
-			process(dataModel, targetFilePath, "service", tableInfo.getName()+"Service", isCoverOldFile);
-			// 生成service.impl
-			process(dataModel, targetFilePath, "service.impl", tableInfo.getName()+"ServiceImpl", isCoverOldFile);
+			if (dataBaseInfo.getGenerateController()) {
+				// 生成controller
+				process(dataModel, targetFilePath, "controller", tableInfo.getName()+"Controller", isCoverOldFile);
+			}
+
+			if(dataBaseInfo.getGenerateService()) {
+				// 生成service
+				process(dataModel, targetFilePath, "service", tableInfo.getName()+"Service", isCoverOldFile);
+				// 生成service.impl
+				process(dataModel, targetFilePath, "service.impl", tableInfo.getName()+"ServiceImpl", isCoverOldFile);
+			}
 		}
 		return true;
 	}

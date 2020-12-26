@@ -120,4 +120,16 @@ function replaceSwitchBtnValue(data) {
         data.field.overMarkdown = false;
     }
 
+    if(data.field.generateController === "on") {
+        data.field.generateController = true;
+    } else {
+        data.field.generateController = false;
+    }
+
+    if(data.field.generateService === "on") {
+        data.field.generateService = true;
+    } else {
+        data.field.generateService = false;
+    }
+
 }

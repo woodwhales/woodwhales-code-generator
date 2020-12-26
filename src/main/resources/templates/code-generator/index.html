@@ -37,15 +37,32 @@
       </div>
     </div>
     <div class="layui-inline">
-      <label class="layui-form-label">生成文档</label>
+      <label class="layui-form-label">覆盖文档</label>
+      <div class="layui-input-block">
+        <input type="checkbox" name="overMarkdown" checked="" lay-skin="switch" lay-text="是|否">
+      </div>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-inline">
+      <label class="layui-form-label">生成配置</label>
+    </div>
+    <div class="layui-inline">
+      <label class="layui-form-label">markdown</label>
       <div class="layui-input-block">
         <input type="checkbox" name="generateMarkdown" lay-skin="switch" lay-text="是|否">
       </div>
     </div>
     <div class="layui-inline">
-      <label class="layui-form-label">覆盖文档</label>
+      <label class="layui-form-label">controller</label>
       <div class="layui-input-block">
-        <input type="checkbox" name="overMarkdown" checked="" lay-skin="switch" lay-text="是|否">
+        <input type="checkbox" name="generateController" lay-skin="switch" lay-text="是|否">
+      </div>
+    </div>
+    <div class="layui-inline">
+      <label class="layui-form-label">service</label>
+      <div class="layui-input-block">
+        <input type="checkbox" name="generateService" lay-skin="switch" lay-text="是|否">
       </div>
     </div>
   </div>
@@ -102,6 +119,12 @@
       <label class="layui-form-label">包名</label>
       <div class="layui-input-inline">
         <input type="text" name="packageName" id="packageName" autocomplete="off" placeholder="请输入要生成的包名称" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-inline">
+      <label class="layui-form-label">作者</label>
+      <div class="layui-input-inline">
+        <input type="text" name="author" id="author" autocomplete="off" placeholder="请输入作者名称" class="layui-input">
       </div>
     </div>
   </div>

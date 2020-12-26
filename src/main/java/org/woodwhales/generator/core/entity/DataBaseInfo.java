@@ -5,13 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.BeanUtils;
 import org.woodwhales.generator.core.constant.MyConstant;
 import org.woodwhales.generator.core.controller.request.BuildConnectionRequestBody;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 
 /**
@@ -90,6 +93,16 @@ public class DataBaseInfo {
 	private Boolean generateCode;
 
 	/**
+	 * 是否生成controller
+	 */
+	private Boolean generateController;
+
+	/**
+	 * 是否生成service
+	 */
+	private Boolean generateService;
+
+	/**
 	 * 是否覆盖markdown
 	 */
 	private Boolean overCode;
@@ -119,11 +132,22 @@ public class DataBaseInfo {
 	 */
 	private String dbName;
 
+	/**
+	 * 作者名称
+	 */
+	private String author;
+
+	/**
+	 * 当前时间
+	 */
+	private String now;
+
 	public static DataBaseInfo convert(BuildConnectionRequestBody requestBody) {
 		DataBaseInfo dataBaseInfo = new DataBaseInfo();
 		BeanUtils.copyProperties(requestBody, dataBaseInfo);
 		dataBaseInfo.setUsername(trimToEmpty(requestBody.getUsername()));
 		dataBaseInfo.setPassword(trimToEmpty(dataBaseInfo.getPassword()));
+		dataBaseInfo.setNow(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
 		return dataBaseInfo;
 	}
 	
@@ -140,7 +164,7 @@ public class DataBaseInfo {
 		String url = null;
 
 		if(StringUtils.equals(dbType, "MYSQL")) {
-			if(StringUtils.isNotBlank(this.schema)) {
+			if(isNotBlank(this.schema)) {
 				url = MyConstant.mysql_Template_Url
 						.replace("[ip]", this.ip)
 						.replace("[port]", this.port+"")
@@ -153,7 +177,7 @@ public class DataBaseInfo {
 		}
 
 		if(StringUtils.equals(dbType, "ORACLE")) {
-			if(StringUtils.isNotBlank(this.sid)) {
+			if(isNotBlank(this.sid)) {
 				url = MyConstant.oracle_Template_Url
 						.replace("[ip]", this.ip)
 						.replace("[port]", this.port+"")
@@ -175,10 +199,13 @@ public class DataBaseInfo {
 				.append(this.port)
 				.append(this.username)
 				.append(this.password);
-				if(StringUtils.isNotBlank(this.schema)) {
+				if(isNotBlank(this.schema)) {
 					stringBuilder.append(this.schema);
 				}
 		return stringBuilder.toString();
 	}
-	
+
+	public String getAuthor() {
+		return StringUtils.trimToNull(this.author);
+	}
 }

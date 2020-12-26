@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 /**
  * @projectName: woodwhales-code-generator
  * @author: woodwhales
@@ -100,7 +102,7 @@ public class GenerateTableInfos {
     }
 
     public boolean hasSuperClass() {
-        return StringUtils.isNotBlank(this.dataBaseInfo.getSuperClass());
+        return isNotBlank(this.dataBaseInfo.getSuperClass());
     }
 
     public boolean hasInterfaceList() {

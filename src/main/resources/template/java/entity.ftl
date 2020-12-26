@@ -20,10 +20,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+<#if hasSuperClass??>
+import lombok.EqualsAndHashCode;
+</#if>
 
 /**
  * ${table.comment}
- * 
+<#if settings.author??>
+ *
+ * @author ${settings.author} on ${settings.now}
+</#if>
+ *
  */
 @TableName(value= "${table.dbName}")
 @Data
@@ -31,7 +38,10 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class ${table.name} <#if superClassSimpleName??>extends ${superClassSimpleName}</#if> implements Serializable<#if hasInterfaceList??>, ${interfaceSimpleNameListString}</#if> {
+<#if hasSuperClass??>
+@EqualsAndHashCode(callSuper = true)
+</#if>
+public class ${table.name} <#if superClassSimpleName??>extends ${superClassSimpleName} </#if>implements Serializable<#if hasInterfaceList??>, ${interfaceSimpleNameListString}</#if> {
     
     private static final long serialVersionUID = 1L;
 

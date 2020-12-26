@@ -16,6 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * ${table.name}Controller
+<#if settings.author??>
+ *
+ * @author ${settings.author} on ${settings.now}
+</#if>
+ *
+ */
 @Slf4j
 @CrossOrigin
 @RestController()
