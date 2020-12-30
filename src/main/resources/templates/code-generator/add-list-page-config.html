@@ -266,6 +266,7 @@
 
         table.render({
             elem: '#configTable'
+            ,limit: Number.MAX_VALUE
             ,url:'/generate/listTableInfo?tableKey=' + $('#tableKey').val()
             ,cols: [[
                 {type:'checkbox'},

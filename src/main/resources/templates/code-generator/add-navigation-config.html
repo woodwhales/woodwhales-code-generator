@@ -120,6 +120,7 @@
 
         table.render({
             elem: '#configTable'
+            ,limit: Number.MAX_VALUE
             ,url:'/generate/listTableInfos?dataBaseInfoKey=' + $('#dataBaseInfoKey').val()
             ,cols: [[
                 {type:'checkbox'},

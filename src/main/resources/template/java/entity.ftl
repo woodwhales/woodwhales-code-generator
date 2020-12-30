@@ -7,11 +7,11 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 <#if hasSuperClass??>
-import ${superClass}
+import ${superClass};
 </#if>
 <#if hasInterfaceList??>
 <#list interfaceList as interfaceClass>
-import ${interfaceClass}
+import ${interfaceClass};
 </#list>
 </#if>
 
@@ -19,7 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+<#--import lombok.experimental.Accessors;-->
 <#if hasSuperClass??>
 import lombok.EqualsAndHashCode;
 </#if>
@@ -37,7 +37,7 @@ import lombok.EqualsAndHashCode;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain = true)
+<#--@Accessors(chain = true)-->
 <#if hasSuperClass??>
 @EqualsAndHashCode(callSuper = true)
 </#if>
