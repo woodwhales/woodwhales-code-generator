@@ -103,4 +103,9 @@ public class CodeTemplateViewController {
 		model.addAttribute("codeTemplateConfig", codeTemplateConfig);
 		return "code-generator/code-template-detail";
 	}
+
+	@GetMapping("/dbConfig/add")
+	public String addDbConfig(Model model) {
+		return "code-generator/db-config-add";
+	}
 }
