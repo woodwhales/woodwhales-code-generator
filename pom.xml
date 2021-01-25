@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>org.woodwhales</groupId>
 	<artifactId>woodwhales-code-generator</artifactId>
-	<version>1.4.0</version>
+	<version>1.5.0</version>
 	<name>woodwhales-code-generator</name>
 	<description>woodwhales-code-generator</description>
 
