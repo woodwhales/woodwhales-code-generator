@@ -103,6 +103,11 @@ public class DataBaseInfo {
 	private Boolean generateService;
 
 	/**
+	 * 是否生成BatchMapper
+	 */
+	private Boolean generateBatchMapper;
+
+	/**
 	 * 是否覆盖markdown
 	 */
 	private Boolean overCode;

@@ -51,6 +51,11 @@ public class DataBaseRequestBody extends BuildConnectionRequestBody {
 	private Boolean generateService;
 
 	/**
+	 * 是否生成BatchMapper
+	 */
+	private Boolean generateBatchMapper;
+
+	/**
 	 * 是否覆盖markdown
 	 */
 	private Boolean overCode;

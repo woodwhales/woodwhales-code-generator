@@ -42,6 +42,10 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
 			// 生成mapper
 			process(dataModel, targetFilePath, "mapper", tableInfo.getName()+"Mapper", isCoverOldFile);
 
+			if(dataBaseInfo.getGenerateBatchMapper()) {
+				process(dataModel, targetFilePath, "batchmapper", "Batch"+tableInfo.getName()+"Mapper", isCoverOldFile);
+			}
+
 			if(tableInfo.getKeys().size() > 0) {
 				dataModel.put("primaryKey", tableInfo.getKeys().get(0));
 			} else {

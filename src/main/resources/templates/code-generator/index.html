@@ -65,6 +65,12 @@
         <input type="checkbox" name="generateService" lay-skin="switch" lay-text="是|否">
       </div>
     </div>
+    <div class="layui-inline">
+      <label class="layui-form-label">batchMapper</label>
+      <div class="layui-input-block">
+        <input type="checkbox" name="generateBatchMapper" lay-skin="switch" checked="" lay-text="是|否">
+      </div>
+    </div>
   </div>
   <div class="layui-form-item">
     <div class="layui-inline">
@@ -210,6 +216,7 @@
       $("#generateDir").val('');
       $("#packageName").val('');
       $("#superClass").val('');
+      $("#author").val('');
 
       pageNameAndPathIdHide();
       interfaceDivIdHide();

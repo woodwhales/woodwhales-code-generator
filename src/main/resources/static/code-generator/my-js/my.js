@@ -132,4 +132,10 @@ function replaceSwitchBtnValue(data) {
         data.field.generateService = false;
     }
 
+    if(data.field.generateBatchMapper === "on") {
+        data.field.generateBatchMapper = true;
+    } else {
+        data.field.generateBatchMapper = false;
+    }
+
 }
