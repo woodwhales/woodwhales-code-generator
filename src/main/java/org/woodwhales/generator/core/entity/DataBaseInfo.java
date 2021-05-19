@@ -55,7 +55,7 @@ public class DataBaseInfo {
 	/**
 	 * 数据库驱动全类名
 	 */
-	private String driveClassName;
+	private String driverClassName;
 
 	/**
 	 * oracle 数据库的sid
@@ -199,7 +199,7 @@ public class DataBaseInfo {
 	 */
 	public String getDataBaseInfoKey() {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(this.driveClassName)
+		stringBuilder.append(this.driverClassName)
 				.append(this.ip)
 				.append(this.port)
 				.append(this.username)

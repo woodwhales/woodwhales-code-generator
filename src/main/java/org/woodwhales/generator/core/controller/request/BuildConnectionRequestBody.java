@@ -30,7 +30,7 @@ public class BuildConnectionRequestBody {
     private String dbType;
 
     @NotBlank(message = "驱动类名为空")
-    private String driveClassName;
+    private String driverClassName;
 
     /**
      * oracel 数据库的 sid

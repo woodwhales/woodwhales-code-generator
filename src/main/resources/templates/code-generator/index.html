@@ -21,7 +21,7 @@
       <div class="layui-input-block">
         <input type="radio" name="dbType" lay-filter="dbType-filter" value="MYSQL" title="MySQL" checked="">
         <input type="radio" name="dbType" lay-filter="dbType-filter" value="ORACLE" title="Oracle">
-        <input type="text" name="driveClassName" id="driveClassName" style="display: none" autocomplete="off" class="layui-input" value="com.mysql.cj.jdbc.Driver">
+        <input type="text" name="driverClassName" id="driverClassName" style="display: none" autocomplete="off" class="layui-input" value="com.mysql.cj.jdbc.Driver">
       </div>
     </div>
     <div class="layui-inline">
@@ -201,11 +201,11 @@
 
     form.on('radio(dbType-filter)', function(data){
       if(data.value === 'MYSQL') {
-        $('#driveClassName').val('com.mysql.cj.jdbc.Driver');
+        $('#driverClassName').val('com.mysql.cj.jdbc.Driver');
         $('#port').val(3306);
         sidRemoveAttr();
       } else {
-        $('#driveClassName').val('oracle.jdbc.OracleDriver');
+        $('#driverClassName').val('oracle.jdbc.OracleDriver');
         $('#port').val(1521);
         sidAddAttr();
       }

@@ -45,6 +45,11 @@ public class CodeTemplateViewController {
 		return "code-generator/detail";
 	}
 
+	@GetMapping("/newIndex")
+	public String aa() {
+		return "code-generator/newIndex";
+	}
+
 	@GetMapping("/tips")
 	public String tips(Model model) {
 		model.addAttribute("tips", "columns \t字段列表\n" +

@@ -47,7 +47,7 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
      */
     @Override
     public Connection buildConnection(DataBaseInfo dataBaseInfo) throws Exception {
-        Class.forName(dataBaseInfo.getDriveClassName());
+        Class.forName(dataBaseInfo.getDriverClassName());
         Connection connection;
         try {
             connection = DriverManager.getConnection(dataBaseInfo.getUrl(), dataBaseInfo.getProperties());
