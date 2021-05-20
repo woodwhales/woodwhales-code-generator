@@ -30,7 +30,11 @@ public class CodeNavigationConfigController {
     @PostMapping("/create/")
     public RespVO<Void> createCodeTemplateConfig(@RequestBody CodeNavigationConfigCreateRequestBody requestBody) {
         boolean success = codeNavigationConfigService.create(requestBody);
-        return RespVO.resp(success);
+        if (success) {
+            return RespVO.success();
+        } else {
+            return RespVO.error();
+        }
     }
 
     @GetMapping("/listSimpleInfo/")

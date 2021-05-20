@@ -56,7 +56,11 @@ public class CodeTemplateController {
         CodeTemplateConfigDetail codeTemplateConfigDetail = new CodeTemplateConfigDetail(codeNavigationConfigVO, null);
         log.info("codeTemplateConfigDetail => {}", GsonUtil.toJson(codeTemplateConfigDetail));
         boolean success = codeNavigationFreeMarkerService.process(codeTemplateConfigDetail);
-        return RespVO.resp(success);
+        if (success) {
+            return RespVO.success();
+        } else {
+            return RespVO.error();
+        }
     }
 
     /**
@@ -72,6 +76,10 @@ public class CodeTemplateController {
         CodeTemplateConfigDetail codeTemplateConfigDetail = codeTemplateConfigService.getCodeTemplateConfigDetailByCodeListPageConfigId(codeListPageConfigId);
         log.info("codeTemplateConfigDetail => {}", GsonUtil.toJson(codeTemplateConfigDetail));
         boolean success = codeListPageFreeMarkerService.process(codeTemplateConfigDetail);
-        return RespVO.resp(success);
+        if (success) {
+            return RespVO.success();
+        } else {
+            return RespVO.error();
+        }
     }
 }

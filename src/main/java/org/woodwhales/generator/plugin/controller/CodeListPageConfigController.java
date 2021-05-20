@@ -22,7 +22,11 @@ public class CodeListPageConfigController {
     @PostMapping("/create/")
     public RespVO<Void> createCodeTemplateConfig(@RequestBody CodeListPageConfigCreateRequestBody requestBody) {
         boolean success = codeListPageConfigService.create(requestBody);
-        return RespVO.resp(success);
+        if (success) {
+            return RespVO.success();
+        } else {
+            return RespVO.error();
+        }
     }
 
 }

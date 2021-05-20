@@ -10,208 +10,236 @@
 </head>
 
 <body>
-  <div id="app">
-    <el-container>
-      <el-header>
-        <h3>woodwhales-code-generator</h3>
-      </el-header>
-      <el-main>
-        <el-row>
-          <el-col :span="24">
-            <el-form :model="dbConfig" ref="dbConfig" :rules="checkRules" label-width="100px">
-              <el-row>
-                <el-col :span="6">
-                  <el-form-item label="数据库类型" prop="dbType">
-                    <el-radio v-model="dbConfig.dbType" label="MYSQL" @change="changeDbType($event)">MySQL</el-radio>
-                    <el-radio v-model="dbConfig.dbType" label="ORACLE" @change="changeDbType($event)">Oracle</el-radio>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="驱动类名" prop="driverClassName">
-                    <el-input v-model="dbConfig.driverClassName" :disabled="true"></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <el-row>
-                <el-form-item label="文件配置">
-                  <el-col :span="3">
-                    <el-form-item label="生成代码" prop="generateCode">
-                      <el-switch v-model="dbConfig.generateCode" active-color="#13ce66" inactive-color="#ff4949">
-                      </el-switch>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="3">
-                    <el-form-item label="覆盖代码" prop="overCode">
-                      <el-switch v-model="dbConfig.overCode" active-color="#13ce66" inactive-color="#ff4949">
-                      </el-switch>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="3">
-                    <el-form-item label="覆盖文档" prop="overMarkdown">
-                      <el-switch v-model="dbConfig.overMarkdown" active-color="#13ce66" inactive-color="#ff4949">
-                      </el-switch>
-                    </el-form-item>
-                  </el-col>
-                </el-form-item>
-              </el-row>
-
-              <el-row>
-                <el-form-item label="代码配置">
-                  <el-col :span="3">
-                    <el-form-item label="markdown" prop="generateMarkdown">
-                      <el-switch v-model="dbConfig.generateMarkdown" active-color="#13ce66" inactive-color="#ff4949">
-                      </el-switch>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="3">
-                    <el-form-item label="controller" prop="generateController">
-                      <el-switch v-model="dbConfig.generateController" active-color="#13ce66" inactive-color="#ff4949">
-                      </el-switch>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="3">
-                    <el-form-item label="service" prop="generateService">
-                      <el-switch v-model="dbConfig.generateService" active-color="#13ce66" inactive-color="#ff4949">
-                      </el-switch>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="3">
-                    <el-form-item label="batchMapper" prop="generateBatchMapper">
-                      <el-switch v-model="dbConfig.generateBatchMapper" active-color="#13ce66" inactive-color="#ff4949">
-                      </el-switch>
-                    </el-form-item>
-                  </el-col>
-                </el-form-item>
-
-              </el-row>
-
-              <el-row>
-                <el-col :span="6">
-                  <el-form-item label="IP地址" prop="ip">
-                    <el-input v-model="dbConfig.ip" placeholder="请输入主机名或IP地址"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="端口" prop="port">
-                    <el-input-number v-model="dbConfig.port" :min="1" :max="25535" placeholder="端口号"></el-input-number>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6" v-if="dbConfig.dbType == 'ORACLE'">
-                  <el-form-item label="SID" prop="sid">
-                    <el-input v-model="dbConfig.sid" placeholder="请输入SID"></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <el-row>
-                <el-col :span="6">
-                  <el-form-item label="用户名" prop="username">
-                    <el-input v-model="dbConfig.username" placeholder="请输入用户名"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="密码" prop="password">
-                    <el-input v-model="dbConfig.password" type="password" placeholder="请输入密码"></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <el-row v-if="dbConfig.system.showSchema">
-                <el-col :span="6">
-                  <el-form-item label="schema" prop="schema">
-                    <el-select v-model="dbConfig.schema" filterable placeholder="请选择">
-                      <el-option v-for="schema in dbConfig.schemaList" :key="schema" :label="schema" :value="schema">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <el-row v-if="dbConfig.system.showGenerateCompent">
-                <el-col :span="6">
-                  <el-form-item label="目录" prop="generateDir">
-                    <el-input v-model="dbConfig.generateDir" placeholder="请指定要生成的目录路径"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="包名" prop="packageName">
-                    <el-input v-model="dbConfig.packageName" placeholder="请输入要生成的包名称"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="6">
-                  <el-form-item label="作者" prop="author">
-                    <el-input v-model="dbConfig.author" placeholder="请输入作者名称"></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <el-row v-if="dbConfig.system.showGenerateCompent">
-                <el-col :span="6">
-                  <el-form-item label="目录" prop="superClass">
-                    <el-input v-model="dbConfig.superClass" placeholder="请输入父类"></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <el-row v-if="dbConfig.system.showGenerateCompent">
-                <el-col :span="6">
-                  <el-form-item label="接口">
-                    <el-button size="mini" type="primary" icon="el-icon-circle-plus" @click="addInterfaceFun">添加</el-button>
-                    <el-button size="mini" type="info" icon="el-icon-delete">清空</el-button>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <el-row v-if="!dbConfig.system.showSchema">
-                <el-form-item>
-                  <el-button type="primary" @click="onTest('dbConfig')" icon="el-icon-check">测试</el-button>
-                  <el-button type="info" @click="onTestReset('dbConfig')" icon="el-icon-close">重置</el-button>
-                </el-form-item>
-              </el-row>
-
-              <el-row v-if="dbConfig.system.showSchema">
-                <el-form-item>
-                  <el-button type="success" @click="onSubmit('dbConfig')" icon="el-icon-circle-check">提交</el-button>
-                  <el-button type="info" @click="onSubmitReset('dbConfig')" icon="el-icon-circle-close">重置</el-button>
-                </el-form-item>
-              </el-row>
-            </el-form>
-
+<div id="app">
+  <el-container>
+    <el-header>
+      <h3>woodwhales-code-generator</h3>
+    </el-header>
+    <el-main>
+      <el-row>
+        <el-col :span="24">
+          <el-divider content-position="left">数据库链接信息</el-divider>
+          <el-form :model="dbConfig" ref="dbConfig" :rules="checkRules" label-width="100px">
             <el-row>
-              <el-col :span="24">
-                <el-table ref="multipleTable" :data="dbConfig.tableInfoList" style="width: 100%">
-                  <el-table-column type="selection" width="100"></el-table-column>
-                  <el-table-column prop="dbName" label="表名" width="250"></el-table-column>
-                  <el-table-column prop="name" label="类名" width="250"></el-table-column>
-                  <el-table-column prop="comment" label="注释" width="250"></el-table-column>
-                  <el-table-column prop="keys" label="主键" width="250"></el-table-column>
-                  <el-table-column label="操作">
-                    <template slot-scope="scope">
-                      <el-button size="mini" type="primary" icon="el-icon-plus" @click="addConfig(scope.$index, scope.row)">添加</el-button>
-                    </template>
-                  </el-table-column>
-                </el-table>
+              <el-col :span="6">
+                <el-form-item label="数据库类型" prop="dbType">
+                  <el-radio v-model="dbConfig.dbType" label="MYSQL" @change="changeDbType($event)">MySQL</el-radio>
+                  <el-radio v-model="dbConfig.dbType" label="ORACLE" @change="changeDbType($event)">Oracle</el-radio>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="驱动类名" prop="driverClassName">
+                  <el-input v-model="dbConfig.driverClassName" :disabled="true"></el-input>
+                </el-form-item>
               </el-col>
             </el-row>
 
-          </el-col>
-        </el-row>
+            <el-row>
+              <el-form-item label="文件配置">
+                <el-col :span="4">
+                  <el-form-item label="生成代码" prop="generateCode">
+                    <el-switch v-model="dbConfig.generateCode" active-color="#13ce66" inactive-color="#ff4949">
+                    </el-switch>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                  <el-form-item label="覆盖代码" prop="overCode">
+                    <el-switch v-model="dbConfig.overCode" active-color="#13ce66" inactive-color="#ff4949">
+                    </el-switch>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                  <el-form-item label="覆盖文档" prop="overMarkdown">
+                    <el-switch v-model="dbConfig.overMarkdown" active-color="#13ce66" inactive-color="#ff4949">
+                    </el-switch>
+                  </el-form-item>
+                </el-col>
+              </el-form-item>
+            </el-row>
+
+            <el-row>
+              <el-form-item label="代码配置">
+                <el-col :span="4">
+                  <el-form-item label="markdown" prop="generateMarkdown">
+                    <el-switch v-model="dbConfig.generateMarkdown" active-color="#13ce66" inactive-color="#ff4949">
+                    </el-switch>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                  <el-form-item label="controller" prop="generateController">
+                    <el-switch v-model="dbConfig.generateController" active-color="#13ce66" inactive-color="#ff4949">
+                    </el-switch>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                  <el-form-item label="service" prop="generateService">
+                    <el-switch v-model="dbConfig.generateService" active-color="#13ce66" inactive-color="#ff4949">
+                    </el-switch>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="4">
+                  <el-form-item label="batchMapper" prop="generateBatchMapper">
+                    <el-switch v-model="dbConfig.generateBatchMapper" active-color="#13ce66" inactive-color="#ff4949">
+                    </el-switch>
+                  </el-form-item>
+                </el-col>
+              </el-form-item>
+            </el-row>
+
+            <el-row>
+              <el-col :span="6">
+                <el-form-item label="IP地址" prop="ip">
+                  <el-input v-model="dbConfig.ip" placeholder="请输入主机名或IP地址"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="端口" prop="port">
+                  <el-input-number v-model="dbConfig.port" :min="1" :max="25535" placeholder="端口号"></el-input-number>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6" v-if="dbConfig.dbType == 'ORACLE'">
+                <el-form-item label="SID" prop="sid">
+                  <el-input v-model="dbConfig.sid" placeholder="请输入SID"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="6">
+                <el-form-item label="用户名" prop="username">
+                  <el-input v-model="dbConfig.username" placeholder="请输入用户名"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="密码" prop="password">
+                  <el-input v-model="dbConfig.password" type="password" placeholder="请输入密码"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row v-if="dbConfig.system.showSchema">
+              <el-col :span="6">
+                <el-form-item label="schema" prop="schema">
+                  <el-select v-model="dbConfig.schema" filterable placeholder="请选择">
+                    <el-option v-for="schema in dbConfig.schemaList" :key="schema" :label="schema" :value="schema">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row v-if="dbConfig.system.showGenerateCompent">
+              <el-col :span="6">
+                <el-form-item label="目录" prop="generateDir">
+                  <el-input v-model="dbConfig.generateDir" placeholder="请指定要生成的目录路径"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="包名" prop="packageName">
+                  <el-input v-model="dbConfig.packageName" placeholder="请输入要生成的包名称"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="作者" prop="author">
+                  <el-input v-model="dbConfig.author" placeholder="请输入作者名称"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row v-if="dbConfig.system.showGenerateCompent">
+              <el-col :span="6">
+                <el-form-item label="目录" prop="superClass">
+                  <el-input v-model="dbConfig.superClass" placeholder="请输入父类"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row v-if="dbConfig.system.showGenerateCompent">
+              <el-form-item label="接口">
+                <el-col :span="12">
+                  <el-tag :key="interface" type="success" v-for="interface in dbConfig.interfaceList" closable
+                          :disable-transitions="false" @close="removeInterface(interface)">
+                    {{interface}}
+                  </el-tag>
+                  <el-input type="success" v-if="dbConfig.system.inputInterfceVisible"
+                            v-model="dbConfig.system.inputInterfaceValue" ref="saveInterfaceInput" size="small"
+                            @keyup.enter.native="addInterfaceFun" @blur="addInterfaceFun">
+                  </el-input>
+                  <el-button-group v-else>
+                    <el-button type="primary" size="mini" @click="showInterface" icon="el-icon-circle-plus-outline">添加</el-button>
+                    <el-button type="warning" size="mini" @click="clearInterface" icon="el-icon-delete">清空</el-button>
+                  </el-button-group>
+                </el-col>
+              </el-form-item>
+            </el-row>
+
+            <el-row v-if="!dbConfig.system.showSchema">
+              <el-form-item>
+                <el-button type="primary" @click="onTest('dbConfig')" icon="el-icon-check">测试</el-button>
+                <el-button type="info" @click="onTestReset('dbConfig')" icon="el-icon-close">重置</el-button>
+              </el-form-item>
+            </el-row>
+
+            <el-row v-if="dbConfig.system.showSubmit">
+              <el-form-item>
+                <el-button type="success" @click="onSubmit('dbConfig')" icon="el-icon-circle-check">提交</el-button>
+                <el-button type="info" @click="onSubmitReset('dbConfig')" icon="el-icon-circle-close">重置</el-button>
+              </el-form-item>
+            </el-row>
+
+            <el-row v-if="dbConfig.system.showGenerate">
+              <el-form-item>
+                <el-button type="success" @click="onGenerate('dbConfig')" icon="el-icon-circle-check">生成</el-button>
+                <el-button type="info" @click="onGenerateReset('dbConfig')" icon="el-icon-circle-close">重置</el-button>
+              </el-form-item>
+            </el-row>
+
+          </el-form>
+
+          <el-divider content-position="left" v-if="dbConfig.system.showTableInfoList">数据库表展示</el-divider>
+
+          <el-row v-if="dbConfig.system.showTableInfoList">
+            <el-col :span="24">
+              <el-table ref="multipleTable" :data="dbConfig.tableInfoList" style="width: 100%"
+                        @selection-change="selectTableInfo">
+                <el-table-column type="selection" width="100"></el-table-column>
+                <el-table-column prop="dbName" label="表名" width="250"></el-table-column>
+                <el-table-column prop="name" label="类名" width="250"></el-table-column>
+                <el-table-column prop="comment" label="注释" width="250"></el-table-column>
+                <el-table-column prop="keys" label="主键" width="250">
+                  <template slot-scope="scope">
+                    <span style="margin-left: 10px">{{ scope.row.keys.join(',') }}</span>
+                  </template>
+                </el-table-column>
+                <!-- <el-table-column label="操作">
+                  <template slot-scope="scope">
+                    <el-button size="mini" type="primary" icon="el-icon-plus"
+                      @click="addConfig(scope.$index, scope.row)">添加</el-button>
+                  </template>
+                </el-table-column> -->
+              </el-table>
+            </el-col>
+          </el-row>
+
+        </el-col>
+      </el-row>
 
 
-      </el-main>
-      <el-footer>&copy; <a href="https://woodwhales.cn">woodwhales.cn</a> - woodwhales's blog</el-footer>
-    </el-container>
-  </div>
+    </el-main>
+    <el-footer>&copy; <a href="https://woodwhales.cn">woodwhales.cn</a> - woodwhales's blog</el-footer>
+  </el-container>
+</div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-
   var app = new Vue({
     el: '#app',
     data: {
+      checkPackageName: function () {
+
+      },
       dbConfig: {
         dbType: 'MYSQL',
         driverClassName: "com.mysql.cj.jdbc.Driver",
@@ -225,8 +253,8 @@
         ip: '127.0.0.1',
         port: '3306',
         sid: 'orcl',
-        username: 'root',
-        password: 'root1234',
+        username: '',
+        password: '',
         driveClassName: '',
         schemaList: [],
         generateDir: '',
@@ -235,10 +263,17 @@
         superClass: '',
         interfaceList: [],
         tableInfoList: [],
+        dbNameList: [],
         tableKey: '',
+        selectAll: false,
         system: {
           showSchema: false,
-          showGenerateCompent: false
+          showSubmit: false,
+          showGenerateCompent: false,
+          showTableInfoList: false,
+          showGenerate: false,
+          inputInterfceVisible: false,
+          inputInterfaceValue: ''
         }
       },
       checkRules: {
@@ -270,69 +305,72 @@
           message: '请输入密码',
           trigger: 'blur'
         },
-        // generateDir: [
-        //     { validator: checkGenerateDir, trigger: 'blur' }
-        // ],
-        // packageName: [
-        //   { validator: checkPackageName, trigger: 'blur' }
-        // ]
+        generateDir: {
+          required: true,
+          message: '请指定要生成的目录路径',
+          trigger: 'blur'
+        },
+        packageName: {
+          required: true,
+          message: '请输入要生成的包名称',
+          trigger: 'blur'
+        }
       }
 
     },
+    created() {
+      console.log('created...')
+    },
+    mounted() {
+      console.log('mounted...')
+    },
     methods: {
       onTest: function (formName) {
-        let that = this
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            axios.post('http://127.0.0.1:10326/generate/buildConnection', this.dbConfig)
-              .then(function (response) {
-                let res = response.data
-                that.parseResp(res, () => {
-                  that.dbConfig.system.showSchema = true
-                  that.dbConfig.schemaList = res.data
-                })
-              })
-              .catch(function (error) {
-                that.$message.error('网络异常')
-              });
-          } else {
-            return false
-          }
+        this.executePostRequest(formName, '/generate/buildConnection', (data) => {
+          this.dbConfig.system.showSchema = true
+          this.dbConfig.system.showSubmit = true
+          this.dbConfig.schemaList = data
         });
       },
-      onSubmit: function(formName) {
-        let that = this
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            axios.post('http://127.0.0.1:10326/generate/buildTableInfos', this.dbConfig)
-              .then(function (response) {
-                let res = response.data
-                that.parseResp(res, () => {
-                  that.dbConfig.tableInfoList = res.data.tableInfos
-                  that.dbConfig.tableKey = res.data.tableKey
-                })
-              })
-              .catch(function (error) {
-                that.$message.error('网络异常')
-              });
-          } else {
-            return false
-          }
+      onSubmit: function (formName) {
+        this.executePostRequest(formName, '/generate/buildTableInfos', (data) => {
+          this.dbConfig.system.showTableInfoList = true
+          this.dbConfig.system.showGenerateCompent = true
+          this.dbConfig.system.showGenerate = true
+          this.dbConfig.system.showSubmit = false
+          this.dbConfig.tableInfoList = data.tableInfos
+          this.dbConfig.tableKey = data.tableKey
+        });
+      },
+      onGenerate: function (formName) {
+        this.executePostRequest(formName, '/generate/process', (data) => {
+          this.$message.success('生成成功')
         });
       },
       onTestReset: function (formName) {
         this.$refs[formName].resetFields();
       },
-      onSubmitReset: function(formName) {
+      onSubmitReset: function (formName) {
         let username = this.dbConfig.username
         let password = this.dbConfig.password
-        this.$refs[formName].resetFields();
+
+        this.onTestReset(formName)
         this.dbConfig.system.showSchema = false
+        this.dbConfig.system.showSubmit = false
+        this.dbConfig.system.showGenerateCompent = false
+        this.dbConfig.system.showTableInfoList = false
+        this.dbConfig.tableInfoList = []
+
         this.dbConfig.username = username
         this.dbConfig.password = password
       },
-      addConfig: function(index, row) {
-        console.log(index, row);
+      onGenerateReset: function (formName) {
+        this.onSubmitReset(formName)
+        this.dbConfig.interfaceList = []
+        this.dbConfig.schemaList = []
+        this.dbConfig.system.showGenerate = false
+      },
+      addConfig: function (index, row) {
         console.log(index, row);
       },
       changeDbType: function ($event) {
@@ -346,14 +384,71 @@
           this.dbConfig.sid = 'orcl'
         }
       },
-      parseResp(res, fun) {
+      parseResp: function (res, fun) {
         if (res.code === 0) {
           if (typeof (fun) === 'function') {
-            fun()
+            fun(res.data)
           }
         } else {
           this.$message.error(res.msg)
         }
+      },
+      executePostRequest: function (formName, url, fun) {
+        let that = this
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            axios.post(url, this.dbConfig)
+                    .then(function (response) {
+                      that.parseResp(response.data, fun)
+                    })
+                    .catch(function (error) {
+                      that.$message.error('网络异常')
+                      console.log(error)
+                    });
+          } else {
+            return false
+          }
+        });
+      },
+      selectTableInfo: function (val) {
+        let dbNameList = []
+
+        val.map((item) => {
+          dbNameList.push(item.dbName)
+        })
+
+        if (val.length == this.dbConfig.tableInfoList.length) {
+          this.dbConfig.selectAll = true
+        }
+
+        this.dbConfig.dbNameList = dbNameList
+      },
+      removeInterface: function (interface) {
+        this.dbConfig.interfaceList.splice(this.dbConfig.interfaceList.indexOf(interface), 1);
+      },
+      showInterface() {
+        this.dbConfig.system.inputInterfceVisible = true;
+        this.$nextTick(_ => {
+          this.$refs.saveInterfaceInput.$refs.input.focus();
+        });
+      },
+      addInterfaceFun: function () {
+        let interface = this.dbConfig.system.inputInterfaceValue;
+        if (interface) {
+          interface = interface.replace(/^\s+|\s+$/g,"");
+          if(this.dbConfig.interfaceList.indexOf(interface) > -1) {
+            this.$message.info("接口类名重复");
+          } else {
+            this.dbConfig.interfaceList.push(interface);
+          }
+        }
+        this.dbConfig.system.inputInterfceVisible = false
+        this.dbConfig.system.inputInterfaceValue = ''
+
+        console.log(this.dbConfig.interfaceList)
+      },
+      clearInterface: function() {
+        this.dbConfig.interfaceList = []
       }
     }
   })
@@ -375,22 +470,22 @@
     list-style: none;
   }
 
-  .el-row {
-    margin-bottom: 20px;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
+  .el-tag+.el-tag {
+    margin-left: 10px;
   }
 
-  .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
+  .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
-  .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
   }
 </style>
 

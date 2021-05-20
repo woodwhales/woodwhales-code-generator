@@ -58,6 +58,7 @@ public class GeneratorController {
 	 * @return
 	 * @throws Exception
 	 */
+	@CrossOrigin
 	@PostMapping("/buildConnection")
 	public RespVO buildConnection(@Valid @RequestBody BuildConnectionRequestBody requestBody) throws Exception {
 		log.info("[buildConnection].buildConnectionRequestBody = {}", requestBody);
@@ -71,6 +72,7 @@ public class GeneratorController {
 	 * @return
 	 * @throws Exception
 	 */
+	@CrossOrigin
 	@PostMapping("/buildTableInfos")
 	public RespVO buildTableInfo(@Valid @RequestBody DataBaseRequestBody dataBaseRequestBody) throws Exception {
 		log.info("[buildTableInfos].dataBaseRequestBody = {}", dataBaseRequestBody);
@@ -93,6 +95,7 @@ public class GeneratorController {
 	 * @return
 	 * @throws Exception
 	 */
+	@CrossOrigin
 	@PostMapping("/process")
 	public RespVO process(@Valid @RequestBody DataBaseRequestBody dataBaseRequestBody) throws Exception {
 		log.info("[process].dataBaseRequestBody = {}", dataBaseRequestBody);
@@ -105,7 +108,11 @@ public class GeneratorController {
 		// 生成markdown
 		boolean generateMarkdownSuccess = markdownService.process(generateTableInfos);
 
-		return RespVO.resp(generateCodeSuccess && generateMarkdownSuccess);
+		if (generateCodeSuccess && generateMarkdownSuccess) {
+			return RespVO.success();
+		} else {
+			return RespVO.error();
+		}
 	}
 
 	@PostMapping("/getTableInfo")
@@ -113,7 +120,7 @@ public class GeneratorController {
 		log.info("[getTableInfo].buildConnectionRequestBody = {}", requestBody);
 		TableInfo tableInfo = generateService.getTableInfo(requestBody.getTableKey());
 		if(Objects.isNull(tableInfo)) {
-			return RespVO.error("暂无数据");
+			return RespVO.errorWithErrorMsg("暂无数据");
 		}
 		return RespVO.success(tableInfo);
 	}
@@ -126,7 +133,7 @@ public class GeneratorController {
 
 		String outPut = dynamicFreeMarkerService.dynamicProcess(freemarkerTemplate, tableInfo, customKeyValueMap);
 		if(StringUtils.isBlank(outPut)) {
-			return RespVO.error("生成失败");
+			return RespVO.errorWithErrorMsg("生成失败");
 		}
 
 		return RespVO.success(outPut);
@@ -163,4 +170,5 @@ public class GeneratorController {
 
 		return PageRespVO.success(colsConfigVOList);
 	}
+
 }

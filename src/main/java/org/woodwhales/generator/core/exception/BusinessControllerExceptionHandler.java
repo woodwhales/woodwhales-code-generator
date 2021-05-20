@@ -27,7 +27,7 @@ public class BusinessControllerExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public ModelAndView handle(Exception exception) {
         log.error("cause by : {}", exception.getMessage(), exception);
-        RespVO errorResp = RespVO.error(exception.getMessage());
+        RespVO errorResp = RespVO.errorWithErrorMsg(exception.getMessage());
         return returnModelAndView(errorResp, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -42,7 +42,7 @@ public class BusinessControllerExceptionHandler {
     @ExceptionHandler(value = GenerateException.class)
     public ModelAndView handle(GenerateException exception) {
         log.error("cause by : {}", exception.getMessage(), exception);
-        RespVO errorResp = RespVO.error(exception.getMessage());
+        RespVO errorResp = RespVO.errorWithErrorMsg(exception.getMessage());
         return returnModelAndView(errorResp, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -50,7 +50,7 @@ public class BusinessControllerExceptionHandler {
     @ExceptionHandler(value = UnexpectedTypeException.class)
     public ModelAndView handle(UnexpectedTypeException exception) {
         log.error("cause by : {}", exception.getMessage(), exception);
-        RespVO errorResp = RespVO.error(exception.getMessage());
+        RespVO errorResp = RespVO.errorWithErrorMsg(exception.getMessage());
         return returnModelAndView(errorResp, HttpStatus.BAD_REQUEST);
     }
 
@@ -58,7 +58,7 @@ public class BusinessControllerExceptionHandler {
     @ExceptionHandler(value = UserRequestException.class)
     public ModelAndView handle(UserRequestException exception) {
         log.error("cause by : {}", exception.getMessage(), exception);
-        RespVO errorResp = RespVO.error(exception.getMessage());
+        RespVO errorResp = RespVO.errorWithErrorMsg(exception.getMessage());
         return returnModelAndView(errorResp, HttpStatus.BAD_REQUEST);
     }
 
@@ -66,7 +66,7 @@ public class BusinessControllerExceptionHandler {
     @ExceptionHandler(value = { MethodArgumentNotValidException.class})
     public ModelAndView handle(MethodArgumentNotValidException exception) {
         log.error("cause by : {}", exception.getMessage(), exception);
-        RespVO errorResp = RespVO.error(exception.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        RespVO errorResp = RespVO.errorWithErrorMsg(exception.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         return returnModelAndView(errorResp, HttpStatus.BAD_REQUEST);
     }
 
@@ -74,7 +74,7 @@ public class BusinessControllerExceptionHandler {
     @ExceptionHandler(value = BindException.class)
     public ModelAndView handle(BindException exception) {
         log.error("cause by : {}", exception.getMessage(), exception);
-        RespVO errorResp = RespVO.error(exception.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        RespVO errorResp = RespVO.errorWithErrorMsg(exception.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         return returnModelAndView(errorResp, HttpStatus.BAD_REQUEST);
     }
 }
