@@ -1,7 +1,9 @@
 package org.woodwhales.generator.core.service;
 
+import org.woodwhales.common.model.result.OpResult;
 import org.woodwhales.common.model.vo.PageRespVO;
 import org.woodwhales.generator.core.controller.request.CodeDatabaseConfigQueryParam;
+import org.woodwhales.generator.core.controller.request.CodeDatabaseConfigRequestBody;
 import org.woodwhales.generator.core.controller.vo.CodeDatabaseConfigVO;
 
 /**
@@ -18,4 +20,11 @@ public interface CodeDatabaseConfigService {
      * @return
      */
     PageRespVO<CodeDatabaseConfigVO> page(CodeDatabaseConfigQueryParam param);
+
+    /**
+     * 创建数据库配置信息
+     * @param requestBody
+     * @return
+     */
+    OpResult<Void> create(CodeDatabaseConfigRequestBody requestBody);
 }

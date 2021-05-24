@@ -3,11 +3,11 @@ package org.woodwhales.generator.core.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.woodwhales.common.model.vo.PageRespVO;
+import org.woodwhales.common.model.vo.RespVO;
 import org.woodwhales.generator.core.controller.request.CodeDatabaseConfigQueryParam;
+import org.woodwhales.generator.core.controller.request.CodeDatabaseConfigRequestBody;
 import org.woodwhales.generator.core.controller.vo.CodeDatabaseConfigVO;
 import org.woodwhales.generator.core.service.CodeDatabaseConfigService;
 
@@ -26,6 +26,12 @@ public class CodeDatabaseConfigController {
     @GetMapping("/page")
     public PageRespVO<CodeDatabaseConfigVO> page(@Validated CodeDatabaseConfigQueryParam param) {
         return codeDatabaseConfigService.page(param);
+    }
+
+    @CrossOrigin
+    @PostMapping("/create")
+    public RespVO<Void> create(@Validated @RequestBody CodeDatabaseConfigRequestBody requestBody) {
+        return RespVO.resp(codeDatabaseConfigService.create(requestBody));
     }
 
 }

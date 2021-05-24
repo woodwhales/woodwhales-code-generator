@@ -8,11 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.woodwhales.common.model.vo.RespVO;
-import org.woodwhales.generator.core.controller.CodeTemplateViewController;
-import org.woodwhales.generator.core.controller.GeneratorController;
-import org.woodwhales.generator.plugin.controller.CodeListPageConfigController;
-import org.woodwhales.generator.plugin.controller.CodeNavigationConfigController;
-import org.woodwhales.generator.plugin.controller.CodeTemplateController;
 
 import javax.validation.UnexpectedTypeException;
 
@@ -20,13 +15,7 @@ import javax.validation.UnexpectedTypeException;
  * @author woodwhales
  */
 @Slf4j
-@RestControllerAdvice(assignableTypes = {
-		CodeTemplateViewController.class,
-		GeneratorController.class,
-		CodeListPageConfigController.class,
-		CodeNavigationConfigController.class,
-		CodeTemplateController.class
-})
+@RestControllerAdvice(basePackages = "org.woodwhales.generator.core.controller")
 public class ControllerExceptionHandler {
 
 	@ResponseBody
