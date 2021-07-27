@@ -34,6 +34,16 @@ public class ColsConfigVO {
     private Integer colsWidth;
 
     /**
+     * 表字段类型
+     */
+    private String dbType;
+
+    /**
+     * 字段大小
+     */
+    private int columnSize;
+
+    /**
      * 排序
      */
     private Integer sort;

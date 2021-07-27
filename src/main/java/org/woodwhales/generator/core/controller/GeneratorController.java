@@ -164,8 +164,8 @@ public class GeneratorController {
 		int index = 1;
 		List<ColsConfigVO> colsConfigVOList = new ArrayList<>(columns.size());
 		for (Column column : columns) {
-			colsConfigVOList.add(new ColsConfigVO(column.getDbName(), column.getName(),
-					column.getComment(), null, index++));
+			colsConfigVOList.add(new ColsConfigVO(column.getDbName(), column.getName(), column.getComment(),
+												  null, column.getDbType(), column.getColumnSize(), index++));
 		}
 
 		return PageRespVO.success(colsConfigVOList);
