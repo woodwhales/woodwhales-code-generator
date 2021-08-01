@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
+import org.woodwhales.common.model.result.OpResult;
 import org.woodwhales.common.model.vo.PageRespVO;
 import org.woodwhales.common.model.vo.RespVO;
 import org.woodwhales.generator.core.controller.request.BuildConnectionRequestBody;
@@ -21,6 +22,7 @@ import org.woodwhales.generator.core.service.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.sql.Connection;
 import java.util.*;
 
 /**

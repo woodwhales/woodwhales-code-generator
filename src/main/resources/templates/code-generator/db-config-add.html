@@ -8,7 +8,241 @@
 </head>
 <body>
     <div class="layui-container">
-        保存配置
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+            <legend>添加配置</legend>
+        </fieldset>
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">配置名称</label>
+                <div class="layui-input-block">
+                    <input type="text" name="dbConfigName" id="dbConfigName" lay-verify="required" autocomplete="off" placeholder="请输入配置名称" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">数据库类型</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="dbType" lay-filter="dbType-filter" value="MYSQL" title="MySQL">
+                    <input type="radio" name="dbType" lay-filter="dbType-filter" value="ORACLE" title="Oracle">
+                    <input type="text" name="driverClassName" id="driverClassName" style="display: none" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">基础配置</label>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">生成代码</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="generateCode" checked="" id="generateCode" lay-skin="switch" lay-text="是|否">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">覆盖代码</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="overCode" checked="" id="overCode" lay-skin="switch" lay-text="是|否">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">覆盖文档</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="overMarkdown" checked="" id="overMarkdown" lay-skin="switch" lay-text="是|否">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">扩展配置</label>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">markdown</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="generateMarkdown" id="generateMarkdown" lay-skin="switch" lay-text="是|否">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">controller</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="generateController" id="generateController" lay-skin="switch" lay-text="是|否">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">service</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="generateService" id="generateService" lay-skin="switch" lay-text="是|否">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">batchMapper</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="generateBatchMapper" id="generateBatchMapper" lay-skin="switch" checked="" lay-text="是|否">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">IP地址</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="ip" id="ip" lay-verify="required" autocomplete="off" placeholder="请输入主机名或IP地址" class="layui-input" value="127.0.0.1">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">端口</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="port" id="port" lay-verify="required" autocomplete="off" class="layui-input" placeholder="请输入端口号" value="3306">
+                    </div>
+                </div>
+                <div class="layui-inline" id="sidDivId" style="display: none">
+                    <label class="layui-form-label">SID</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="sid" id="sid" lay-verify="required" autocomplete="off" placeholder="请输入SID" class="layui-input" value="orcl">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">用户</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="username" id="username" lay-verify="required" autocomplete="off" placeholder="请输入用户名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" name="password" id="password" lay-verify="required|pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">配置备注</label>
+                <div class="layui-input-block">
+                    <textarea placeholder="请输入备注内容" name="dbConfigMemo" id="dbConfigMemo" class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" id="testConnection">测试</button>
+                    <button type="submit" class="layui-btn layui-btn-xs" lay-submit="" lay-filter="saveDbConfig" id="saveDbConfig">保存</button>
+                </div>
+            </div>
+        </form>
     </div>
+
+    <script th:src="@{/webjars/layui/layui.js}"></script>
+    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:inline="none">
+        layui.use(['form', 'layer', 'table', 'layedit', 'util', 'element'], function(){
+            var form = layui.form,
+                layer = layui.layer;
+
+            form.on('submit(saveDbConfig)', function(data) {
+                let datas = {
+                    'extraCodeDbConfig': getExtraCodeDbConfig(),
+                    'extraFileDbConfig': getExtraFileDbConfig(),
+                    'baseDbConfig': getBaseDbConfig(),
+                    'dbConfigName': data.field.dbConfigName,
+                    'dbConfigMemo': data.field.dbConfigMemo
+                }
+
+                basePost("/databaseConfig/create", datas, "保存成功", "保存失败");
+                return false;
+            });
+
+            form.on('radio(dbType-filter)', function(data){
+                if(data.value === 'MYSQL') {
+                    $('#driverClassName').val('com.mysql.cj.jdbc.Driver');
+                    $('#port').val(3306);
+                    $('#sid').removeAttr("lay-verify");
+                    $('#sid').hide();
+                    $('#sidDivId').hide();
+                } else {
+                    $('#driverClassName').val('oracle.jdbc.OracleDriver');
+                    $('#port').val(1521);
+                    $('#sidDivId').show();
+                    $('#sid').attr('lay-verify','required');
+                    $('#sid').show();
+                }
+            });
+
+            $('#testConnection').click(function () {
+                let baseDbConfig = getBaseDbConfig();
+                testConnection(baseDbConfig);
+            });
+
+            function getBaseDbConfig() {
+                return {
+                    "ip": $('#ip').val(),
+                    "port": $('#port').val(),
+                    "username": $('#username').val(),
+                    "password": $('#password').val(),
+                    "dbType": $(':radio[name="dbType"]:checked').val(),
+                    "driverClassName": $('#driverClassName').val(),
+                    "sid": $('#sid').val()
+                }
+            }
+
+            function getCheckboxValue(checkboxName) {
+                let value = false;
+                $("input:checkbox[name="+ checkboxName +"]:checked").each(function(i){
+                    if($(this).val() === 'on') {
+                        value = true;
+                    }
+                });
+                return value;
+            }
+
+            function getExtraCodeDbConfig() {
+                return {
+                    "generateCode": getCheckboxValue("generateCode"),
+                    "overCode": getCheckboxValue("overCode"),
+                    "overMarkdown": getCheckboxValue("overMarkdown"),
+                    "generateMarkdown": getCheckboxValue("generateMarkdown")
+                }
+            }
+
+            function getExtraFileDbConfig() {
+                return {
+                    "generateController": getCheckboxValue("generateController"),
+                    "generateService": getCheckboxValue("generateService"),
+                    "generateBatchMapper": getCheckboxValue("generateBatchMapper"),
+                }
+            }
+
+            function testConnection(data) {
+                basePost("/databaseConfig/testConnection", data, "测试成功", "测试失败");
+            }
+
+            function basePost(url, data, successMsg, errorMsg) {
+                let index = layer.load(2);
+                $.ajax({
+                    url: url,
+                    type:'post',
+                    dataType:'json',
+                    contentType:"application/json",
+                    async:false,
+                    cache:false,
+                    data:JSON.stringify(data),
+                    success:function(res) {
+                        if(res.code === 0) {
+                            layer.msg(successMsg, {icon: 1});
+                            layer.close(index);
+                        } else {
+                            layer.close(index);
+                            layer.alert(res.msg, {
+                                icon: 5,
+                                title: errorMsg
+                            });
+                        }
+                    },
+                    error:function(res) {
+                        layer.close(index);
+                        layer.alert('网络异常', {
+                            icon: 5,
+                            title:'操作失败'
+                        });
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

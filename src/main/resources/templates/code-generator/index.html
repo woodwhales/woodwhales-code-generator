@@ -27,19 +27,19 @@
     <div class="layui-inline">
       <label class="layui-form-label">生成代码</label>
       <div class="layui-input-block">
-        <input type="checkbox" name="generateCode" checked="" lay-skin="switch" lay-text="是|否">
+        <input type="checkbox" name="generateCode" checked="" id="generateCode" lay-skin="switch" lay-text="是|否">
       </div>
     </div>
     <div class="layui-inline">
       <label class="layui-form-label">覆盖代码</label>
       <div class="layui-input-block">
-        <input type="checkbox" name="overCode" checked="" lay-skin="switch" lay-text="是|否">
+        <input type="checkbox" name="overCode" checked="" id="overCode" lay-skin="switch" lay-text="是|否">
       </div>
     </div>
     <div class="layui-inline">
       <label class="layui-form-label">覆盖文档</label>
       <div class="layui-input-block">
-        <input type="checkbox" name="overMarkdown" checked="" lay-skin="switch" lay-text="是|否">
+        <input type="checkbox" name="overMarkdown" checked="" id="overMarkdown" lay-skin="switch" lay-text="是|否">
       </div>
     </div>
   </div>
@@ -50,25 +50,25 @@
     <div class="layui-inline">
       <label class="layui-form-label">markdown</label>
       <div class="layui-input-block">
-        <input type="checkbox" name="generateMarkdown" lay-skin="switch" lay-text="是|否">
+        <input type="checkbox" name="generateMarkdown" id="generateMarkdown" lay-skin="switch" lay-text="是|否">
       </div>
     </div>
     <div class="layui-inline">
       <label class="layui-form-label">controller</label>
       <div class="layui-input-block">
-        <input type="checkbox" name="generateController" lay-skin="switch" lay-text="是|否">
+        <input type="checkbox" name="generateController" id="generateController" lay-skin="switch" lay-text="是|否">
       </div>
     </div>
     <div class="layui-inline">
       <label class="layui-form-label">service</label>
       <div class="layui-input-block">
-        <input type="checkbox" name="generateService" lay-skin="switch" lay-text="是|否">
+        <input type="checkbox" name="generateService" id="generateService" lay-skin="switch" lay-text="是|否">
       </div>
     </div>
     <div class="layui-inline">
       <label class="layui-form-label">batchMapper</label>
       <div class="layui-input-block">
-        <input type="checkbox" name="generateBatchMapper" lay-skin="switch" checked="" lay-text="是|否">
+        <input type="checkbox" name="generateBatchMapper" id="generateBatchMapper" lay-skin="switch" checked="" lay-text="是|否">
       </div>
     </div>
   </div>
@@ -267,14 +267,126 @@
     }
 
     $('#saveConfigBtn').click(function () {
+      let data = {
+        "driverClassName": $("#driverClassName").val(),
+        "ip": $("#ip").val(),
+        "port": $("#port").val(),
+        "sid": $("#sid").val(),
+        "username": $("#username").val(),
+        "password": $("#password").val(),
+        "generateCode": false,
+        "overCode": false,
+        "overMarkdown": false,
+        "generateMarkdown": false,
+        "generateController": false,
+        "generateService": false,
+        "generateBatchMapper": false
+      }
+
+      $("input:checkbox[name='generateCode']:checked").each(function(i){
+        data.generateCode = $(this).val();
+      });
+      $("input:checkbox[name='overCode']:checked").each(function(i){
+        data.overCode = $(this).val();
+      });
+      $("input:checkbox[name='overMarkdown']:checked").each(function(i){
+        data.overMarkdown = $(this).val();
+      });
+      $("input:checkbox[name='generateMarkdown']:checked").each(function(i){
+        data.generateMarkdown = $(this).val();
+      });
+      $("input:checkbox[name='generateController']:checked").each(function(i){
+        data.generateController = $(this).val();
+      });
+      $("input:checkbox[name='generateService']:checked").each(function(i){
+        data.generateService = $(this).val();
+      });
+      $("input:checkbox[name='generateBatchMapper']:checked").each(function(i){
+        data.generateBatchMapper = $(this).val();
+      });
+      addConfigData('/dbConfig/add', data);
+    });
+
+    $('#loadConfigBtn').click(function() {
+      loadConfigData('/dbConfig/page', undefined);
+    });
+
+    function loadConfigData(content) {
       layer.open({
         type: 2,
-        title: '保存配置',
-        area: ['700px', '450px'],
+        title: '加载配置',
+        area: ['72%', '580px'],
         fixed: true,
-        content: '/dbConfig/add'
+        content: content
       });
-    })
+    }
+    
+    function addConfigData(content, data) {
+      var lay = layer.open({
+        type: 2,
+        title: '保存配置',
+        area: ['72%', '580px'],
+        fixed: true,
+        content: content,
+        success: function (layero, index) {
+          let childBody = layer.getChildFrame('body',index);
+          let iframeWin = layero.find('iframe')[0].contentWindow;
+
+          childBody.contents().find("#driverClassName").val(data.driverClassName);
+
+          if(data.driverClassName === 'oracle.jdbc.OracleDriver') {
+            childBody.contents().find("#sidDivId").show();
+            childBody.contents().find("#sid").val(data.sid);
+            childBody.contents().find("#sid").attr('lay-verify','required');
+            data.dbType = 'ORACLE';
+
+          }
+          if(data.driverClassName === 'com.mysql.cj.jdbc.Driver') {
+            childBody.contents().find("#sidDivId").hide();
+            childBody.contents().find("#sid").val('');
+            childBody.contents().find("#sid").removeAttr("lay-verify");
+            data.dbType = 'MYSQL';
+          }
+
+          childBody.contents().find("#"+data.dbType).prop("checked","true");
+
+          childBody.find("input[name=dbType]").each(function(i,item){
+            if($(item).val() === data.dbType){
+              $(item).attr('checked',true);
+            } else {
+              $(item).attr('checked',false);
+            }
+          });
+          childBody.contents().find("#ip").val(data.ip);
+          childBody.contents().find("#port").val(data.port);
+          childBody.contents().find("#username").val(data.username);
+          childBody.contents().find("#password").val(data.password);
+          let dbConfigName = data.dbType + "_" + data.ip + "_" + data.port + "_" + data.username;
+          childBody.contents().find("#dbConfigName").val(dbConfigName);
+
+          copyValue(childBody, "generateCode", data.generateCode);
+          copyValue(childBody, "overCode", data.overCode);
+          copyValue(childBody, "overMarkdown", data.overMarkdown);
+          copyValue(childBody, "generateMarkdown", data.generateMarkdown);
+          copyValue(childBody, "generateController", data.generateController);
+          copyValue(childBody, "generateService", data.generateService);
+          copyValue(childBody, "generateBatchMapper", data.generateBatchMapper);
+          iframeWin.layui.form.render();
+        }
+      });
+
+      layer.style(lay, {
+        overflow: 'visible',
+      });
+    }
+
+    function copyValue(childBody, childId, value) {
+      if('on' === value) {
+        childBody.contents().find("#"+childId).attr("checked", true);
+      } else {
+        childBody.contents().find("#"+childId).attr("checked", false);
+      }
+    }
 
     $('#clearInterface').click(function () {
       clearInterfaceFun();
@@ -496,6 +608,39 @@
 
 });
 
+  function loadDbConfig(dbConfigCode) {
+    let index = layer.load(2);
+    $.ajax({
+      url:'/databaseConfig/get',
+      type:'post',
+      dataType:'json',
+      contentType:"application/json",
+      async:false,
+      cache:false,
+      data:JSON.stringify({
+        'dbConfigCode' : dbConfigCode
+      }),
+      success:function(res) {
+        if(res.code === 0) {
+          layer.close(index);
+          layer.msg('加载成功', {icon: 1});
+        } else {
+          layer.close(index);
+          layer.alert(res.msg, {
+            icon: 5,
+            title:'加载失败'
+          });
+        }
+      },
+      error:function(res) {
+        layer.close(index);
+        layer.alert('网络异常', {
+          icon: 5,
+          title:'操作失败'
+        });
+      }
+    });
+  }
 </script>
 </body>
 </html>

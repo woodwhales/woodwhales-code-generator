@@ -113,4 +113,9 @@ public class CodeTemplateViewController {
 	public String addDbConfig(Model model) {
 		return "code-generator/db-config-add";
 	}
+
+	@GetMapping("/dbConfig/page")
+	public String pageDbConfig(Model model) {
+		return "code-generator/db-config-page";
+	}
 }

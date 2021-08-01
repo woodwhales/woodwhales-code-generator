@@ -7,6 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.woodwhales.common.model.result.OpResult;
 import org.woodwhales.generator.core.controller.request.GenerateTemplateRequestBody;
 import org.woodwhales.generator.core.entity.Column;
 import org.woodwhales.generator.core.entity.DataBaseInfo;
@@ -49,13 +50,28 @@ public class GenerateServiceImpl implements GenerateService {
 		ConnectionFactory connectionFactory = getConnectionFactory(dbType);
 
 		// 获取数据库链接
-		Connection connection = connectionFactory.buildConnection(dataBaseInfo);
+		Connection connection = getConnection(dataBaseInfo).getData();
 
 		// 数据库链接成功之后清除缓存
 		dataBaseInfoCache.clearCache(dataBaseInfo.getDataBaseInfoKey());
 
 		// 查询所有数据库表名
 		return connectionFactory.listSchemas(connection);
+	}
+
+	@Override
+	public OpResult<Connection> getConnection(DataBaseInfo dataBaseInfo) throws Exception {
+		String dbType = dataBaseInfo.getDbType();
+		ConnectionFactory connectionFactory = getConnectionFactory(dbType);
+
+		// 获取数据库链接
+		try {
+			Connection connection = connectionFactory.buildConnection(dataBaseInfo);
+			return OpResult.success(connection);
+		} catch (Exception e) {
+			log.error("获取数据库链接失败", e);
+			throw e;
+		}
 	}
 
 	/**

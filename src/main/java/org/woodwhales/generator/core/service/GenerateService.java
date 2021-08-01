@@ -1,9 +1,11 @@
 package org.woodwhales.generator.core.service;
 
+import org.woodwhales.common.model.result.OpResult;
 import org.woodwhales.generator.core.controller.request.GenerateTemplateRequestBody;
 import org.woodwhales.generator.core.entity.DataBaseInfo;
 import org.woodwhales.generator.core.entity.TableInfo;
 
+import java.sql.Connection;
 import java.util.List;
 
 /**
@@ -19,6 +21,14 @@ public interface GenerateService {
 	 * @throws Exception
 	 */
 	List<String> listSchema(DataBaseInfo dataBaseInfo) throws Exception;
+
+	/**
+	 * 获取数据库链接
+	 * @param dataBaseInfo
+	 * @return
+	 * @throws Exception
+	 */
+	OpResult<Connection> getConnection(DataBaseInfo dataBaseInfo) throws Exception;
 
 	/**
 	 * 根据 dataBaseInfo 生成数据库表信息

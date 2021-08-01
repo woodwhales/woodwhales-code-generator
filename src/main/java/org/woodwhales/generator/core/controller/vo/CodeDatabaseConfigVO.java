@@ -1,9 +1,14 @@
 package org.woodwhales.generator.core.controller.vo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.woodwhales.generator.core.controller.request.dbconfig.ExtraCodeDbConfig;
+import org.woodwhales.generator.core.controller.request.dbconfig.ExtraFileDbConfig;
+import org.woodwhales.generator.plugin.entity.CodeDatabaseConfig;
 
 /**
  * @author woodwhales on 2021-05-20 23:23
@@ -60,11 +65,6 @@ public class CodeDatabaseConfigVO {
     private String configUsername;
 
     /**
-     * 用户密码
-     */
-    private String configPassword;
-
-    /**
      * schema
      */
     private String configSchema;
@@ -72,12 +72,12 @@ public class CodeDatabaseConfigVO {
     /**
      * 代码配置
      */
-    private String generateCodeContent;
+    private ExtraCodeDbConfig extraCodeDbConfig;
 
     /**
      * 文件配置
      */
-    private String generateFileContent;
+    private ExtraFileDbConfig extraFileDbConfig;
 
     /**
      * 创建时间
@@ -88,5 +88,15 @@ public class CodeDatabaseConfigVO {
      * 更新时间
      */
     private java.util.Date gmtModified;
+
+    public static CodeDatabaseConfigVO build(CodeDatabaseConfig codeDatabaseConfig) {
+        CodeDatabaseConfigVO codeDatabaseConfigVO = new CodeDatabaseConfigVO();
+        BeanUtils.copyProperties(codeDatabaseConfig, codeDatabaseConfigVO);
+        codeDatabaseConfigVO.setExtraCodeDbConfig(new Gson().fromJson(codeDatabaseConfig.getGenerateCodeContent(),
+                ExtraCodeDbConfig.class));
+        codeDatabaseConfigVO.setExtraFileDbConfig(new Gson().fromJson(codeDatabaseConfig.getGenerateFileContent(),
+                ExtraFileDbConfig.class));
+        return codeDatabaseConfigVO;
+    }
 
 }
