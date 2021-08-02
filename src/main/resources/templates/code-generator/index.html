@@ -19,8 +19,8 @@
     <div class="layui-inline">
       <label class="layui-form-label">数据库类型</label>
       <div class="layui-input-block">
-        <input type="radio" name="dbType" lay-filter="dbType-filter" value="MYSQL" title="MySQL" checked="">
-        <input type="radio" name="dbType" lay-filter="dbType-filter" value="ORACLE" title="Oracle">
+        <input type="radio" name="dbType" lay-filter="dbType-filter" value="MYSQL" id="MYSQL" title="MySQL" checked="">
+        <input type="radio" name="dbType" lay-filter="dbType-filter" value="ORACLE" id="ORACLE" title="Oracle">
         <input type="text" name="driverClassName" id="driverClassName" style="display: none" autocomplete="off" class="layui-input" value="com.mysql.cj.jdbc.Driver">
       </div>
     </div>
@@ -339,8 +339,8 @@
             childBody.contents().find("#sid").val(data.sid);
             childBody.contents().find("#sid").attr('lay-verify','required');
             data.dbType = 'ORACLE';
-
           }
+
           if(data.driverClassName === 'com.mysql.cj.jdbc.Driver') {
             childBody.contents().find("#sidDivId").hide();
             childBody.contents().find("#sid").val('');
@@ -606,41 +606,78 @@
       return false;
     });
 
-});
+    window.loadDbConfig = function(dbConfigCode) {
+      let index = layer.load(2);
+      $.ajax({
+        url:'/databaseConfig/get',
+        type:'post',
+        dataType:'json',
+        contentType:"application/json",
+        async:false,
+        cache:false,
+        data:JSON.stringify({
+          'dbConfigCode' : dbConfigCode
+        }),
+        success:function(res) {
+          if(res.code === 0) {
+            layer.close(index);
+            layer.msg('加载成功', {icon: 1});
+            let data = res.data;
 
-  function loadDbConfig(dbConfigCode) {
-    let index = layer.load(2);
-    $.ajax({
-      url:'/databaseConfig/get',
-      type:'post',
-      dataType:'json',
-      contentType:"application/json",
-      async:false,
-      cache:false,
-      data:JSON.stringify({
-        'dbConfigCode' : dbConfigCode
-      }),
-      success:function(res) {
-        if(res.code === 0) {
+            $('#driverClassName').val(data.databaseDriverClassName);
+            $('#ip').val(data.configIp);
+            $('#port').val(data.configPort);
+            $('#username').val(data.configUsername);
+            $('#password').val(data.configPassword);
+
+            if(data.driverClassName === 'oracle.jdbc.OracleDriver') {
+              $("#sidDivId").show();
+              $("#sid").val(data.configSid);
+              $("#sid").attr('lay-verify','required');
+            }
+
+            if(data.driverClassName === 'com.mysql.cj.jdbc.Driver') {
+              $("#sidDivId").hide();
+              $("#sid").val('');
+              $("#sid").removeAttr("lay-verify");
+            }
+
+            $("input[name=dbType]").each(function(i,item){
+              if($(item).val() === data.databaseType){
+                $(item).attr('checked',true);
+              } else {
+                $(item).attr('checked',false);
+              }
+            });
+
+            $('#generateCode').attr("checked", data.extraCodeDbConfig.generateCode);
+            $('#generateMarkdown').attr("checked", data.extraCodeDbConfig.generateMarkdown);
+            $('#overCode').attr('checked', data.extraCodeDbConfig.overCode);
+            $('#overMarkdown').attr('checked', data.extraCodeDbConfig.overMarkdown);
+            $('#generateBatchMapper').attr('checked', data.extraFileDbConfig.generateBatchMapper);
+            $('#generateController').attr('checked', data.extraFileDbConfig.generateController);
+            $('#generateService').attr('checked', data.extraFileDbConfig.generateService);
+
+            form.render();
+          } else {
+            layer.close(index);
+            layer.alert(res.msg, {
+              icon: 5,
+              title:'加载失败'
+            });
+          }
+        },
+        error:function(res) {
           layer.close(index);
-          layer.msg('加载成功', {icon: 1});
-        } else {
-          layer.close(index);
-          layer.alert(res.msg, {
+          layer.alert('网络异常', {
             icon: 5,
-            title:'加载失败'
+            title:'操作失败'
           });
         }
-      },
-      error:function(res) {
-        layer.close(index);
-        layer.alert('网络异常', {
-          icon: 5,
-          title:'操作失败'
-        });
-      }
-    });
-  }
+      });
+    }
+
+});
 </script>
 </body>
 </html>

@@ -1,6 +1,5 @@
 package org.woodwhales.generator.core.controller.vo;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -63,6 +62,11 @@ public class CodeDatabaseConfigVO {
      * 用户名称
      */
     private String configUsername;
+
+    /**
+     * 用户密码
+     */
+    private String configPassword;
 
     /**
      * schema

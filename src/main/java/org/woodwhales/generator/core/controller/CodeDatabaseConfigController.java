@@ -15,7 +15,6 @@ import org.woodwhales.generator.core.controller.vo.CodeDatabaseConfigVO;
 import org.woodwhales.generator.core.entity.DataBaseInfo;
 import org.woodwhales.generator.core.service.CodeDatabaseConfigService;
 import org.woodwhales.generator.core.service.GenerateService;
-import org.woodwhales.generator.plugin.entity.CodeDatabaseConfig;
 
 import javax.validation.Valid;
 import java.sql.Connection;
