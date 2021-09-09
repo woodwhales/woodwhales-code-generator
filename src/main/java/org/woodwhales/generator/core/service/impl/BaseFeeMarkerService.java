@@ -30,6 +30,10 @@ public abstract class BaseFeeMarkerService {
         return configuration;
     }
 
+    /**
+     * freemarker模板路径
+     * @return
+     */
     protected abstract String templateFilePath();
 
     @PostConstruct
@@ -65,7 +69,7 @@ public abstract class BaseFeeMarkerService {
      * @return
      */
     protected boolean process(Template template, String targetFileAbsoluteName, HashMap<String, Object> dataModel, boolean isCoverOldFile) {
-        try(FileWriter fw = new FileWriter(new File(targetFileAbsoluteName), !isCoverOldFile)) {
+        try(FileWriter fw = new FileWriter(targetFileAbsoluteName, !isCoverOldFile)) {
             template.process(dataModel, fw);
         } catch (IOException | TemplateException e) {
             log.error("生成文件异常，cause = {}", e.getCause().getMessage());

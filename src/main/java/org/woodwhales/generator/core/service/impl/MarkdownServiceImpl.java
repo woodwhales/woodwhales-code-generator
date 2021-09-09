@@ -27,7 +27,7 @@ public class MarkdownServiceImpl extends BaseFeeMarkerService implements FreeMar
             return true;
         }
 
-        Template template = configuration.getTemplate("markdown.ftl");
+        Template template = configuration.getTemplate("markdown.ftl", "UTF-8");
 
         String targetFilePath = generateTableInfos.getMarkdownFile().getAbsolutePath();
 
