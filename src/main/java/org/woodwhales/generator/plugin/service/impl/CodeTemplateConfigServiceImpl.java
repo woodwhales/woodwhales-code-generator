@@ -3,7 +3,7 @@ package org.woodwhales.generator.plugin.service.impl;
 import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.woodwhales.common.model.vo.PageRespVO;
+import cn.woodwhales.common.model.vo.PageRespVO;
 import org.woodwhales.generator.plugin.controller.vo.CodeListPageConfigVO;
 import org.woodwhales.generator.plugin.controller.vo.CodeNavigationConfigVO;
 import org.woodwhales.generator.plugin.entity.CodeListPageConfig;

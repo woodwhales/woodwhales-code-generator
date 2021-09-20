@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.woodwhales.common.model.vo.RespVO;
+import cn.woodwhales.common.model.vo.RespVO;
 import org.woodwhales.generator.plugin.controller.request.CodeNavigationConfigCreateRequestBody;
 import org.woodwhales.generator.plugin.controller.vo.CodeNavigationConfigSimpleInfoVO;
 import org.woodwhales.generator.plugin.service.CodeNavigationConfigService;

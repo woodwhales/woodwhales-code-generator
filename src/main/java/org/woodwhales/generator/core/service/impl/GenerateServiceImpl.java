@@ -7,7 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-import org.woodwhales.common.model.result.OpResult;
+import cn.woodwhales.common.model.result.OpResult;
 import org.woodwhales.generator.core.controller.request.GenerateTemplateRequestBody;
 import org.woodwhales.generator.core.entity.Column;
 import org.woodwhales.generator.core.entity.DataBaseInfo;

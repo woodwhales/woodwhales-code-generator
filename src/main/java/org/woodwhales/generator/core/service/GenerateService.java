@@ -1,6 +1,6 @@
 package org.woodwhales.generator.core.service;
 
-import org.woodwhales.common.model.result.OpResult;
+import cn.woodwhales.common.model.result.OpResult;
 import org.woodwhales.generator.core.controller.request.GenerateTemplateRequestBody;
 import org.woodwhales.generator.core.entity.DataBaseInfo;
 import org.woodwhales.generator.core.entity.TableInfo;

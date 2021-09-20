@@ -9,11 +9,13 @@
 		<version>2.2.6.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>org.woodwhales</groupId>
 	<artifactId>woodwhales-code-generator</artifactId>
 	<version>1.6.0</version>
 	<name>woodwhales-code-generator</name>
 	<description>woodwhales-code-generator</description>
+	<url>https://github.com/woodwhales/woodwhales-code-generator</url>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -96,9 +98,9 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.oracle</groupId>
+			<groupId>com.oracle.database.jdbc</groupId>
 			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.3</version>
+			<version>11.2.0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -144,11 +146,9 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>org.woodwhales.common</groupId>
+			<groupId>cn.woodwhales.common</groupId>
 			<artifactId>woodwhales-common</artifactId>
-			<version>2.5.0</version>
-			<scope>system</scope>
-			<systemPath>${pom.basedir}/src/main/resources/lib/woodwhales-common-2.5.0.jar</systemPath>
+			<version>3.5.2</version>
 		</dependency>
 	</dependencies>
 
@@ -175,12 +175,12 @@
 
 	</build>
 
-	<repositories>
-		<repository>
-			<id>aliyun</id>
-			<name>aliyun</name>
-			<url>http://maven.aliyun.com/nexus/content/groups/public</url>
-		</repository>
-	</repositories>
+<!--	<repositories>-->
+<!--		<repository>-->
+<!--			<id>aliyun</id>-->
+<!--			<name>aliyun</name>-->
+<!--			<url>http://maven.aliyun.com/nexus/content/groups/public</url>-->
+<!--		</repository>-->
+<!--	</repositories>-->
 
 </project>

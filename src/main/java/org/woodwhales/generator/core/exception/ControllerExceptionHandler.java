@@ -7,7 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.woodwhales.common.model.vo.RespVO;
+import cn.woodwhales.common.model.vo.RespVO;
 
 import javax.validation.UnexpectedTypeException;
 
