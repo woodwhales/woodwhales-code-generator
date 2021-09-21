@@ -90,7 +90,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>29.0-jre</version>
+			<version>30.1.1-jre</version>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
@@ -148,7 +148,7 @@
 		<dependency>
 			<groupId>cn.woodwhales.common</groupId>
 			<artifactId>woodwhales-common</artifactId>
-			<version>3.5.2</version>
+			<version>3.6.0</version>
 		</dependency>
 	</dependencies>
 
@@ -175,12 +175,12 @@
 
 	</build>
 
-<!--	<repositories>-->
-<!--		<repository>-->
-<!--			<id>aliyun</id>-->
-<!--			<name>aliyun</name>-->
-<!--			<url>http://maven.aliyun.com/nexus/content/groups/public</url>-->
-<!--		</repository>-->
-<!--	</repositories>-->
+	<repositories>
+		<repository>
+			<id>aliyun</id>
+			<name>aliyun</name>
+			<url>http://maven.aliyun.com/nexus/content/groups/public</url>
+		</repository>
+	</repositories>
 
 </project>
