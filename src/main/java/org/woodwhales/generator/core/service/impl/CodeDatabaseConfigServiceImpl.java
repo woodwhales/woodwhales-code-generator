@@ -1,11 +1,8 @@
 package org.woodwhales.generator.core.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.woodwhales.common.model.result.OpResult;
@@ -19,7 +16,6 @@ import org.woodwhales.generator.plugin.entity.CodeDatabaseConfig;
 import org.woodwhales.generator.plugin.mapper.CodeDatabaseConfigMapper;
 import org.woodwhales.mybatisplus.MybatisPlusExecutor;
 
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -46,7 +42,6 @@ public class CodeDatabaseConfigServiceImpl implements CodeDatabaseConfigService 
 
         CodeDatabaseConfig oldCodeDatabaseConfig = getCodeDatabaseConfigByCode(requestBody.getConfigCode());
         if(Objects.nonNull(oldCodeDatabaseConfig)) {
-
             newCodeDatabaseConfig.setId(oldCodeDatabaseConfig.getId());
             newCodeDatabaseConfig.setGmtCreated(oldCodeDatabaseConfig.getGmtCreated());
             codeDatabaseConfigMapper.updateById(newCodeDatabaseConfig);

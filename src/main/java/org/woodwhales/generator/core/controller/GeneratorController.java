@@ -22,7 +22,6 @@ import org.woodwhales.generator.core.service.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.sql.Connection;
 import java.util.*;
 
 /**
