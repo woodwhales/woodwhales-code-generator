@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.woodwhales.common.model.result.OpResult;
+import cn.woodwhales.common.model.result.OpResult;
 import org.woodwhales.generator.plugin.controller.request.CodeListPageConfigCreateRequestBody;
 import org.woodwhales.generator.plugin.entity.CodeListPageConfig;
 import org.woodwhales.generator.plugin.mapper.CodeListPageConfigMapper;

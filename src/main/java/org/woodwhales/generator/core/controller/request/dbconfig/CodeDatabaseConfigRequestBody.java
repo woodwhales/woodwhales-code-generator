@@ -4,7 +4,6 @@ import cn.hutool.crypto.SecureUtil;
 import com.google.gson.Gson;
 import lombok.Data;
 import org.woodwhales.generator.plugin.entity.CodeDatabaseConfig;
-import org.woodwhales.util.JsonTool;
 
 import javax.validation.constraints.NotNull;
 

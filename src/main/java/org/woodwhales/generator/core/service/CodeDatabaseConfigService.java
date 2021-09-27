@@ -1,7 +1,7 @@
 package org.woodwhales.generator.core.service;
 
-import org.woodwhales.common.model.result.OpResult;
-import org.woodwhales.common.model.vo.PageRespVO;
+import cn.woodwhales.common.model.result.OpResult;
+import cn.woodwhales.common.model.vo.PageRespVO;
 import org.woodwhales.generator.core.controller.request.CodeDatabaseConfigQueryParam;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigGetRequestBody;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigRequestBody;

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
-import org.woodwhales.common.model.vo.RespVO;
+import cn.woodwhales.common.model.vo.RespVO;
 import org.woodwhales.generator.view.controller.BusinessViewController;
 
 import javax.validation.UnexpectedTypeException;
