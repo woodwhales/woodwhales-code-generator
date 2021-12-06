@@ -69,8 +69,7 @@
                 ,toolbar: '#confirmDbConfig'
                 ,page: true
                 ,cols: [[
-                    {type:'radio'}
-                    ,{field: 'configCode', title: '编号', width:'10%', templet: function(d){
+                    {field: 'configCode', title: '编号', width:'10%', templet: function(d){
                         return d.configCode.substring(d.configCode.length-6);
                     }}
                     ,{field: 'configName', title: '配置名称', width:'35%',}
@@ -79,16 +78,10 @@
                 ]]
             });
 
-            table.on('toolbar(dbConfigTable)', function(obj){
-                var checkStatus = table.checkStatus(obj.config.id); //获取选中行状态
-                switch(obj.event){
-                    case 'getCheckData':
-                        var data = checkStatus.data[0];
-                        window.parent.loadDbConfig(data.configCode);
-                        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                        parent.layer.close(index);
-                        break;
-                };
+            table.on('row(dbConfigTable)', function(obj){
+                window.parent.loadDbConfig(obj.data.configCode);
+                var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                parent.layer.close(index);
             });
 
         });

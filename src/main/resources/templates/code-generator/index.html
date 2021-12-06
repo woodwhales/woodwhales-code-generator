@@ -501,7 +501,7 @@
                 ,cols: [[
                   {type:'checkbox'}
                   ,{field: 'dbName', title: '表名', templet: function (data) {
-                      return '<a href="/detail?tableKey='+data.tableKey+'">'+data.dbName+'</a>';
+                      return data.dbName;
                     }}
                   ,{field: 'name', title: '类名'}
                   ,{field: 'comment', title: '注释', width: 400}
@@ -604,6 +604,10 @@
       }
 
       return false;
+    });
+
+    table.on('row(tableInfosId)', function(obj){
+      window.location.href = "/detail?tableKey=" + obj.data.tableKey;
     });
 
     window.loadDbConfig = function(dbConfigCode) {

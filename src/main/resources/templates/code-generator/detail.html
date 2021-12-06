@@ -15,16 +15,18 @@
             <legend>数据库表信息</legend>
         </fieldset>
     </div>
+
     <div class="layui-row">
         <a th:href="@{/}" class="layui-btn layui-bg-gray layui-btn layui-btn-xs">返回</a>
     </div>
-    <div class="layui-row">
 
+    <br/>
+    <div class="layui-row">
         <blockquote class="layui-elem-quote" >
             <div class="layui-form-item layui-form-text">
                 <label class="layui-form-label">建表语句</label>
                 <div class="layui-input-block">
-                    <textarea name="desc" placeholder="请输入内容" class="layui-textarea" style="white-space:pre-wrap;" id="createTableSqlId"></textarea>
+                    <textarea name="desc" placeholder="请输入内容" class="layui-textarea" style="white-space:pre-wrap;" id="createTableSqlId" disabled></textarea>
                 </div>
             </div>
         </blockquote>
