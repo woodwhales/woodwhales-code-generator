@@ -150,7 +150,8 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
             DatabaseMetaData metaData = connection.getMetaData();
             final String catalog = connection.getCatalog();
 
-            tableInfoList = getTableInfoList(metaData, catalog, schema, dataBaseInfoKey);
+            final Statement statement = connection.createStatement();
+            tableInfoList = getTableInfoList(statement, metaData, catalog, schema, dataBaseInfoKey);
 
             for (TableInfo tableInfo : tableInfoList) {
                 String dbTableName = tableInfo.getDbName();
@@ -181,7 +182,7 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
         return tableInfoList;
     }
 
-    private List<TableInfo> getTableInfoList(DatabaseMetaData metaData, String catalog,
+    private List<TableInfo> getTableInfoList(Statement statement, DatabaseMetaData metaData, String catalog,
                                              String schema, String dataBaseInfoKey) throws SQLException {
         List<TableInfo> tableInfoList = new ArrayList<>();
 
@@ -194,7 +195,10 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
 
                 TableInfo tableInfo = new TableInfo(dbTableName, dataBaseInfoKey);
                 fillNameAndPropertyName(tableInfo, dbTableName);
-
+                ResultSet rs = statement.executeQuery(String.format("show create table `%s`", dbTableName));
+                if(rs.next()) {
+                    tableInfo.setCreateTableSql(rs.getString(2));
+                }
                 tableInfo.setComment(comment);
                 tableInfoList.add(tableInfo);
             }

@@ -55,6 +55,11 @@ public class TableInfo {
 	 */
 	private List<Column> columns;
 
+	/**
+	 * 建表语句
+	 */
+	private String createTableSql;
+
 	public TableInfo(String dbName, String dataBaseInfoKey) {
 		Preconditions.checkArgument(StringUtils.isNotBlank(dbName), "数据库表名不允许为空");
 		Preconditions.checkArgument(StringUtils.isNotBlank(dataBaseInfoKey), "数据库连接信息缓存key不允许为空");

@@ -1,13 +1,12 @@
 package org.woodwhales.generator.core.controller;
 
+import cn.woodwhales.common.model.vo.PageRespVO;
+import cn.woodwhales.common.model.vo.RespVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
-import cn.woodwhales.common.model.result.OpResult;
-import cn.woodwhales.common.model.vo.PageRespVO;
-import cn.woodwhales.common.model.vo.RespVO;
 import org.woodwhales.generator.core.controller.request.BuildConnectionRequestBody;
 import org.woodwhales.generator.core.controller.request.DataBaseRequestBody;
 import org.woodwhales.generator.core.controller.request.DataBaseTableRequestBody;
