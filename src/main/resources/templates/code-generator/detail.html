@@ -236,7 +236,7 @@
                         let tableColumns = res.data.columns;
 
                         $('#createTableSqlId').html(res.data.createTableSql);
-                        $('#createTableSqlId').attr('rows', res.data.createTableSql.split("\n").length - 1);
+                        $('#createTableSqlId').attr('rows', res.data.createTableSql.split("\n").length);
 
                         table.render({
                             elem: '#tableInfoId'
