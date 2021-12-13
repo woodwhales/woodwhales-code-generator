@@ -148,7 +148,7 @@
 		<dependency>
 			<groupId>cn.woodwhales.common</groupId>
 			<artifactId>woodwhales-common</artifactId>
-			<version>3.6.0</version>
+			<version>3.6.7</version>
 		</dependency>
 	</dependencies>
 
