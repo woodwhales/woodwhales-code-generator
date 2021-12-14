@@ -2,6 +2,7 @@ package org.woodwhales.generator.core.service;
 
 import cn.woodwhales.common.model.result.OpResult;
 import org.woodwhales.generator.core.controller.request.GenerateTemplateRequestBody;
+import org.woodwhales.generator.core.controller.vo.DataBaseSimpleInfoVO;
 import org.woodwhales.generator.core.entity.DataBaseInfo;
 import org.woodwhales.generator.core.entity.TableInfo;
 
@@ -20,7 +21,7 @@ public interface GenerateService {
 	 * @return
 	 * @throws Exception
 	 */
-	List<String> listSchema(DataBaseInfo dataBaseInfo) throws Exception;
+	DataBaseSimpleInfoVO getDataBaseVersion(DataBaseInfo dataBaseInfo) throws Exception;
 
 	/**
 	 * 获取数据库链接

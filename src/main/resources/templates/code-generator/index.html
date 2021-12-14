@@ -117,12 +117,20 @@
     </div>
   </div>
   <div class="layui-form-item" id="schemaDivId" hidden="true">
-    <label class="layui-form-label">schema</label>
-    <div class="layui-input-inline">
-      <select name="schema" id="schema" lay-filter="schema" disabled="">
-        <option value=""></option>
-      </select>
+    <div class="layui-inline">
+      <label class="layui-form-label">schema</label>
+      <div class="layui-input-inline">
+        <select name="schema" id="schema" lay-filter="schema" disabled="">
+          <option value=""></option>
+        </select>
+      </div>
     </div>
+      <div class="layui-inline">
+        <label class="layui-form-label">数据库版本</label>
+        <div class="layui-input-inline">
+          <div class="layui-form-mid layui-word-aux" id="dbVersion"></div>
+        </div>
+      </div>
   </div>
   <div class="layui-form-item" id="pageNameAndPathId" hidden="true">
     <div class="layui-inline">
@@ -437,6 +445,7 @@
         $('#schema').attr('disabled','');
         $("#schema").empty();
         $('#schema').removeAttr("lay-verify");
+        $("#dbVersion").html();
         layui.form.render("select");
         clearInterfaceFun();
         $.ajax({
@@ -455,11 +464,12 @@
 
               // 数据库下拉选增加数据库名称并且增加必选校验
               $('#schema').append(new Option('请选择', ''));
-              $.each(res.data, function(index, item) {
+              $.each(res.data.schemas, function(index, item) {
                 $('#schema').append(new Option(item, item));
               });
               $('#schema').removeAttr("disabled");
               $('#schema').attr('lay-verify','required');
+              $('#dbVersion').html(res.data.dbVersion)
               layui.form.render("select");
               schemaDivIdShow();
               layer.close(index);

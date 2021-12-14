@@ -2,6 +2,7 @@ package org.woodwhales.generator.core.service.impl.connection;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.woodwhales.generator.core.controller.vo.DataBaseSimpleInfoVO;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -21,7 +22,7 @@ import static org.woodwhales.generator.core.constant.DbTypeConstant.ORACLE_SERVI
 public class OracleConnectionFactoryImpl extends BaseConnectionFactory {
 
     @Override
-    public List<String> listSchemas(Connection connection) throws SQLException {
+    public DataBaseSimpleInfoVO getDataBaseVersion(Connection connection) throws SQLException {
 
         DatabaseMetaData metaData = connection.getMetaData();
 
@@ -35,6 +36,6 @@ public class OracleConnectionFactoryImpl extends BaseConnectionFactory {
 
         closeResource(connection, resultSet);
 
-        return schemaList;
+        return new DataBaseSimpleInfoVO(this.getDbVersion(metaData), schemaList);
     }
 }

@@ -39,6 +39,12 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
 
     private final String[] types = new String[] {"TABLE"};
 
+    protected String getDbVersion(DatabaseMetaData metaData) throws SQLException {
+        final String databaseProductName = metaData.getDatabaseProductName();
+        final String databaseProductVersion = metaData.getDatabaseProductVersion();
+        return String.format("%s %s", databaseProductName, databaseProductVersion);
+    }
+
     /**
      * 创建数据库链接，如果抛出异常则链接失败
      * @param dataBaseInfo

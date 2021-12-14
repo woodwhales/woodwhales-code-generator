@@ -63,7 +63,7 @@ public class GeneratorController {
 	public RespVO buildConnection(@Valid @RequestBody BuildConnectionRequestBody requestBody) throws Exception {
 		log.info("[buildConnection].buildConnectionRequestBody = {}", requestBody);
 		DataBaseInfo dataBaseInfo = DataBaseInfo.convert(requestBody);
-		return RespVO.success(generateService.listSchema(dataBaseInfo));
+		return RespVO.success(generateService.getDataBaseVersion(dataBaseInfo));
 	}
 
 	/**

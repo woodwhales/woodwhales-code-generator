@@ -1,5 +1,6 @@
 package org.woodwhales.generator.core.service;
 
+import org.woodwhales.generator.core.controller.vo.DataBaseSimpleInfoVO;
 import org.woodwhales.generator.core.entity.DataBaseInfo;
 import org.woodwhales.generator.core.entity.TableInfo;
 
@@ -47,7 +48,7 @@ public interface ConnectionFactory {
      * @return
      * @throws SQLException
      */
-    List<String> listSchemas(Connection connection) throws SQLException;
+    DataBaseSimpleInfoVO getDataBaseVersion(Connection connection) throws SQLException;
 
     /**
      * 获取所有数据库表信息

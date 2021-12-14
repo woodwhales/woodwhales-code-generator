@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import cn.woodwhales.common.model.result.OpResult;
 import org.woodwhales.generator.core.controller.request.GenerateTemplateRequestBody;
+import org.woodwhales.generator.core.controller.vo.DataBaseSimpleInfoVO;
 import org.woodwhales.generator.core.entity.Column;
 import org.woodwhales.generator.core.entity.DataBaseInfo;
 import org.woodwhales.generator.core.entity.TableInfo;
@@ -45,7 +46,7 @@ public class GenerateServiceImpl implements GenerateService {
 	}
 
 	@Override
-	public List<String> listSchema(DataBaseInfo dataBaseInfo) throws Exception {
+	public DataBaseSimpleInfoVO getDataBaseVersion(DataBaseInfo dataBaseInfo) throws Exception {
 		String dbType = dataBaseInfo.getDbType();
 		ConnectionFactory connectionFactory = getConnectionFactory(dbType);
 
@@ -56,7 +57,7 @@ public class GenerateServiceImpl implements GenerateService {
 		dataBaseInfoCache.clearCache(dataBaseInfo.getDataBaseInfoKey());
 
 		// 查询所有数据库表名
-		return connectionFactory.listSchemas(connection);
+		return connectionFactory.getDataBaseVersion(connection);
 	}
 
 	@Override
