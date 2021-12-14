@@ -264,7 +264,7 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
                         .comment(remarks).build();
 
                 // 将数据库表的字段类型转成 java 变量类型
-                column.setType(convertType(columnName, column.getDbType()));
+                column.setType(this.convertType(dbTableName, columnName, column.getDbType()));
                 column.setName(StringTools.upperWithOutFirstChar(columnName));
                 column.setPrimaryKey(checkPrimaryKey(columnName, primaryKeys));
 
@@ -287,7 +287,7 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
         return keys.contains(columnName);
     }
 
-    private String convertType(String columnName, String dbType) {
+    private String convertType(String dbTableName, String columnName, String dbType) {
         Map<String, String> typeMap = columnConfig.getType();
         String type = typeMap.get(dbType);
 
@@ -301,7 +301,7 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
             }
         }
 
-        Preconditions.checkArgument(isNotBlank(type), "数据字段 columnName = [%s] 的字段类型 = [%s] 未匹配", columnName, dbType);
+        Preconditions.checkArgument(isNotBlank(type), "数据库表 = [%s] 数据字段 columnName = [%s] 的字段类型 = [%s] 未匹配", dbTableName, columnName, dbType);
         return type;
     }
 
