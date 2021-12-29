@@ -6,7 +6,6 @@ import org.woodwhales.generator.core.controller.request.CodeDatabaseConfigQueryP
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigGetRequestBody;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigRequestBody;
 import org.woodwhales.generator.core.controller.vo.CodeDatabaseConfigVO;
-import org.woodwhales.generator.plugin.entity.CodeDatabaseConfig;
 
 /**
  * @projectName: woodwhales-code-generator
