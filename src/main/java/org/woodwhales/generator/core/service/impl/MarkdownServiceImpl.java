@@ -1,5 +1,6 @@
 package org.woodwhales.generator.core.service.impl;
 
+import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class MarkdownServiceImpl extends BaseFeeMarkerService implements FreeMar
             return true;
         }
 
+        Configuration configuration = this.initConfiguration("/template/markdown");
         Template template = configuration.getTemplate("markdown.ftl", "UTF-8");
 
         String targetFilePath = generateTableInfos.getMarkdownFile().getAbsolutePath();
@@ -42,8 +44,4 @@ public class MarkdownServiceImpl extends BaseFeeMarkerService implements FreeMar
         return process(template, targetFilePath, fileName, dataModel, isCoverOldFile);
     }
 
-    @Override
-    protected String templateFilePath() {
-        return "/template/markdown";
-    }
 }

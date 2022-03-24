@@ -1,5 +1,6 @@
 package org.woodwhales.generator.plugin.service.impl;
 
+import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.springframework.stereotype.Service;
 import org.woodwhales.generator.core.service.impl.BaseFeeMarkerService;
@@ -18,12 +19,8 @@ import java.util.HashMap;
 public class CodeNavigationFreeMarkerServiceImpl extends BaseFeeMarkerService implements CodeTemplateFreeMarkerService {
 
     @Override
-    protected String templateFilePath() {
-        return "/template/custom";
-    }
-
-    @Override
     public boolean process(CodeTemplateConfigDetail codeTemplateConfigDetail) throws Exception {
+        Configuration configuration = this.initConfiguration("/template/custom");
         Template template = configuration.getTemplate("code-navigation.ftl");
 
         // 要生成的目录

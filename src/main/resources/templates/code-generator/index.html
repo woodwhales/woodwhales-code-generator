@@ -152,6 +152,13 @@
       </div>
     </div>
   </div>
+  <div class="layui-form-item" id="ormId" hidden="true">
+    <label class="layui-form-label">ORM框架</label>
+    <div class="layui-input-block">
+      <input type="radio" name="orm" id="myBatis" value="myBatis" title="MyBatis">
+      <input type="radio" name="orm" id="myBatisPlus" value="myBatisPlus" title="MyBatisPlus">
+    </div>
+  </div>
   <div class="layui-form-item" id="superClassDivId" hidden="true">
     <label class="layui-form-label">父类</label>
     <div class="layui-input-inline">
@@ -219,26 +226,45 @@
       }
     });
 
-	$('#resetBtnId').click(function () {
+    //自定义验证规则
+    form.verify({
+      otherReq: function(value, item){
+        var $ = layui.$;
+        var verifyName=$(item).attr('name')
+                , verifyType=$(item).attr('type')
+                ,formElem=$(item).parents('.layui-form')//获取当前所在的form元素，如果存在的话
+                ,verifyElem=formElem.find('input[name='+verifyName+']')//获取需要校验的元素
+                ,isTrue= verifyElem.is(':checked')//是否命中校验
+                ,focusElem = verifyElem.next().find('i.layui-icon');//焦点元素
+        if(!isTrue || !value){
+          //定位焦点
+          focusElem.css(verifyType=='radio'?{"color":"#FF5722"}:{"border-color":"#FF5722"});
+          //对非输入框设置焦点
+          focusElem.first().attr("tabIndex","").css("outline","").blur(function() {
+            focusElem.css(verifyType=='radio'?{"color":""}:{"border-color":""});
+          }).focus();
+          return '必填项不能为空';
+        }
+      }
+    });
 
+	$('#resetBtnId').click(function () {
       $("#generateDir").val('');
       $("#packageName").val('');
       $("#superClass").val('');
       $("#author").val('');
 
-      pageNameAndPathIdHide();
-      interfaceDivIdHide();
-      superClassDivIdHide();
-      tableInfosDivHide();
-      schemaDivIdHide();
-      generateDirRemoveAttr();
-      packageNameRemoveAttr();
+      ["pageNameAndPathId", "interfaceDivId", "superClassDivId", "tableInfosDiv", "schemaDivId", "ormId"].forEach(hideItem);
+      ["myBatisPlus", "myBatis", "generateDir", "packageName"].forEach(removeAttr);
+
       clearInterfaceFun();
       updateBtnToTest();
 
 	  if('测试' === $('#btnId').html()) {
         $("#schema").empty();
         $('#schema').removeAttr("lay-verify");
+        $('input[name=orm]').prop('checked', false);
+        layui.form.render('radio');
         layui.form.render("select");
 	    return false;
       }
@@ -254,15 +280,6 @@
     })
 
     let interfaceList = new Array();
-
-    function emptySchema() {
-      $('#schema').attr('disabled','');
-      $("#schema").empty();
-      $('#schema').removeAttr("lay-verify");
-      layui.form.render("select");
-      updateBtnToSubmit();
-      clearInterfaceFun();
-    }
 
     window.closeTagInner = function(index) {
       interfaceList.splice(index, 1);
@@ -445,6 +462,8 @@
         $('#schema').attr('disabled','');
         $("#schema").empty();
         $('#schema').removeAttr("lay-verify");
+        $('input[name=orm]').prop('checked', false);
+        layui.form.render('radio');
         $("#dbVersion").html();
         layui.form.render("select");
         clearInterfaceFun();
@@ -471,7 +490,7 @@
               $('#schema').attr('lay-verify','required');
               $('#dbVersion').html(res.data.dbVersion)
               layui.form.render("select");
-              schemaDivIdShow();
+              ["schemaDivId"].forEach(showItem);
               layer.close(index);
             } else {
               layer.close(index);
@@ -523,25 +542,23 @@
                 ,data: res.data.tableInfos
               });
 
-              pageNameAndPathIdShow();
-              superClassDivIdShow();
-              interfaceDivIdShow();
-              generateDirAddAttr();
+              ["pageNameAndPathId", "tableInfoLabelId", "tableInfosDiv", "ormId", "superClassDivId", "interfaceDivId"].forEach(showItem);
 
+
+              generateDirAddAttr();
               // 只要选中了生成代码，包名必须选择
               if(data.field.generateCode) {
                 packageNameAddAttr();
               }
-
-              tableInfoLabelIdShow();
-              tableInfosDivShow();
+              myBatisPlusAddAttr();
+              myBatisAddAttr();
               updateBtnToGenerate();
               let dataBaseInfoKey = res.data.dataBaseInfoKey;
               $('#addNavigationConfig').attr("href","/addNavigationConfig?dataBaseInfoKey=" + dataBaseInfoKey);
               layer.close(index);
               return false;
             } else {
-              tableInfoLabelIdHide();
+              ["tableInfoLabelId"].forEach(hideItem)
               layer.close(index);
               layer.alert(res.msg, {
                 icon: 5,
@@ -550,7 +567,7 @@
             }
           },
           error:function(res) {
-            tableInfoLabelIdHide();
+            ["tableInfoLabelId"].forEach(hideItem)
             layer.close(index);
             layer.alert('网络异常', {
               icon: 5,
@@ -562,7 +579,6 @@
       }
 
       if('生成' === $('#btnId').html()) {
-
         // 判断是否选择要生成的表格数据
         let checkStatus = table.checkStatus('tableInfosId');
 

@@ -21,30 +21,17 @@ import java.util.HashMap;
 @Slf4j
 public abstract class BaseFeeMarkerService {
 
-    protected Configuration configuration;
-
-    private Configuration initConfiguration() {
-        Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
-        configuration.setDefaultEncoding("UTF-8");
-        configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-        return configuration;
-    }
-
-    /**
-     * freemarker模板路径
-     * @return
-     */
-    protected abstract String templateFilePath();
-
-    @PostConstruct
-    protected Configuration getConfiguration() {
-        configuration = initConfiguration();
+    protected Configuration initConfiguration(String templateFilePath) {
         try {
-            configuration.setClassForTemplateLoading(BaseFeeMarkerService.class, templateFilePath());
+            Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
+            configuration.setDefaultEncoding("UTF-8");
+            configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+            configuration.setClassForTemplateLoading(this.getClass().getClass(), templateFilePath);
+            return configuration;
         } catch (Exception e) {
-            log.error("load template process is failed, {}", e);
+            log.error("load template process is failed, causeBy={}", e.getMessage(), e);
+            throw e;
         }
-        return configuration;
     }
 
     /**

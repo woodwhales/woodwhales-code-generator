@@ -2,36 +2,12 @@ function closeTag(index) {
     closeTagInner(index);
 }
 
-function schemaDivIdHide() {
-    $('#schemaDivId').hide();
+function hideItem(item, index) {
+    $('#'+item).hide();
 }
 
-function schemaDivIdShow() {
-    $('#schemaDivId').show();
-}
-
-function pageNameAndPathIdHide() {
-    $('#pageNameAndPathId').hide();
-}
-
-function pageNameAndPathIdShow() {
-    $('#pageNameAndPathId').show();
-}
-
-function superClassDivIdHide() {
-    $('#superClassDivId').hide();
-}
-
-function superClassDivIdShow() {
-    $('#superClassDivId').show();
-}
-
-function interfaceDivIdHide() {
-    $('#interfaceDivId').hide();
-}
-
-function interfaceDivIdShow() {
-    $('#interfaceDivId').show();
+function showItem(item, index) {
+    $('#'+item).show();
 }
 
 function updateBtnToTest() {
@@ -46,32 +22,20 @@ function updateBtnToGenerate() {
     $('#btnId').html('生成');
 }
 
-function tableInfosDivShow() {
-    $('#tableInfosDiv').show();
-}
-
-function tableInfosDivHide() {
-    $('#tableInfosDiv').hide();
-}
-
-function tableInfoLabelIdShow() {
-    $('#tableInfoLabelId').show();
-}
-
-function tableInfoLabelIdHide() {
-    $('#tableInfoLabelId').hide();
-}
-
 function generateDirAddAttr() {
     $('#generateDir').attr('lay-verify','required');
 }
 
-function generateDirRemoveAttr() {
-    $('#generateDir').removeAttr("lay-verify");
+function myBatisPlusAddAttr() {
+    $('#myBatisPlus').attr('lay-verify','otherReq');
 }
 
-function packageNameRemoveAttr() {
-    $('#packageName').removeAttr("lay-verify");
+function myBatisAddAttr() {
+    $('#myBatis').attr('lay-verify','otherReq');
+}
+
+function removeAttr(item, index) {
+    $('#'+item).removeAttr("lay-verify");
 }
 
 function sidAddAttr() {
@@ -84,6 +48,14 @@ function sidRemoveAttr() {
     $('#sid').removeAttr("lay-verify");
     $('#sid').hide();
     $('#sidDivId').hide();
+}
+
+function packageNameAddAttr() {
+    $('#packageName').attr('lay-verify','required');
+}
+
+function packageNameAddAttr() {
+    $('#packageName').attr('lay-verify','required');
 }
 
 function packageNameAddAttr() {

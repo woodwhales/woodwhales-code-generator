@@ -143,6 +143,11 @@ public class DataBaseInfo {
 	private String author;
 
 	/**
+	 * orm框架
+	 */
+	private String orm;
+
+	/**
 	 * 当前时间
 	 */
 	private String now;

@@ -85,4 +85,9 @@ public class DataBaseRequestBody extends BuildConnectionRequestBody {
 	 */
 	private String author;
 
+	/**
+	 * orm框架
+	 */
+	private String orm;
+
 }

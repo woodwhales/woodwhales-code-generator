@@ -63,7 +63,7 @@ public class GenerateTableInfos {
         // 设置 markdown 生成目录
         this.markdownFile = new File(generateDir);
         // 设置 java代码 生成目录
-        this.javaFile = getTargetFile(baseDirPath, this.dataBaseInfo.getPackageName());
+        this.javaFile = this.getTargetFile(baseDirPath, this.dataBaseInfo.getPackageName());
     }
 
     /**
@@ -86,7 +86,7 @@ public class GenerateTableInfos {
             try {
                 FileUtils.forceMkdir(targetDirFile);
             } catch (Exception e) {
-                log.error("create dir process failed, {}", e);
+                log.error("create dir process failed, causeBy={}", e.getMessage(), e);
                 throw new GenerateException("生成代码的包目录失败");
             }
         }
