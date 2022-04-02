@@ -2,7 +2,6 @@ package org.woodwhales.generator.core.service.impl;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import freemarker.template.TemplateExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +14,6 @@ import org.woodwhales.generator.core.service.FreeMarkerService;
 import java.io.File;
 import java.util.HashMap;
 
-import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 
 /**

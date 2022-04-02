@@ -6,7 +6,6 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,7 +25,7 @@ public abstract class BaseFeeMarkerService {
             Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
             configuration.setDefaultEncoding("UTF-8");
             configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-            configuration.setClassForTemplateLoading(this.getClass().getClass(), templateFilePath);
+            configuration.setClassForTemplateLoading(this.getClass(), templateFilePath);
             return configuration;
         } catch (Exception e) {
             log.error("load template process is failed, causeBy={}", e.getMessage(), e);
