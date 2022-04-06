@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.woodwhales.generator.core.controller.request.CodeDatabaseConfigQueryParam;
+import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigDeleteRequestBody;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigGetRequestBody;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigRequestBody;
 import org.woodwhales.generator.core.controller.vo.CodeDatabaseConfigVO;
@@ -56,12 +57,20 @@ public class CodeDatabaseConfigServiceImpl implements CodeDatabaseConfigService 
         Wrapper<CodeDatabaseConfig> wrapper = Wrappers.<CodeDatabaseConfig>lambdaQuery()
                 .eq(CodeDatabaseConfig::getStatus, 0)
                 .eq(CodeDatabaseConfig::getConfigCode, configCode);
-
         return MybatisPlusExecutor.executeQueryOne(codeDatabaseConfigMapper, wrapper);
     }
 
     @Override
     public OpResult<CodeDatabaseConfigVO> get(CodeDatabaseConfigGetRequestBody requestBody) {
-        return OpResult.success(CodeDatabaseConfigVO.build(getCodeDatabaseConfigByCode(requestBody.getDbConfigCode())));
+        return OpResult.success(CodeDatabaseConfigVO.build(getCodeDatabaseConfigByCode(requestBody.getConfigCode())));
+    }
+
+    @Override
+    public OpResult<Void> delete(CodeDatabaseConfigDeleteRequestBody requestBody) {
+        CodeDatabaseConfig codeDatabaseConfig = getCodeDatabaseConfigByCode(requestBody.getConfigCode());
+        if(Objects.nonNull(codeDatabaseConfig)) {
+            codeDatabaseConfigMapper.deleteById(codeDatabaseConfig.getId());
+        }
+        return OpResult.success();
     }
 }

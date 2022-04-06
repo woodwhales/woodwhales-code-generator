@@ -3,6 +3,7 @@ package org.woodwhales.generator.core.service;
 import cn.woodwhales.common.model.result.OpResult;
 import cn.woodwhales.common.model.vo.PageRespVO;
 import org.woodwhales.generator.core.controller.request.CodeDatabaseConfigQueryParam;
+import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigDeleteRequestBody;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigGetRequestBody;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigRequestBody;
 import org.woodwhales.generator.core.controller.vo.CodeDatabaseConfigVO;
@@ -35,4 +36,11 @@ public interface CodeDatabaseConfigService {
      * @return
      */
     OpResult<CodeDatabaseConfigVO> get(CodeDatabaseConfigGetRequestBody requestBody);
+
+    /**
+     * 删除数据库配置信息
+     * @param requestBody
+     * @return
+     */
+    OpResult<Void> delete(CodeDatabaseConfigDeleteRequestBody requestBody);
 }

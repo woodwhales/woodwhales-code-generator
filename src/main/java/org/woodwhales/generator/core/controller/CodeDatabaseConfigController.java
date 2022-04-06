@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.woodwhales.generator.core.controller.request.BuildConnectionRequestBody;
 import org.woodwhales.generator.core.controller.request.CodeDatabaseConfigQueryParam;
+import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigDeleteRequestBody;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigGetRequestBody;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigRequestBody;
 import org.woodwhales.generator.core.controller.vo.CodeDatabaseConfigVO;
@@ -43,6 +44,12 @@ public class CodeDatabaseConfigController {
     @PostMapping("/create")
     public RespVO<Void> create(@Validated @RequestBody CodeDatabaseConfigRequestBody requestBody) {
         return RespVO.resp(codeDatabaseConfigService.create(requestBody));
+    }
+
+    @CrossOrigin
+    @PostMapping("/delete")
+    public RespVO<Void> delete(@Validated @RequestBody CodeDatabaseConfigDeleteRequestBody requestBody) {
+        return RespVO.resp(codeDatabaseConfigService.delete(requestBody));
     }
 
     @CrossOrigin
