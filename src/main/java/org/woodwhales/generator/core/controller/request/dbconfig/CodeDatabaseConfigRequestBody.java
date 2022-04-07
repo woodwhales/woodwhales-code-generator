@@ -34,12 +34,12 @@ public class CodeDatabaseConfigRequestBody {
      * 配置名称
      */
     @NotNull(message = "配置名称不允许为空")
-    private String dbConfigName;
+    private String configName;
 
     /**
      * 备注
      */
-    private String dbConfigMemo;
+    private String configMemo;
 
     public String getConfigCode() {
         String ip = this.baseDbConfig.getIp();
@@ -53,8 +53,8 @@ public class CodeDatabaseConfigRequestBody {
     public CodeDatabaseConfig buildConfigCodeDatabase() {
         CodeDatabaseConfig codeDatabaseConfig = new CodeDatabaseConfig();
         codeDatabaseConfig.setConfigCode(this.getConfigCode());
-        codeDatabaseConfig.setConfigName(this.dbConfigName);
-        codeDatabaseConfig.setConfigMemo(this.dbConfigMemo);
+        codeDatabaseConfig.setConfigName(this.configName);
+        codeDatabaseConfig.setConfigMemo(this.configMemo);
 
         codeDatabaseConfig.setDatabaseType(this.baseDbConfig.getDbType());
         codeDatabaseConfig.setDatabaseDriverClassName(this.baseDbConfig.getDriverClassName());

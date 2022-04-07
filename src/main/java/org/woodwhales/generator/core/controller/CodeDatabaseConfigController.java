@@ -12,6 +12,7 @@ import org.woodwhales.generator.core.controller.request.CodeDatabaseConfigQueryP
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigDeleteRequestBody;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigGetRequestBody;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigRequestBody;
+import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigUpdateRequestBody;
 import org.woodwhales.generator.core.controller.vo.CodeDatabaseConfigVO;
 import org.woodwhales.generator.core.entity.DataBaseInfo;
 import org.woodwhales.generator.core.service.CodeDatabaseConfigService;
@@ -50,6 +51,13 @@ public class CodeDatabaseConfigController {
     @PostMapping("/delete")
     public RespVO<Void> delete(@Validated @RequestBody CodeDatabaseConfigDeleteRequestBody requestBody) {
         return RespVO.resp(codeDatabaseConfigService.delete(requestBody));
+    }
+
+
+    @CrossOrigin
+    @PostMapping("/update")
+    public RespVO<Void> update(@Validated @RequestBody CodeDatabaseConfigUpdateRequestBody requestBody) {
+        return RespVO.resp(codeDatabaseConfigService.update(requestBody));
     }
 
     @CrossOrigin

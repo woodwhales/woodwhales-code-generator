@@ -12,11 +12,13 @@ import org.woodwhales.generator.core.controller.request.CodeDatabaseConfigQueryP
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigDeleteRequestBody;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigGetRequestBody;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigRequestBody;
+import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigUpdateRequestBody;
 import org.woodwhales.generator.core.controller.vo.CodeDatabaseConfigVO;
 import org.woodwhales.generator.core.service.CodeDatabaseConfigService;
 import org.woodwhales.generator.plugin.entity.CodeDatabaseConfig;
 import org.woodwhales.generator.plugin.mapper.CodeDatabaseConfigMapper;
 
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -70,6 +72,18 @@ public class CodeDatabaseConfigServiceImpl implements CodeDatabaseConfigService 
         CodeDatabaseConfig codeDatabaseConfig = getCodeDatabaseConfigByCode(requestBody.getConfigCode());
         if(Objects.nonNull(codeDatabaseConfig)) {
             codeDatabaseConfigMapper.deleteById(codeDatabaseConfig.getId());
+        }
+        return OpResult.success();
+    }
+
+    @Override
+    public OpResult<Void> update(CodeDatabaseConfigUpdateRequestBody requestBody) {
+        CodeDatabaseConfig codeDatabaseConfig = getCodeDatabaseConfigByCode(requestBody.getConfigCode());
+        if(Objects.nonNull(codeDatabaseConfig)) {
+            codeDatabaseConfig.setConfigName(requestBody.getConfigName());
+            codeDatabaseConfig.setConfigMemo(requestBody.getConfigMemo());
+            codeDatabaseConfig.setGmtModified(new Date());
+            codeDatabaseConfigMapper.updateById(codeDatabaseConfig);
         }
         return OpResult.success();
     }

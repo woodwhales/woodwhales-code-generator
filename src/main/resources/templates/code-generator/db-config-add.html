@@ -139,8 +139,8 @@
                     'extraCodeDbConfig': getExtraCodeDbConfig(),
                     'extraFileDbConfig': getExtraFileDbConfig(),
                     'baseDbConfig': getBaseDbConfig(),
-                    'dbConfigName': data.field.dbConfigName,
-                    'dbConfigMemo': data.field.dbConfigMemo
+                    'configName': data.field.dbConfigName,
+                    'configMemo': data.field.dbConfigMemo
                 }
 
                 basePost("/databaseConfig/create", datas, "保存成功", "保存失败");
