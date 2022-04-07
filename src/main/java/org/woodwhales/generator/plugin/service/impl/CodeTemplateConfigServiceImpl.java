@@ -1,9 +1,10 @@
 package org.woodwhales.generator.plugin.service.impl;
 
+import cn.woodwhales.common.model.vo.PageRespVO;
+import cn.woodwhales.common.model.vo.RespVO;
 import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import cn.woodwhales.common.model.vo.PageRespVO;
 import org.woodwhales.generator.plugin.controller.vo.CodeListPageConfigVO;
 import org.woodwhales.generator.plugin.controller.vo.CodeNavigationConfigVO;
 import org.woodwhales.generator.plugin.entity.CodeListPageConfig;
@@ -99,14 +100,14 @@ public class CodeTemplateConfigServiceImpl implements CodeTemplateConfigService 
     }
 
     @Override
-    public PageRespVO<CodeNavigationConfig> listCodeNavigationConfig() {
+    public RespVO<PageRespVO<CodeNavigationConfig>> listCodeNavigationConfig() {
         List<CodeNavigationConfig> codeNavigationConfigList = codeNavigationConfigService.listCodeNavigationConfig();
         return PageRespVO.success(codeNavigationConfigList);
     }
 
-    public PageRespVO<CodeListPageConfig> listCodeListPageConfig() {
+    public RespVO<List<CodeListPageConfig>> listCodeListPageConfig() {
         List<CodeListPageConfig> codeListPageConfigList = codeListPageConfigService.listCodeListPageConfig();
-        return PageRespVO.success(codeListPageConfigList);
+        return RespVO.success(codeListPageConfigList);
     }
 
     private CodeListPageConfig getCodeListPageConfigByCodeListPageConfigId(Integer codeListPageConfigId) {

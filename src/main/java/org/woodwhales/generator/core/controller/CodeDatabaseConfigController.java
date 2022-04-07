@@ -37,7 +37,7 @@ public class CodeDatabaseConfigController {
     private GenerateService generateService;
 
     @GetMapping("/page")
-    public PageRespVO<CodeDatabaseConfigVO> page(@Validated CodeDatabaseConfigQueryParam param) {
+    public RespVO<PageRespVO<CodeDatabaseConfigVO>> page(@Validated CodeDatabaseConfigQueryParam param) {
         return codeDatabaseConfigService.page(param);
     }
 

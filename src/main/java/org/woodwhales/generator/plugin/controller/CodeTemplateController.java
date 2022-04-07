@@ -38,7 +38,7 @@ public class CodeTemplateController {
     private CodeTemplateFreeMarkerService codeNavigationFreeMarkerService;
 
     @GetMapping("/page/")
-    public PageRespVO<CodeNavigationConfig> page() {
+    public RespVO<PageRespVO<CodeNavigationConfig>> page() {
         return codeTemplateConfigService.listCodeNavigationConfig();
     }
 

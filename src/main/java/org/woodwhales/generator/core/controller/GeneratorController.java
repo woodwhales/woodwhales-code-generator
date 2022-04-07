@@ -1,6 +1,5 @@
 package org.woodwhales.generator.core.controller;
 
-import cn.woodwhales.common.model.vo.PageRespVO;
 import cn.woodwhales.common.model.vo.RespVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -140,7 +139,7 @@ public class GeneratorController {
 	}
 
 	@GetMapping("/listTableInfos")
-	public PageRespVO<NavigationConfigVO> listTableInfos(@NotBlank @RequestParam("dataBaseInfoKey") String encryptedDataBaseInfoKey) {
+	public RespVO<List<NavigationConfigVO>> listTableInfos(@NotBlank @RequestParam("dataBaseInfoKey") String encryptedDataBaseInfoKey) {
 		List<TableInfo> tableInfos = generateService.listTables(encryptedDataBaseInfoKey);
 
 		int index = 1;
@@ -153,11 +152,11 @@ public class GeneratorController {
 					index++));
 		}
 
-		return PageRespVO.success(navigationConfigVOList);
+		return RespVO.success(navigationConfigVOList);
 	}
 
 	@GetMapping("/listTableInfo")
-	public PageRespVO<ColsConfigVO> listTableInfo(@NotBlank @RequestParam("tableKey") String tableKey) {
+	public RespVO<List<ColsConfigVO>> listTableInfo(@NotBlank @RequestParam("tableKey") String tableKey) {
 		TableInfo tableInfo = generateService.getTableInfo(tableKey);
 		List<Column> columns = tableInfo.getColumns();
 
@@ -168,7 +167,7 @@ public class GeneratorController {
 												  null, column.getDbType(), column.getColumnSize(), index++));
 		}
 
-		return PageRespVO.success(colsConfigVOList);
+		return RespVO.success(colsConfigVOList);
 	}
 
 }

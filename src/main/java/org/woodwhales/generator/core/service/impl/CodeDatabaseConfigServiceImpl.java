@@ -2,6 +2,7 @@ package org.woodwhales.generator.core.service.impl;
 
 import cn.woodwhales.common.model.result.OpResult;
 import cn.woodwhales.common.model.vo.PageRespVO;
+import cn.woodwhales.common.model.vo.RespVO;
 import cn.woodwhales.common.mybatisplus.MybatisPlusExecutor;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -32,7 +33,7 @@ public class CodeDatabaseConfigServiceImpl implements CodeDatabaseConfigService 
     private CodeDatabaseConfigMapper codeDatabaseConfigMapper;
 
     @Override
-    public PageRespVO<CodeDatabaseConfigVO> page(CodeDatabaseConfigQueryParam param) {
+    public RespVO<PageRespVO<CodeDatabaseConfigVO>> page(CodeDatabaseConfigQueryParam param) {
         return MybatisPlusExecutor.executeQueryPage(codeDatabaseConfigMapper, param, wrapper -> {
             wrapper.like(StringUtils.isNotBlank(param.getConfigName()), CodeDatabaseConfig::getConfigName, param.getConfigName())
             .eq(CodeDatabaseConfig::getStatus, 0);

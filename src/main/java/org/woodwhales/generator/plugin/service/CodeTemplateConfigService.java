@@ -1,6 +1,7 @@
 package org.woodwhales.generator.plugin.service;
 
 import cn.woodwhales.common.model.vo.PageRespVO;
+import cn.woodwhales.common.model.vo.RespVO;
 import org.woodwhales.generator.plugin.controller.vo.CodeListPageConfigVO;
 import org.woodwhales.generator.plugin.controller.vo.CodeNavigationConfigVO;
 import org.woodwhales.generator.plugin.entity.CodeNavigationConfig;
@@ -28,7 +29,7 @@ public interface CodeTemplateConfigService {
 
     CodeListPageConfigVO getCodeListPageConfigVOByCodeListPageConfigId(Integer codeListPageConfigId);
 
-    PageRespVO<CodeNavigationConfig> listCodeNavigationConfig();
+    RespVO<PageRespVO<CodeNavigationConfig>> listCodeNavigationConfig();
 
     CodeNavigationConfigVO getCodeNavigationConfigVOByCodeListPageConfigId(Integer codeListPageConfigId);
 

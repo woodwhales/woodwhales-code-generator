@@ -2,6 +2,7 @@ package org.woodwhales.generator.core.service;
 
 import cn.woodwhales.common.model.result.OpResult;
 import cn.woodwhales.common.model.vo.PageRespVO;
+import cn.woodwhales.common.model.vo.RespVO;
 import org.woodwhales.generator.core.controller.request.CodeDatabaseConfigQueryParam;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigDeleteRequestBody;
 import org.woodwhales.generator.core.controller.request.dbconfig.CodeDatabaseConfigGetRequestBody;
@@ -22,7 +23,7 @@ public interface CodeDatabaseConfigService {
      * @param param
      * @return
      */
-    PageRespVO<CodeDatabaseConfigVO> page(CodeDatabaseConfigQueryParam param);
+    RespVO<PageRespVO<CodeDatabaseConfigVO>> page(CodeDatabaseConfigQueryParam param);
 
     /**
      * 创建数据库配置信息
