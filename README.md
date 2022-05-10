@@ -6,7 +6,9 @@ woodwhales-code-generator 代码生成工具
 
 > 代码生成工具，数据库表结构设计文档生成器
 
-技术支持：spring boot + mybatis-plus + freemarker + thymeleaf + layui + x-admin
+技术支持：spring boot + mybatis-plus + freemarker
+
+前端页面工程请移步至：[woodwhales-code-generator-web](https://github.com/woodwhales/woodwhales-code-generator-web)
 
 ### 功能特性
 
@@ -29,27 +31,7 @@ JDK版本：JDK 1.8+
 
 - 首页
 
-![](doc/images/index.png)
-
-- 配置导航栏
-
-![](doc/images/config-01.png)
-
-- 配置列表页
-
-![](doc/images/config-02.png)
-
-#### 业务数据
-
-- 首页
-
-![](doc/images/admin-01.png)
-
-- 业务
-
-![](doc/images/admin-02.png)
-
-> 目录：输入项目根目录即可。
+![](doc/images/index-02.png)
 
 ### 核心模块
 

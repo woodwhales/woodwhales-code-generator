@@ -22,7 +22,6 @@ import java.util.Objects;
 /**
  * @author woodwhales
  */
-@Controller
 public class CodeTemplateViewController {
 
 	@Autowired
