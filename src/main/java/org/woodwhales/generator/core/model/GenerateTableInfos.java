@@ -32,6 +32,16 @@ public class GenerateTableInfos {
     private File markdownFile;
 
     /**
+     * 是否生成代码
+     */
+    private final Boolean generateCode;
+
+    /**
+     * 是否生成数据库表结构设计文档
+     */
+    private final Boolean generateMarkdown;
+
+    /**
      * java代码生成根路径
      * {项目根路径}/src/main/java/
      */
@@ -40,7 +50,7 @@ public class GenerateTableInfos {
     /**
      * 数据库连接信息
      */
-    private DataBaseInfo dataBaseInfo;
+    private final DataBaseInfo dataBaseInfo;
 
     /**
      * 数据库表结构信息结果集
@@ -48,22 +58,32 @@ public class GenerateTableInfos {
     private List<TableInfo> tables;
 
     /**
-     *
-     *
-     * @param generateDir 项目根目录
-     * @param baseDirPath 项目的java源码目录：xxx项目/src/main/java/
      * @param dataBaseInfo 数据库连接信息
-     * @param tables 数据库表信息集合
      */
-    public GenerateTableInfos(String generateDir, String baseDirPath,
-                              DataBaseInfo dataBaseInfo, List<TableInfo> tables) {
+    public GenerateTableInfos(Boolean generateCode,
+                              Boolean generateMarkdown,
+                              DataBaseInfo dataBaseInfo) {
         Objects.requireNonNull(dataBaseInfo, "数据库链接信息对象不允许为空");
         this.dataBaseInfo = dataBaseInfo;
-        this.tables = tables;
-        // 设置 markdown 生成目录
-        this.markdownFile = new File(generateDir);
-        // 设置 java代码 生成目录
-        this.javaFile = this.getTargetFile(baseDirPath, this.dataBaseInfo.getPackageName());
+        this.generateCode = generateCode;
+        this.generateMarkdown = generateMarkdown;
+    }
+
+    public GenerateTableInfos markdownFile(String markdownFile) {
+        if(generateMarkdown && StringUtils.isNotBlank(markdownFile)) {
+            // 设置 markdown 生成目录
+            this.markdownFile = new File(markdownFile);
+        }
+        return this;
+    }
+
+    public GenerateTableInfos javaFile(String baseDirPath, List<TableInfo> tables) {
+        if(generateCode && StringUtils.isNotBlank(baseDirPath)) {
+            // 设置 java代码 生成目录
+            this.javaFile = this.getTargetFile(baseDirPath, this.dataBaseInfo.getJavaCodeConfig().getPackageName());
+            this.tables = tables;
+        }
+        return this;
     }
 
     /**
@@ -96,22 +116,22 @@ public class GenerateTableInfos {
 
     public String getSuperClassSimpleName() {
         if (hasSuperClass()) {
-            return StringUtils.substringAfterLast(this.dataBaseInfo.getSuperClass(), ".");
+            return StringUtils.substringAfterLast(this.dataBaseInfo.getJavaCodeConfig().getSuperClass(), ".");
         }
         return null;
     }
 
     public boolean hasSuperClass() {
-        return isNotBlank(this.dataBaseInfo.getSuperClass());
+        return isNotBlank(this.dataBaseInfo.getJavaCodeConfig().getSuperClass());
     }
 
     public boolean hasInterfaceList() {
-        return CollectionUtils.isNotEmpty(this.dataBaseInfo.getInterfaceList());
+        return CollectionUtils.isNotEmpty(this.dataBaseInfo.getJavaCodeConfig().getInterfaceList());
     }
 
     public String getInterfaceSimpleNameListString() {
         if (hasInterfaceList()) {
-            List<String> interfaceSimpleNameList = this.dataBaseInfo.getInterfaceList().stream()
+            List<String> interfaceSimpleNameList = this.dataBaseInfo.getJavaCodeConfig().getInterfaceList().stream()
                     .map(interfaceName -> StringUtils.substringAfterLast(interfaceName, "."))
                     .collect(Collectors.toList());
             return StringUtils.join(interfaceSimpleNameList, ", ");

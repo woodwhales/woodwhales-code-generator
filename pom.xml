@@ -12,7 +12,7 @@
 
 	<groupId>org.woodwhales</groupId>
 	<artifactId>woodwhales-code-generator</artifactId>
-	<version>1.9.0</version>
+	<version>2.0.0</version>
 	<name>woodwhales-code-generator</name>
 	<description>woodwhales-code-generator</description>
 	<url>https://github.com/woodwhales/woodwhales-code-generator</url>

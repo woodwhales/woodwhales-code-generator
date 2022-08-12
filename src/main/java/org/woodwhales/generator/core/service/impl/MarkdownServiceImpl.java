@@ -22,9 +22,9 @@ public class MarkdownServiceImpl extends BaseFeeMarkerService implements FreeMar
 
     @Override
     public boolean process(GenerateTableInfos generateTableInfos) throws Exception {
-
+        Boolean generateMarkdown = generateTableInfos.getGenerateMarkdown();
         DataBaseInfo dataBaseInfo = generateTableInfos.getDataBaseInfo();
-        if(!dataBaseInfo.getGenerateMarkdown()) {
+        if(!generateMarkdown) {
             return true;
         }
 
@@ -36,7 +36,7 @@ public class MarkdownServiceImpl extends BaseFeeMarkerService implements FreeMar
         String schema = dataBaseInfo.getSchema();
         String fileName = schema + "数据库表结构设计.md";
 
-        final Boolean isCoverOldFile = dataBaseInfo.getOverMarkdown();
+        final Boolean isCoverOldFile = dataBaseInfo.getMarkdownConfig().getOverMarkdown();
         HashMap<String, Object> dataModel = new HashMap<>(16);
         dataModel.put("tables", generateTableInfos.getTables());
         dataModel.put("schema", dataBaseInfo.getSchema());
