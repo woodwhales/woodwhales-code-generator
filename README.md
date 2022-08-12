@@ -33,6 +33,50 @@ JDK版本：JDK 1.8+
 
 ![](doc/images/index-02.png)
 
+### windows 服务安装
+
+步骤1：下载 [Windows Service Wrapper](https://github.com/winsw/winsw/releases/)，得到：[WinSW-x64.exe](https://github.com/winsw/winsw/releases/download/v3.0.0-alpha.10/WinSW-x64.exe) 文件
+
+步骤2：使用 maven 命令打包本项目程序，得到：woodwhales-code-generator.jar
+
+步骤3：将步骤1 和步骤2 的文件放在相同目录下，并将 WinSW-x64.exe 文件和 jar 文件重命名一致，如：woodwhales-code-generator
+
+步骤4：在步骤3 的目录中创建 xml 文件，文件名为：woodwhales-code-generator.xml
+
+```xml
+<service>
+    <id>woodwhales-code-generator</id>
+    <name>woodwhales-code-generator</name>
+    <description>woodwhales-code-generator 代码生成工具</description>
+    <env name="C:\programs\run\code-generator" value="%BASE%"/>
+    <executable>java</executable>
+    <arguments>-jar -Dfile.encoding=utf-8 "%BASE%\woodwhales-code-generator.jar"</arguments>
+      <!-- 开机启动 -->
+     <startmode>Automatic</startmode>
+    <log mode="roll-by-time">
+		<pattern>yyyyMMdd</pattern>
+    </log>
+</service>
+```
+
+上述`env` 的 name 是步骤3 的服务部署目录绝对路径。
+
+步骤5：使用管理员角色启动 cmd，cd 到服务服务部署目录，执行如下命令：
+
+```cmd
+woodwhales-code-generator.exe install
+```
+
+步骤6：启动 woodwhales-code-generator.jar 为 windows 服务：
+
+```cmd
+net start woodwhales-code-generator
+```
+
+> 停止命令：net stop woodwhales-code-generator
+>
+> 删除 windows 服务命令：sc delete woodwhales-code-generator
+
 ### 核心模块
 
 #### 核心模块图
