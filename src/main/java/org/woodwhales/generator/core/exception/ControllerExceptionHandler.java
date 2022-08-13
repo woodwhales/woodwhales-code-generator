@@ -2,6 +2,7 @@ package org.woodwhales.generator.core.exception;
 
 import freemarker.core.InvalidReferenceException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,8 +22,12 @@ public class ControllerExceptionHandler {
 	@ResponseBody
 	@ExceptionHandler(value = Exception.class)
 	public RespVO handle(Exception exception) {
-		log.error("cause by : {}", exception.getMessage(), exception);
-		return RespVO.errorWithErrorMsg(exception.getMessage());
+		String message = exception.getMessage();
+		if(exception instanceof NullPointerException && StringUtils.isBlank(message)) {
+			message = "空指针异常";
+		}
+		log.error("cause by : {}", message, exception);
+		return RespVO.errorWithErrorMsg(message);
 	}
 	
 	@ResponseBody

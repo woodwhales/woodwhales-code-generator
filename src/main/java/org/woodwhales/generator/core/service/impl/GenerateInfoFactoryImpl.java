@@ -4,6 +4,7 @@ import cn.woodwhales.common.business.DataTool;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.woodwhales.generator.core.controller.request.DataBaseRequestBody;
@@ -48,6 +49,9 @@ public class GenerateInfoFactoryImpl implements GenerateInfoFactory {
         if(generateCode) {
             // 检查目标文件目录是否为合法文件夹
             String generateDir = javaCodeConfig.getGenerateDir();
+            if(StringUtils.isBlank(generateDir)) {
+                throw new GenerateException("项目目录不允许为空");
+            }
             File baseDir = checkBaseDirPath(generateDir);
             dataBaseInfo.getJavaCodeConfig().setInterfaceList(DataTool.toList(javaCodeConfig.getInterfaceList(), Function.identity(), true));
             // 获取数据库表结构信息
@@ -57,6 +61,9 @@ public class GenerateInfoFactoryImpl implements GenerateInfoFactory {
         // 生成markdown
         if(generateMarkdown) {
             String markdownDir = markdownConfig.getMarkdownDir();
+            if(StringUtils.isBlank(markdownDir)) {
+                throw new GenerateException("markdown文档目录不允许为空");
+            }
             File markdownFileDir = FileUtils.getFile(markdownDir);
             if(!markdownFileDir.exists()) {
                 try {
