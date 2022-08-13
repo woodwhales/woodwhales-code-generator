@@ -36,30 +36,55 @@ public class CodeDatabaseConfigController {
     @Autowired
     private GenerateService generateService;
 
+    /**
+     * 分页获取配置信息
+     * @param param
+     * @return
+     */
     @GetMapping("/page")
     public RespVO<PageRespVO<CodeDatabaseConfigVO>> page(@Validated CodeDatabaseConfigQueryParam param) {
         return codeDatabaseConfigService.page(param);
     }
 
+    /**
+     * 创建配置信息
+     * @param requestBody
+     * @return
+     */
     @CrossOrigin
     @PostMapping("/create")
     public RespVO<Void> create(@Validated @RequestBody CodeDatabaseConfigRequestBody requestBody) {
         return RespVO.resp(codeDatabaseConfigService.create(requestBody));
     }
 
+    /**
+     * 删除配置信息
+     * @param requestBody
+     * @return
+     */
     @CrossOrigin
     @PostMapping("/delete")
     public RespVO<Void> delete(@Validated @RequestBody CodeDatabaseConfigDeleteRequestBody requestBody) {
         return RespVO.resp(codeDatabaseConfigService.delete(requestBody));
     }
 
-
+    /**
+     * 更新配置信息
+     * @param requestBody
+     * @return
+     */
     @CrossOrigin
     @PostMapping("/update")
     public RespVO<Void> update(@Validated @RequestBody CodeDatabaseConfigUpdateRequestBody requestBody) {
         return RespVO.resp(codeDatabaseConfigService.update(requestBody));
     }
 
+    /**
+     * 测试配置是否链接正确
+     * @param requestBody
+     * @return
+     * @throws Exception
+     */
     @CrossOrigin
     @PostMapping("/testConnection")
     public RespVO testConnection(@Valid @RequestBody BuildConnectionRequestBody requestBody) throws Exception {
@@ -73,6 +98,11 @@ public class CodeDatabaseConfigController {
         }
     }
 
+    /**
+     * 获取配置信息
+     * @param requestBody
+     * @return
+     */
     @CrossOrigin
     @PostMapping("/get")
     public RespVO<CodeDatabaseConfigVO> get(@Validated @RequestBody CodeDatabaseConfigGetRequestBody requestBody) {
