@@ -89,7 +89,7 @@ public class GenerateServiceImpl implements GenerateService {
 
 		List<TableInfo> cacheTableInfoList = dataBaseInfoCache.getTableInfoList(dataBaseInfoKey);
 
-		// 生成代码
+		// 生成代码或者生成markdown
 		if(isProcess) {
 			final List<String> dbNameList = dataBaseInfo.getDbTableConfig().getDbNameList();
 			final Boolean selectAll = dataBaseInfo.getDbTableConfig().getSelectAll();

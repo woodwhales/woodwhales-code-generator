@@ -69,10 +69,11 @@ public class GenerateTableInfos {
         this.generateMarkdown = generateMarkdown;
     }
 
-    public GenerateTableInfos markdownFile(String markdownFile) {
+    public GenerateTableInfos markdownFile(String markdownFile, List<TableInfo> tables) {
         if(generateMarkdown && StringUtils.isNotBlank(markdownFile)) {
             // 设置 markdown 生成目录
             this.markdownFile = new File(markdownFile);
+            this.tables = tables;
         }
         return this;
     }
