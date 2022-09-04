@@ -45,6 +45,8 @@ public class GenerateInfoFactoryImpl implements GenerateInfoFactory {
         Boolean generateCode = javaCodeConfig.getGenerateCode();
         Boolean generateMarkdown = markdownConfig.getGenerateMarkdown();
         GenerateTableInfos generateTableInfos = new GenerateTableInfos(generateCode, generateMarkdown, dataBaseInfo);
+        // 获取数据库表结构信息
+        List<TableInfo> tables = generateService.listTables(dataBaseInfo, true);
         // 生成代码
         if(generateCode) {
             // 检查目标文件目录是否为合法文件夹
@@ -54,8 +56,6 @@ public class GenerateInfoFactoryImpl implements GenerateInfoFactory {
             }
             File baseDir = checkBaseDirPath(generateDir);
             dataBaseInfo.getJavaCodeConfig().setInterfaceList(DataTool.toList(javaCodeConfig.getInterfaceList(), Function.identity(), true));
-            // 获取数据库表结构信息
-            List<TableInfo> tables = generateService.listTables(dataBaseInfo, true);
             generateTableInfos.javaFile(baseDir.getAbsolutePath(), tables);
         }
         // 生成markdown
@@ -73,7 +73,7 @@ public class GenerateInfoFactoryImpl implements GenerateInfoFactory {
                     throw new GenerateException("生成markdown的目录失败");
                 }
             }
-            generateTableInfos.markdownFile(markdownDir);
+            generateTableInfos.markdownFile(markdownDir, tables);
         }
         return generateTableInfos;
     }
