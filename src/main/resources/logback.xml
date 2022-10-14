@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds">
+    <contextName>logback</contextName>
+    <property name="log.path" value="/data/logs/woodwhales-code-generator/" />
+    <property name="app.name" value="application" />
+
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) | %clr(${PID:- }){magenta} | %clr(%15.15t){faint} | %clr(%-40.40logger{39}:%-4.4line){cyan} | %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
+    <property name="LOG_PATTERN" value="${LOG_PATTERN:-%d{yyyy-MM-dd HH:mm:ss.SSS} | ${LOG_LEVEL_PATTERN:-%5p} | ${PID:- } | %15.15t | %-40.40logger{39}:%-4.4line | %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/${app.name}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/%d{yyyy-MM-dd}/info.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>90</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/%d{yyyy-MM-dd}/error.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>90</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
+    <logger name="org.woodwhales" level="DEBUG" />
+    <logger name="com.baomidou.mybatisplus" level="WARN" />
+    <logger name="org.apache.http" level="WARN" />
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE" />
+        <appender-ref ref="ERROR_FILE"/>
+    </root>
+
+</configuration>
