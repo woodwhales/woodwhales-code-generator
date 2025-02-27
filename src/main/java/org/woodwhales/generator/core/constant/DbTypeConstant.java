@@ -11,4 +11,6 @@ public class DbTypeConstant {
     public static final String MYSQL_SERVICE_NAME = "mySqlConnectionFactoryImpl";
 
     public static final String ORACLE_SERVICE_NAME = "oracleConnectionFactoryImpl";
+
+    public static final String PGSQL_SERVICE_NAME = "pgsqlConnectionFactoryImpl";
 }

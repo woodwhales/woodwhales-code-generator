@@ -97,7 +97,7 @@ public class DataBaseInfo {
 		dataBaseInfo.setNow(DateFormatUtils.format(new Date(), "yyyy-MM-dd HH:mm:ss"));
 		return dataBaseInfo;
 	}
-	
+
 	public Properties getProperties () {
 		Properties properties = new Properties();
 		properties.put("remarksReporting", "true");
@@ -106,7 +106,7 @@ public class DataBaseInfo {
 		properties.put("password", this.password);
 		return properties;
 	}
-	
+
 	public String getUrl() {
 		String url = null;
 
@@ -129,6 +129,19 @@ public class DataBaseInfo {
 						.replace("[ip]", this.ip)
 						.replace("[port]", this.port+"")
 						.replace("[sid]", this.sid);
+			}
+		}
+
+		if(StringUtils.equals(dbType, "PGSQL")) {
+			if(isNotBlank(this.schema)) {
+				url = MyConstant.pgsql_Template_Url
+						.replace("[ip]", this.ip)
+						.replace("[port]", this.port+"")
+						.replace("[schema]", this.schema);
+			} else {
+				url = MyConstant.pgsql_Template_Url_Without_Schema
+						.replace("[ip]", this.ip)
+						.replace("[port]", this.port+"");
 			}
 		}
 

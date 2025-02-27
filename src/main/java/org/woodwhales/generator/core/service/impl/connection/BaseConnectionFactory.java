@@ -115,7 +115,7 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
      * @return
      * @throws SQLException
      */
-    private List<String> getPrimaryKey(DatabaseMetaData metaData, String catalog,
+    public List<String> getPrimaryKey(DatabaseMetaData metaData, String catalog,
                                          String schema, String dbTableName) throws SQLException {
         List<String> primaryKeys = new ArrayList<>();
 
@@ -188,7 +188,7 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
         return tableInfoList;
     }
 
-    private List<TableInfo> getTableInfoList(Statement statement, DatabaseMetaData metaData, String catalog,
+    public List<TableInfo> getTableInfoList(Statement statement, DatabaseMetaData metaData, String catalog,
                                              String schema, String dataBaseInfoKey) throws SQLException {
         List<TableInfo> tableInfoList = new ArrayList<>();
 
@@ -215,7 +215,7 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
         return tableInfoList;
     }
 
-    private List<String> getPrimaryKeyTypes(List<String> primaryKeys, List<Column> columns) {
+    public List<String> getPrimaryKeyTypes(List<String> primaryKeys, List<Column> columns) {
         List<String> primaryKeyTypes = new ArrayList<>();
         for (String primaryKey : primaryKeys) {
             for (Column column : columns) {
@@ -236,7 +236,7 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
      * @return
      * @throws SQLException
      */
-    private List<Column> getColumns(DatabaseMetaData metaData,
+    public List<Column> getColumns(DatabaseMetaData metaData,
                                     String schema, String dbTableName, List<String> primaryKeys) throws SQLException {
 
         ResultSet columnResultSet = metaData.getColumns(schema, null, dbTableName, null);

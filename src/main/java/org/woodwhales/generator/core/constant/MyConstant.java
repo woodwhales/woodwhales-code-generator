@@ -16,4 +16,7 @@ public class MyConstant {
 
 	public static final String oracle_Template_Url = "jdbc:oracle:thin:@[ip]:[port]:[sid]";
 
+	public static final String pgsql_Template_Url_Without_Schema = "jdbc:postgresql://[ip]:[port]/postgres";
+
+	public static final String pgsql_Template_Url = "jdbc:postgresql://[ip]:[port]/[schema]";
 }

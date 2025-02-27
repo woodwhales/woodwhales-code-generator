@@ -1,6 +1,7 @@
 package org.woodwhales.generator.core.controller.vo;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -8,6 +9,7 @@ import java.util.List;
  * @author woodwhales on 2021-12-14 17:12
  */
 @Data
+@NoArgsConstructor
 public class DataBaseSimpleInfoVO {
 
     private String dbVersion;
