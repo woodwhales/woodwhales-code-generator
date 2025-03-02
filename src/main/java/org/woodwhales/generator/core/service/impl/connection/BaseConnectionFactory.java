@@ -157,7 +157,7 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
             final String catalog = connection.getCatalog();
 
             final Statement statement = connection.createStatement();
-            tableInfoList = getTableInfoList(statement, metaData, catalog, schema, dataBaseInfoKey);
+            tableInfoList = computeTableInfoList(statement, metaData, catalog, schema, dataBaseInfoKey);
 
             for (TableInfo tableInfo : tableInfoList) {
                 String dbTableName = tableInfo.getDbName();
@@ -188,8 +188,8 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
         return tableInfoList;
     }
 
-    public List<TableInfo> getTableInfoList(Statement statement, DatabaseMetaData metaData, String catalog,
-                                             String schema, String dataBaseInfoKey) throws SQLException {
+    public List<TableInfo> computeTableInfoList(Statement statement, DatabaseMetaData metaData, String catalog,
+                                                String schema, String dataBaseInfoKey) throws SQLException {
         List<TableInfo> tableInfoList = new ArrayList<>();
 
         ResultSet tableResultSet = metaData.getTables(catalog, schema, null, this.types);
@@ -244,7 +244,6 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
         List<Column> columns = new ArrayList<>();
 
         try {
-
             while (columnResultSet.next()) {
                 String columnName = columnResultSet.getString("COLUMN_NAME");
                 String typeName = columnResultSet.getString("TYPE_NAME");
@@ -287,7 +286,7 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
         return keys.contains(columnName);
     }
 
-    private String convertType(String dbTableName, String columnName, String dbType) {
+    public String convertType(String dbTableName, String columnName, String dbType) {
         Map<String, String> typeMap = columnConfig.getType();
         String type = typeMap.get(dbType);
 
@@ -296,12 +295,15 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
         }
 
         for(String key : typeMap.keySet()){
-            if(StringUtils.containsIgnoreCase(dbType, key)) {
+            if(StringUtils.startsWithIgnoreCase(dbType, key)) {
                 type = typeMap.get(key);
             }
         }
-
-        Preconditions.checkArgument(isNotBlank(type), "数据库表 = [%s] 数据字段 columnName = [%s] 的字段类型 = [%s] 未匹配", dbTableName, columnName, dbType);
+        if (StringUtils.isBlank(type)) {
+            log.warn("数据库表 = [{}] 数据字段 columnName = [{}] 的字段类型 = [{}] 未匹配", dbTableName, columnName, dbType);
+            return "Object";
+        }
+        // Preconditions.checkArgument(isNotBlank(type), "数据库表 = [%s] 数据字段 columnName = [%s] 的字段类型 = [%s] 未匹配", dbTableName, columnName, dbType);
         return type;
     }
 

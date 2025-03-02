@@ -1,4 +1,5 @@
 package org.woodwhales.generator.core.databse;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.woodwhales.generator.core.entity.DataBaseInfo;
@@ -51,8 +52,7 @@ public class DataBaseTest {
     }
 
     @BeforeAll
-    @Test
-    public static void init() throws ClassNotFoundException, SQLException {
+    public static void initMethod() throws ClassNotFoundException, SQLException {
         dataBaseInfo = DataBaseInfo.builder()
                                             .ip("127.0.0.1")
                                             .port(3306)

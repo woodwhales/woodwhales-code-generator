@@ -196,11 +196,15 @@ public class DataBaseInfo {
 		}
 
 		if(StringUtils.equals(dbType, "PGSQL")) {
-			if(isNotBlank(this.sid)) {
-				url = MyConstant.oracle_Template_Url
+			if(isNotBlank(this.schema)) {
+				url = MyConstant.pgsql_Template_Url
 						.replace("[ip]", this.ip)
 						.replace("[port]", this.port+"")
-						.replace("[sid]", this.sid);
+						.replace("[schema]", this.schema);
+			} else {
+				url = MyConstant.pgsql_Template_UrlWithout_Schema
+						.replace("[ip]", this.ip)
+						.replace("[port]", this.port+"");
 			}
 		}
 

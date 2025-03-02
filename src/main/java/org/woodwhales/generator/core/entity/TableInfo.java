@@ -1,11 +1,13 @@
 package org.woodwhales.generator.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Preconditions;
 import lombok.Data;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.woodwhales.generator.core.constant.MyConstant;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,12 +45,12 @@ public class TableInfo {
 	/**
 	 * 主键字段名
 	 */
-	private List<String> keys;
+	private List<String> keys = new ArrayList<>();
 
 	/**
 	 * 主键字段类型
 	 */
-	private List<String> keyTypes;
+	private List<String> keyTypes = new ArrayList<>();
 
 	/**
 	 * 字段集合
@@ -58,7 +60,13 @@ public class TableInfo {
 	/**
 	 * 建表语句
 	 */
-	private String createTableSql;
+	private String createTableSql = "";
+
+	/**
+	 * 库表所属的schema
+	 */
+	@JsonIgnore
+	private String schemaName;
 
 	public TableInfo(String dbName, String dataBaseInfoKey) {
 		Preconditions.checkArgument(StringUtils.isNotBlank(dbName), "数据库表名不允许为空");

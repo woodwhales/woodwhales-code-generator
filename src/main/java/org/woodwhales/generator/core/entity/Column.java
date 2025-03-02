@@ -39,7 +39,7 @@ public class Column {
 	/**
 	 * 字段大小
 	 */
-	private int columnSize;
+	private Integer columnSize;
 
 	/**
 	 * 是否允许为NULL
