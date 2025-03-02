@@ -40,7 +40,8 @@ public class GenerateServiceImpl implements GenerateService {
 
 	private ConnectionFactory getConnectionFactory(final String dbType) {
 		Map<String, ConnectionFactory> connectionFactoryMap = applicationContext.getBeansOfType(ConnectionFactory.class);
-		String serviceName = DbTypeEnum.getServiceName(dbType);
+		DbTypeEnum dbTypeEnum = DbTypeEnum.ofDbType(dbType);
+		String serviceName = dbTypeEnum.getDbConnectionFactoryServiceName();
 		ConnectionFactory connectionFactory = connectionFactoryMap.get(serviceName);
 		return connectionFactory;
 	}
@@ -89,10 +90,10 @@ public class GenerateServiceImpl implements GenerateService {
 
 		List<TableInfo> cacheTableInfoList = dataBaseInfoCache.getTableInfoList(dataBaseInfoKey);
 
-		// 生成代码或者生成markdown
+		// 生成代码
 		if(isProcess) {
-			final List<String> dbNameList = dataBaseInfo.getDbTableConfig().getDbNameList();
-			final Boolean selectAll = dataBaseInfo.getDbTableConfig().getSelectAll();
+			final List<String> dbNameList = dataBaseInfo.getDbNameList();
+			final Boolean selectAll = dataBaseInfo.getSelectAll();
 			// 不是全选，dbNameList不允许为空
 			if(!selectAll) {
 				Preconditions.checkArgument(CollectionUtils.isNotEmpty(dbNameList), "未选择要生成的数据库表");

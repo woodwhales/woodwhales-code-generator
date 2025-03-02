@@ -6,8 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.woodwhales.generator.core.controller.request.JavaCodeConfig;
-import org.woodwhales.generator.core.controller.request.JavaCodeOrmConfig;
 import org.woodwhales.generator.core.entity.DataBaseInfo;
 import org.woodwhales.generator.core.entity.TableInfo;
 import org.woodwhales.generator.core.model.GenerateTableInfos;
@@ -30,23 +28,17 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
     @Override
     public boolean process(GenerateTableInfos generateTableInfos) throws Exception {
         DataBaseInfo dataBaseInfo = generateTableInfos.getDataBaseInfo();
-        Boolean generateCode = generateTableInfos.getGenerateCode();
-        if (!generateCode) {
+        if (!dataBaseInfo.getGenerateCode()) {
             return true;
         }
 
-        JavaCodeConfig javaCodeConfig = dataBaseInfo.getJavaCodeConfig();
-        JavaCodeOrmConfig ormConfig = javaCodeConfig.getOrmConfig();
-        Configuration configuration = this.initConfiguration("/template/java/" + lowerCase(ormConfig.getOrm()));
+        Configuration configuration = this.initConfiguration("/template/java/" + lowerCase(dataBaseInfo.getOrm()));
         HashMap<String, Object> dataModel = new HashMap<>(16);
-        HashMap<String, Object> settings = new HashMap<>();
-        settings.put("author", javaCodeConfig.getAuthor());
-        settings.put("now", dataBaseInfo.getNow());
-        dataModel.put("settings", settings);
-        dataModel.put("packageName", javaCodeConfig.getPackageName());
+        dataModel.put("settings", dataBaseInfo);
+        dataModel.put("packageName", dataBaseInfo.getPackageName());
         String targetFilePath = generateTableInfos.getJavaFile().getAbsolutePath();
 
-        final Boolean isCoverOldFile = javaCodeConfig.getOverCode();
+        final Boolean isCoverOldFile = dataBaseInfo.getOverCode();
 
         for (TableInfo tableInfo : generateTableInfos.getTables()) {
             dataModel.put("table", tableInfo);
@@ -55,7 +47,7 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
             // 生成mapper
             this.process(dataModel, targetFilePath, "mapper", tableInfo.getName() + "Mapper", isCoverOldFile, configuration);
 
-            if (ormConfig.getGenerateBatchMapper()) {
+            if (dataBaseInfo.getGenerateBatchMapper()) {
                 this.process(dataModel, targetFilePath, "batchmapper", "Batch" + tableInfo.getName() + "Mapper", isCoverOldFile, configuration);
             }
 
@@ -71,12 +63,12 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
                 dataModel.put("primaryKeyType", null);
             }
 
-            if (javaCodeConfig.getGenerateController()) {
+            if (dataBaseInfo.getGenerateController()) {
                 // 生成controller
                 this.process(dataModel, targetFilePath, "controller", tableInfo.getName() + "Controller", isCoverOldFile, configuration);
             }
 
-            if (javaCodeConfig.getGenerateService()) {
+            if (dataBaseInfo.getGenerateService()) {
                 // 生成service
                 this.process(dataModel, targetFilePath, "service", tableInfo.getName() + "Service", isCoverOldFile, configuration);
                 // 生成service.impl
@@ -86,25 +78,21 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
         return true;
     }
 
-    private boolean entityProcess(HashMap<String, Object> dataModel,
-                                  String targetFilePath,
-                                  String fileName,
-                                  GenerateTableInfos generateTableInfos,
-                                  Configuration configuration) throws Exception {
-        JavaCodeConfig javaCodeConfig = generateTableInfos.getDataBaseInfo().getJavaCodeConfig();
+    private boolean entityProcess(HashMap<String, Object> dataModel, String targetFilePath,
+                                  String fileName, GenerateTableInfos generateTableInfos, Configuration configuration) throws Exception {
         if (generateTableInfos.hasSuperClass()) {
             dataModel.put("hasSuperClass", generateTableInfos.hasSuperClass());
-            dataModel.put("superClass", javaCodeConfig.getSuperClass());
+            dataModel.put("superClass", generateTableInfos.getDataBaseInfo().getSuperClass());
             dataModel.put("superClassSimpleName", generateTableInfos.getSuperClassSimpleName());
         }
 
         if (generateTableInfos.hasInterfaceList()) {
             dataModel.put("hasInterfaceList", generateTableInfos.hasInterfaceList());
             dataModel.put("interfaceSimpleNameListString", generateTableInfos.getInterfaceSimpleNameListString());
-            dataModel.put("interfaceList", javaCodeConfig.getInterfaceList());
+            dataModel.put("interfaceList", generateTableInfos.getDataBaseInfo().getInterfaceList());
         }
 
-        Boolean overCode = javaCodeConfig.getOverCode();
+        Boolean overCode = generateTableInfos.getDataBaseInfo().getOverCode();
         return this.process(dataModel, targetFilePath, "entity", fileName, overCode, configuration);
     }
 

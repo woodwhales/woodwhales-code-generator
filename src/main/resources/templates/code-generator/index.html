@@ -21,6 +21,7 @@
       <div class="layui-input-block">
         <input type="radio" name="dbType" lay-filter="dbType-filter" value="MYSQL" id="MYSQL" title="MySQL" checked="">
         <input type="radio" name="dbType" lay-filter="dbType-filter" value="ORACLE" id="ORACLE" title="Oracle">
+        <input type="radio" name="dbType" lay-filter="dbType-filter" value="PGSQL" id="PGSQL" title="PostgreSQL">
         <input type="text" name="driverClassName" id="driverClassName" style="display: none" autocomplete="off" class="layui-input" value="com.mysql.cj.jdbc.Driver">
       </div>
     </div>
@@ -345,7 +346,7 @@
         content: content
       });
     }
-    
+
     function addConfigData(content, data) {
       var lay = layer.open({
         type: 2,

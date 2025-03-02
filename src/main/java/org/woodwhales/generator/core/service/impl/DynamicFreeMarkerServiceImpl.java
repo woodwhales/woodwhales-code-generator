@@ -2,10 +2,10 @@ package org.woodwhales.generator.core.service.impl;
 
 import com.google.common.base.Preconditions;
 import freemarker.cache.StringTemplateLoader;
+import freemarker.core.ParseException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +25,6 @@ import java.util.Objects;
  * @date: 20.8.30 10:36
  * @description:
  */
-@Slf4j
 @Service
 public class DynamicFreeMarkerServiceImpl implements DynamicFreeMarkerService {
 
@@ -50,13 +49,14 @@ public class DynamicFreeMarkerServiceImpl implements DynamicFreeMarkerService {
         Template template;
         try {
             template = new Template(null, freemarkerTemplate, configuration);
-            Map<String, Object> dataModel = getDataModel(tableInfo, customKeyValueMap);
-            template.process(dataModel, stringWriter);
-            return stringWriter.toString();
-        } catch (Exception e) {
-            log.error("模板生成失败, 失败原因：{}", e.getMessage(), e);
+        } catch (ParseException e) {
             throw new GenerateException("模板语法不正确");
         }
+
+        Map<String, Object> dataModel = getDataModel(tableInfo, customKeyValueMap);
+
+        template.process(dataModel, stringWriter);
+        return stringWriter.toString();
     }
 
     private Map<String, Object> getDataModel(TableInfo tableInfo, Map<String, Object> customKeyValueMap) {

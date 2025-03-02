@@ -28,7 +28,7 @@ public enum DbTypeEnum {
     ORACLE("ORACLE", DbTypeConstant.ORACLE_SERVICE_NAME),
 
     /**
-     * PGSQL 类型
+     * PostgreSQL 类型
      */
     PGSQL("PGSQL", DbTypeConstant.PGSQL_SERVICE_NAME),
     ;

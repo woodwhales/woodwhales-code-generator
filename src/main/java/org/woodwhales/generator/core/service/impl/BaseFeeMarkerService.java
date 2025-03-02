@@ -1,12 +1,10 @@
 package org.woodwhales.generator.core.service.impl;
 
-import cn.hutool.core.io.FileUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -57,17 +55,10 @@ public abstract class BaseFeeMarkerService {
      * @return
      */
     protected boolean process(Template template, String targetFileAbsoluteName, HashMap<String, Object> dataModel, boolean isCoverOldFile) {
-        if(!isCoverOldFile) {
-            File file = FileUtils.getFile(targetFileAbsoluteName);
-            if(file.exists()) {
-                log.warn("文件[ {} ]已存在，不进行覆盖操作", targetFileAbsoluteName);
-                return true;
-            }
-        }
         try(FileWriter fw = new FileWriter(targetFileAbsoluteName, !isCoverOldFile)) {
             template.process(dataModel, fw);
         } catch (IOException | TemplateException e) {
-            log.error("生成文件异常，cause = {}", e.getCause().getMessage(), e);
+            log.error("生成文件异常，cause = {}", e.getCause().getMessage());
             return false;
         }
 

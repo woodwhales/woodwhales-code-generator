@@ -9,11 +9,9 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.BeanUtils;
 import org.woodwhales.generator.core.constant.MyConstant;
 import org.woodwhales.generator.core.controller.request.BuildConnectionRequestBody;
-import org.woodwhales.generator.core.controller.request.DbTableConfig;
-import org.woodwhales.generator.core.controller.request.JavaCodeConfig;
-import org.woodwhales.generator.core.controller.request.MarkdownConfig;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -70,19 +68,84 @@ public class DataBaseInfo {
 	private String schema;
 
 	/**
-	 * 表格配置
+	 * 包名称
 	 */
-	private DbTableConfig dbTableConfig;
+	private String packageName;
 
 	/**
-	 * 代码生成配置
+	 * 生成代码的目录
 	 */
-	private JavaCodeConfig javaCodeConfig;
+	private String generateDir;
 
 	/**
-	 * markdown 配置
+	 * 是否生成数据库表结构设计文档
 	 */
-	private MarkdownConfig markdownConfig;
+	private Boolean generateMarkdown;
+
+	/**
+	 * 是否覆盖markdown
+	 */
+	private Boolean overMarkdown;
+
+	/**
+	 * 是否生成代码
+	 */
+	private Boolean generateCode;
+
+	/**
+	 * 是否生成controller
+	 */
+	private Boolean generateController;
+
+	/**
+	 * 是否生成service
+	 */
+	private Boolean generateService;
+
+	/**
+	 * 是否生成BatchMapper
+	 */
+	private Boolean generateBatchMapper;
+
+	/**
+	 * 是否覆盖markdown
+	 */
+	private Boolean overCode;
+
+	/**
+	 * 要生成的数据库表名列表
+	 */
+	private List<String> dbNameList;
+
+	/**
+	 * 是否生成全部数据库表
+	 */
+	private Boolean selectAll;
+
+	/**
+	 * 父类
+	 */
+	private String superClass;
+
+	/**
+	 * 接口
+	 */
+	private List<String> interfaceList;
+
+	/**
+	 * 数据库表名
+	 */
+	private String dbName;
+
+	/**
+	 * 作者名称
+	 */
+	private String author;
+
+	/**
+	 * orm框架
+	 */
+	private String orm;
 
 	/**
 	 * 当前时间
@@ -133,15 +196,11 @@ public class DataBaseInfo {
 		}
 
 		if(StringUtils.equals(dbType, "PGSQL")) {
-			if(isNotBlank(this.schema)) {
-				url = MyConstant.pgsql_Template_Url
+			if(isNotBlank(this.sid)) {
+				url = MyConstant.oracle_Template_Url
 						.replace("[ip]", this.ip)
 						.replace("[port]", this.port+"")
-						.replace("[schema]", this.schema);
-			} else {
-				url = MyConstant.pgsql_Template_Url_Without_Schema
-						.replace("[ip]", this.ip)
-						.replace("[port]", this.port+"");
+						.replace("[sid]", this.sid);
 			}
 		}
 
@@ -166,6 +225,6 @@ public class DataBaseInfo {
 	}
 
 	public String getAuthor() {
-		return StringUtils.trimToNull(this.javaCodeConfig.getAuthor());
+		return StringUtils.trimToNull(this.author);
 	}
 }
