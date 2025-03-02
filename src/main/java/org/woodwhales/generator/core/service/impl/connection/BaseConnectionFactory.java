@@ -62,6 +62,9 @@ public abstract class BaseConnectionFactory implements ConnectionFactory {
             if (StringUtils.equals("28000", exception.getSQLState()) || exception.getErrorCode() == 1017) {
                 throw new GenerateException("账号或密码不正确！");
             }
+            if (StringUtils.containsIgnoreCase(exception.getMessage(), "认证失败")) {
+                throw new GenerateException("账号或密码不正确：" + exception.getMessage());
+            }
             throw new GenerateException("数据库链接失败！");
         }
 
