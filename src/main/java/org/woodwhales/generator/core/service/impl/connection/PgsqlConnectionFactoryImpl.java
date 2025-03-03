@@ -90,26 +90,38 @@ public class PgsqlConnectionFactoryImpl extends BaseConnectionFactory {
                 "        'CREATE TABLE ' || n.nspname || '.' || c.relname || ' (' || E'\\n' ||\n" +
                 "        string_agg(\n" +
                 "            '    ' || a.attname || ' ' || \n" +
-                "            REPLACE(pg_catalog.format_type(a.atttypid, a.atttypmod), 'character varying', 'varchar') ||  -- 替换为 varchar\n" +
+                "            REPLACE(pg_catalog.format_type(a.atttypid, a.atttypmod), 'character varying', 'varchar') ||\n" +
                 "            CASE WHEN a.attnotnull THEN ' NOT NULL' ELSE '' END ||\n" +
                 "            CASE WHEN a.atthasdef THEN ' DEFAULT ' || pg_get_expr(ad.adbin, ad.adrelid) ELSE '' END,\n" +
                 "            ',' || E'\\n'\n" +
                 "        ) || E'\\n' || ');' AS table_def\n" +
                 "    FROM \n" +
                 "        pg_attribute a\n" +
-                "    JOIN \n" +
-                "        pg_class c ON a.attrelid = c.oid\n" +
-                "    JOIN \n" +
-                "        pg_namespace n ON c.relnamespace = n.oid\n" +
-                "    LEFT JOIN \n" +
-                "        pg_attrdef ad ON a.attrelid = ad.adrelid AND a.attnum = ad.adnum\n" +
+                "    JOIN pg_class c ON a.attrelid = c.oid\n" +
+                "    JOIN pg_namespace n ON c.relnamespace = n.oid\n" +
+                "    LEFT JOIN pg_attrdef ad ON a.attrelid = ad.adrelid AND a.attnum = ad.adnum\n" +
                 "    WHERE \n" +
-                "        c.relname = '"+ dbTableName +"'  -- 表名\n" +
-                "        AND n.nspname = '"+ schemaName +"'  -- 模式名\n" +
-                "        AND a.attnum > 0  -- 排除系统字段\n" +
-                "        AND NOT a.attisdropped  -- 排除已删除的字段\n" +
-                "    GROUP BY \n" +
-                "        n.nspname, c.relname\n" +
+                "        c.relname = '"+dbTableName+"'\n" +
+                "        AND n.nspname = '"+schemaName+"'\n" +
+                "        AND a.attnum > 0\n" +
+                "        AND NOT a.attisdropped\n" +
+                "    GROUP BY n.nspname, c.relname\n" +
+                "),\n" +
+                "column_comments AS (\n" +
+                "    SELECT \n" +
+                "        'COMMENT ON COLUMN ' || n.nspname || '.' || c.relname || '.' || a.attname || ' IS ' || \n" +
+                "        '''' || REPLACE(d.description, '''', '''''') || ''';' AS column_comment\n" +
+                "    FROM \n" +
+                "        pg_attribute a\n" +
+                "    JOIN pg_class c ON a.attrelid = c.oid\n" +
+                "    JOIN pg_namespace n ON c.relnamespace = n.oid\n" +
+                "    LEFT JOIN pg_description d ON d.objoid = c.oid AND d.objsubid = a.attnum\n" +
+                "    WHERE \n" +
+                "        c.relname = '"+dbTableName+"'\n" +
+                "        AND n.nspname = '"+schemaName+"'\n" +
+                "        AND a.attnum > 0\n" +
+                "        AND NOT a.attisdropped\n" +
+                "        AND d.description IS NOT NULL\n" +
                 "),\n" +
                 "index_definitions AS (\n" +
                 "    SELECT \n" +
@@ -119,31 +131,23 @@ public class PgsqlConnectionFactoryImpl extends BaseConnectionFactory {
                 "        string_agg(a.attname, ', ') || ');' AS index_def\n" +
                 "    FROM \n" +
                 "        pg_index i\n" +
-                "    JOIN \n" +
-                "        pg_class c ON i.indrelid = c.oid\n" +
-                "    JOIN \n" +
-                "        pg_class c2 ON i.indexrelid = c2.oid\n" +
-                "    JOIN \n" +
-                "        pg_namespace n ON c.relnamespace = n.oid\n" +
-                "    JOIN \n" +
-                "        pg_am am ON c2.relam = am.oid\n" +
-                "    JOIN \n" +
-                "        pg_attribute a ON a.attrelid = c.oid AND a.attnum = ANY(i.indkey)\n" +
+                "    JOIN pg_class c ON i.indrelid = c.oid\n" +
+                "    JOIN pg_class c2 ON i.indexrelid = c2.oid\n" +
+                "    JOIN pg_namespace n ON c.relnamespace = n.oid\n" +
+                "    JOIN pg_am am ON c2.relam = am.oid\n" +
+                "    JOIN pg_attribute a ON a.attrelid = c.oid AND a.attnum = ANY(i.indkey)\n" +
                 "    WHERE \n" +
-                "        c.relname = '"+ dbTableName +"'  -- 表名\n" +
-                "        AND n.nspname = '"+ schemaName +"'  -- 模式名\n" +
-                "    GROUP BY \n" +
-                "        n.nspname, c.relname, c2.relname, i.indisunique, am.amname\n" +
+                "        c.relname = '"+dbTableName+"'\n" +
+                "        AND n.nspname = '"+schemaName+"'\n" +
+                "    GROUP BY n.nspname, c.relname, c2.relname, i.indisunique, am.amname\n" +
                 ")\n" +
                 "SELECT \n" +
-                "    table_def || E'\\n' ||\n" +
-                "    COALESCE(string_agg(index_def, E'\\n'), '') AS full_table_definition\n" +
-                "FROM \n" +
-                "    table_definition\n" +
-                "LEFT JOIN \n" +
-                "    index_definitions ON true\n" +
-                "GROUP BY \n" +
-                "    table_def;\n";
+                "    (SELECT table_def FROM table_definition) || \n" +
+                "    E'\\n' || \n" +
+                "    COALESCE((SELECT string_agg(index_def, E'\\n') FROM index_definitions), '') || \n" +
+                "    E'\\n' || \n" +
+                "    COALESCE((SELECT string_agg(column_comment, E'\\n') FROM column_comments), '') \n" +
+                "AS full_table_definition;";
 
         ResultSet createResultSet = statement.executeQuery(createSql);
         try {
