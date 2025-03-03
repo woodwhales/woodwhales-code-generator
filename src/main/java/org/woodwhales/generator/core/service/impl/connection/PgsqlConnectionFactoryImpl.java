@@ -140,13 +140,28 @@ public class PgsqlConnectionFactoryImpl extends BaseConnectionFactory {
                 "        c.relname = '"+dbTableName+"'\n" +
                 "        AND n.nspname = '"+schemaName+"'\n" +
                 "    GROUP BY n.nspname, c.relname, c2.relname, i.indisunique, am.amname\n" +
+                "),\n" +
+                "table_comment AS (\n" +
+                "    SELECT \n" +
+                "        'COMMENT ON TABLE ' || n.nspname || '.' || c.relname || ' IS ' || \n" +
+                "        '''' || REPLACE(d.description, '''', '''''') || ''';' AS table_comment\n" +
+                "    FROM \n" +
+                "        pg_class c\n" +
+                "    JOIN pg_namespace n ON c.relnamespace = n.oid\n" +
+                "    LEFT JOIN pg_description d ON d.objoid = c.oid AND d.objsubid = 0\n" +
+                "    WHERE \n" +
+                "        c.relname = '"+dbTableName+"'\n" +
+                "        AND n.nspname = '"+schemaName+"'\n" +
+                "        AND d.description IS NOT NULL\n" +
                 ")\n" +
                 "SELECT \n" +
                 "    (SELECT table_def FROM table_definition) || \n" +
                 "    E'\\n' || \n" +
                 "    COALESCE((SELECT string_agg(index_def, E'\\n') FROM index_definitions), '') || \n" +
                 "    E'\\n' || \n" +
-                "    COALESCE((SELECT string_agg(column_comment, E'\\n') FROM column_comments), '') \n" +
+                "    COALESCE((SELECT string_agg(column_comment, E'\\n') FROM column_comments), '') || \n" +
+                "    E'\\n' || \n" +
+                "    COALESCE((SELECT table_comment FROM table_comment), '') \n" +
                 "AS full_table_definition;";
 
         ResultSet createResultSet = statement.executeQuery(createSql);
