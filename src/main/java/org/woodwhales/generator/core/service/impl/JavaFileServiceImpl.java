@@ -28,28 +28,28 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
     @Override
     public boolean process(GenerateTableInfos generateTableInfos) throws Exception {
         DataBaseInfo dataBaseInfo = generateTableInfos.getDataBaseInfo();
-        if (!dataBaseInfo.getGenerateCode()) {
+        if (!dataBaseInfo.getJavaCodeConfig().getGenerateCode()) {
             return true;
         }
 
-        Configuration configuration = this.initConfiguration("/template/java/" + lowerCase(dataBaseInfo.getOrm()));
+        Configuration configuration = this.initConfiguration("/template/java/" + lowerCase(dataBaseInfo.getJavaCodeConfig().getOrmConfig().getOrm()));
         HashMap<String, Object> dataModel = new HashMap<>(16);
         dataModel.put("settings", dataBaseInfo);
-        dataModel.put("packageName", dataBaseInfo.getPackageName());
+        dataModel.put("packageName", dataBaseInfo.getJavaCodeConfig().getPackageName());
         String targetFilePath = generateTableInfos.getJavaFile().getAbsolutePath();
 
-        final Boolean isCoverOldFile = dataBaseInfo.getOverCode();
+        final Boolean isCoverOldFile = dataBaseInfo.getJavaCodeConfig().getOverCode();
 
         for (TableInfo tableInfo : generateTableInfos.getTables()) {
             dataModel.put("table", tableInfo);
             // 生成entity
             this.entityProcess(dataModel, targetFilePath, tableInfo.getName(), generateTableInfos, configuration);
             // 生成mapper
-            this.process(dataModel, targetFilePath, "mapper", tableInfo.getName() + "Mapper", isCoverOldFile, configuration);
+            //this.process(dataModel, targetFilePath, "mapper", tableInfo.getName() + "Mapper", isCoverOldFile, configuration);
 
-            if (dataBaseInfo.getGenerateBatchMapper()) {
-                this.process(dataModel, targetFilePath, "batchmapper", "Batch" + tableInfo.getName() + "Mapper", isCoverOldFile, configuration);
-            }
+            //if (dataBaseInfo.getJavaCodeConfig().getGenerateBatchMapper()) {
+            //    this.process(dataModel, targetFilePath, "batchmapper", "Batch" + tableInfo.getName() + "Mapper", isCoverOldFile, configuration);
+            //}
 
             if (tableInfo.getKeys().size() > 0) {
                 dataModel.put("primaryKey", tableInfo.getKeys().get(0));
@@ -63,17 +63,17 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
                 dataModel.put("primaryKeyType", null);
             }
 
-            if (dataBaseInfo.getGenerateController()) {
-                // 生成controller
-                this.process(dataModel, targetFilePath, "controller", tableInfo.getName() + "Controller", isCoverOldFile, configuration);
-            }
+            //if (dataBaseInfo.getGenerateController()) {
+            //    // 生成controller
+            //    this.process(dataModel, targetFilePath, "controller", tableInfo.getName() + "Controller", isCoverOldFile, configuration);
+            //}
 
-            if (dataBaseInfo.getGenerateService()) {
-                // 生成service
-                this.process(dataModel, targetFilePath, "service", tableInfo.getName() + "Service", isCoverOldFile, configuration);
-                // 生成service.impl
-                this.process(dataModel, targetFilePath, "service.impl", tableInfo.getName() + "ServiceImpl", isCoverOldFile, configuration);
-            }
+            //if (dataBaseInfo.getGenerateService()) {
+            //    // 生成service
+            //    this.process(dataModel, targetFilePath, "service", tableInfo.getName() + "Service", isCoverOldFile, configuration);
+            //    // 生成service.impl
+            //    this.process(dataModel, targetFilePath, "service.impl", tableInfo.getName() + "ServiceImpl", isCoverOldFile, configuration);
+            //}
         }
         return true;
     }
@@ -82,17 +82,17 @@ public class JavaFileServiceImpl extends BaseFeeMarkerService implements FreeMar
                                   String fileName, GenerateTableInfos generateTableInfos, Configuration configuration) throws Exception {
         if (generateTableInfos.hasSuperClass()) {
             dataModel.put("hasSuperClass", generateTableInfos.hasSuperClass());
-            dataModel.put("superClass", generateTableInfos.getDataBaseInfo().getSuperClass());
+            dataModel.put("superClass", generateTableInfos.getDataBaseInfo().getJavaCodeConfig().getSuperClass());
             dataModel.put("superClassSimpleName", generateTableInfos.getSuperClassSimpleName());
         }
 
         if (generateTableInfos.hasInterfaceList()) {
             dataModel.put("hasInterfaceList", generateTableInfos.hasInterfaceList());
             dataModel.put("interfaceSimpleNameListString", generateTableInfos.getInterfaceSimpleNameListString());
-            dataModel.put("interfaceList", generateTableInfos.getDataBaseInfo().getInterfaceList());
+            dataModel.put("interfaceList", generateTableInfos.getDataBaseInfo().getJavaCodeConfig().getInterfaceList());
         }
 
-        Boolean overCode = generateTableInfos.getDataBaseInfo().getOverCode();
+        Boolean overCode = generateTableInfos.getDataBaseInfo().getJavaCodeConfig().getOverCode();
         return this.process(dataModel, targetFilePath, "entity", fileName, overCode, configuration);
     }
 

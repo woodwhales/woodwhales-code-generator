@@ -18,6 +18,6 @@ public class DbTableConfig {
     /**
      * 是否生成全部数据库表
      */
-    private Boolean selectAll;
+    private Boolean selectAll = Boolean.FALSE;
 
 }

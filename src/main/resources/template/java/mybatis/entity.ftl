@@ -23,7 +23,7 @@ import lombok.EqualsAndHashCode;
 </#if>
 
 /**
- * ${table.comment}
+ * ${table.comment!""}
 <#if settings.author??>
  *
  * @author ${settings.author} on ${settings.now}
@@ -40,12 +40,12 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 </#if>
 public class ${table.name} <#if superClassSimpleName??>extends ${superClassSimpleName} </#if>implements Serializable<#if hasInterfaceList??>, ${interfaceSimpleNameListString}</#if> {
-    
+
     private static final long serialVersionUID = 1L;
 
     <#list table.columns as column>
     /**
-     * ${column.comment}
+     * ${column.comment!""}
      */
     @Column(name = "${column.dbName}")
     private ${column.type} ${column.name};

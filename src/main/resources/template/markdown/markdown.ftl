@@ -7,7 +7,7 @@
 | 名称 | 数据类型 | 长度 | 允许NULL | 默认值 | 注释 | 备注说明 |
 | ---- | -------- | ---- | -------- | ------ | ---- | -------- |
 <#list table.columns as column>
-| ${column.dbName} | ${column.dbType} | ${column.columnSize} | ${column.nullableString} | ${column.defaultValue!''} | ${column.comment} |  |
+| ${column.dbName} | ${column.dbType} | ${column.columnSize!''} | ${column.nullableString} | ${column.defaultValue!''} | ${column.comment!''} |  |
 </#list>
 
 </#list>

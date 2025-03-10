@@ -1,5 +1,7 @@
 package org.woodwhales.generator.core.entity;
 
+import cn.hutool.json.JSONUtil;
+import cn.woodwhales.common.util.JsonUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +11,11 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.BeanUtils;
 import org.woodwhales.generator.core.constant.MyConstant;
 import org.woodwhales.generator.core.controller.request.BuildConnectionRequestBody;
+import org.woodwhales.generator.core.controller.request.DbTableConfig;
+import org.woodwhales.generator.core.controller.request.JavaCodeConfig;
+import org.woodwhales.generator.core.controller.request.MarkdownConfig;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -68,92 +72,19 @@ public class DataBaseInfo {
 	private String schema;
 
 	/**
-	 * 包名称
-	 */
-	private String packageName;
-
-	/**
-	 * 生成代码的目录
-	 */
-	private String generateDir;
-
-	/**
-	 * 是否生成数据库表结构设计文档
-	 */
-	private Boolean generateMarkdown;
-
-	/**
-	 * 是否覆盖markdown
-	 */
-	private Boolean overMarkdown;
-
-	/**
-	 * 是否生成代码
-	 */
-	private Boolean generateCode;
-
-	/**
-	 * 是否生成controller
-	 */
-	private Boolean generateController;
-
-	/**
-	 * 是否生成service
-	 */
-	private Boolean generateService;
-
-	/**
-	 * 是否生成BatchMapper
-	 */
-	private Boolean generateBatchMapper;
-
-	/**
-	 * 是否覆盖markdown
-	 */
-	private Boolean overCode;
-
-	/**
-	 * 要生成的数据库表名列表
-	 */
-	private List<String> dbNameList;
-
-	/**
-	 * 是否生成全部数据库表
-	 */
-	private Boolean selectAll;
-
-	/**
-	 * 父类
-	 */
-	private String superClass;
-
-	/**
-	 * 接口
-	 */
-	private List<String> interfaceList;
-
-	/**
-	 * 数据库表名
-	 */
-	private String dbName;
-
-	/**
-	 * 作者名称
-	 */
-	private String author;
-
-	/**
-	 * orm框架
-	 */
-	private String orm;
-
-	/**
 	 * 当前时间
 	 */
 	private String now;
 
+	private DbTableConfig dbTableConfig;
+
+	private JavaCodeConfig javaCodeConfig;
+
+	private MarkdownConfig markdownConfig;
+
+
 	public static DataBaseInfo convert(BuildConnectionRequestBody requestBody) {
-		DataBaseInfo dataBaseInfo = new DataBaseInfo();
+		DataBaseInfo dataBaseInfo = JsonUtils.toObject(JSONUtil.toJsonStr(requestBody), DataBaseInfo.class);
 		BeanUtils.copyProperties(requestBody, dataBaseInfo);
 		dataBaseInfo.setUsername(trimToEmpty(requestBody.getUsername()));
 		dataBaseInfo.setPassword(trimToEmpty(dataBaseInfo.getPassword()));
@@ -229,6 +160,6 @@ public class DataBaseInfo {
 	}
 
 	public String getAuthor() {
-		return StringUtils.trimToNull(this.author);
+		return StringUtils.trimToNull(this.javaCodeConfig.getAuthor());
 	}
 }

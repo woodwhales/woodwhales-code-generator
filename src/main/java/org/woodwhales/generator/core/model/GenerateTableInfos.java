@@ -63,7 +63,7 @@ public class GenerateTableInfos {
         // 设置 markdown 生成目录
         this.markdownFile = new File(generateDir);
         // 设置 java代码 生成目录
-        this.javaFile = this.getTargetFile(baseDirPath, this.dataBaseInfo.getPackageName());
+        this.javaFile = this.getTargetFile(baseDirPath, this.dataBaseInfo.getJavaCodeConfig().getPackageName());
     }
 
     /**
@@ -96,22 +96,22 @@ public class GenerateTableInfos {
 
     public String getSuperClassSimpleName() {
         if (hasSuperClass()) {
-            return StringUtils.substringAfterLast(this.dataBaseInfo.getSuperClass(), ".");
+            return StringUtils.substringAfterLast(this.dataBaseInfo.getJavaCodeConfig().getSuperClass(), ".");
         }
         return null;
     }
 
     public boolean hasSuperClass() {
-        return isNotBlank(this.dataBaseInfo.getSuperClass());
+        return isNotBlank(this.dataBaseInfo.getJavaCodeConfig().getSuperClass());
     }
 
     public boolean hasInterfaceList() {
-        return CollectionUtils.isNotEmpty(this.dataBaseInfo.getInterfaceList());
+        return CollectionUtils.isNotEmpty(this.dataBaseInfo.getJavaCodeConfig().getInterfaceList());
     }
 
     public String getInterfaceSimpleNameListString() {
         if (hasInterfaceList()) {
-            List<String> interfaceSimpleNameList = this.dataBaseInfo.getInterfaceList().stream()
+            List<String> interfaceSimpleNameList = this.dataBaseInfo.getJavaCodeConfig().getInterfaceList().stream()
                     .map(interfaceName -> StringUtils.substringAfterLast(interfaceName, "."))
                     .collect(Collectors.toList());
             return StringUtils.join(interfaceSimpleNameList, ", ");

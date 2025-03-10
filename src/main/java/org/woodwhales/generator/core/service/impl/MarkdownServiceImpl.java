@@ -4,7 +4,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.woodwhales.generator.core.entity.DataBaseInfo;
+import org.woodwhales.generator.core.controller.request.MarkdownConfig;
 import org.woodwhales.generator.core.model.GenerateTableInfos;
 import org.woodwhales.generator.core.service.FreeMarkerService;
 
@@ -23,8 +23,8 @@ public class MarkdownServiceImpl extends BaseFeeMarkerService implements FreeMar
     @Override
     public boolean process(GenerateTableInfos generateTableInfos) throws Exception {
 
-        DataBaseInfo dataBaseInfo = generateTableInfos.getDataBaseInfo();
-        if(!dataBaseInfo.getGenerateMarkdown()) {
+        MarkdownConfig markdownConfig = generateTableInfos.getDataBaseInfo().getMarkdownConfig();
+        if(!markdownConfig.getGenerateMarkdown()) {
             return true;
         }
 
@@ -33,13 +33,13 @@ public class MarkdownServiceImpl extends BaseFeeMarkerService implements FreeMar
 
         String targetFilePath = generateTableInfos.getMarkdownFile().getAbsolutePath();
 
-        String schema = dataBaseInfo.getSchema();
+        String schema = generateTableInfos.getDataBaseInfo().getSchema();
         String fileName = schema + "数据库表结构设计.md";
 
-        final Boolean isCoverOldFile = dataBaseInfo.getOverMarkdown();
+        final Boolean isCoverOldFile = markdownConfig.getOverMarkdown();
         HashMap<String, Object> dataModel = new HashMap<>(16);
         dataModel.put("tables", generateTableInfos.getTables());
-        dataModel.put("schema", dataBaseInfo.getSchema());
+        dataModel.put("schema", generateTableInfos.getDataBaseInfo().getSchema());
 
         return process(template, targetFilePath, fileName, dataModel, isCoverOldFile);
     }

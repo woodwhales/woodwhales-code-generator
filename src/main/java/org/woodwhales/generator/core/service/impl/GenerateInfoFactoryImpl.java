@@ -33,14 +33,14 @@ public class GenerateInfoFactoryImpl implements GenerateInfoFactory {
     @Override
     public GenerateTableInfos buildGenerateTableInfos(DataBaseRequestBody requestBody) throws Exception {
         // 检查目标文件目录是否为合法文件夹
-        String generateDir = requestBody.getGenerateDir();
+        String generateDir = requestBody.getJavaCodeConfig().getGenerateDir();
         File baseDir = checkBaseDirPath(generateDir);
 
         DataBaseInfo dataBaseInfo = DataBaseInfo.convert(requestBody);
 
-        List<String> interfaceList = requestBody.getInterfaceList();
+        List<String> interfaceList = requestBody.getJavaCodeConfig().getInterfaceList();
         if(CollectionUtils.isNotEmpty(interfaceList)) {
-            dataBaseInfo.setInterfaceList(interfaceList.stream().distinct().collect(Collectors.toList()));
+            dataBaseInfo.getJavaCodeConfig().setInterfaceList(interfaceList.stream().distinct().collect(Collectors.toList()));
         }
 
         // 获取数据库表结构信息

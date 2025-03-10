@@ -92,8 +92,8 @@ public class GenerateServiceImpl implements GenerateService {
 
 		// 生成代码
 		if(isProcess) {
-			final List<String> dbNameList = dataBaseInfo.getDbNameList();
-			final Boolean selectAll = dataBaseInfo.getSelectAll();
+			final List<String> dbNameList = dataBaseInfo.getDbTableConfig().getDbNameList();
+			final Boolean selectAll = dataBaseInfo.getDbTableConfig().getSelectAll();
 			// 不是全选，dbNameList不允许为空
 			if(!selectAll) {
 				Preconditions.checkArgument(CollectionUtils.isNotEmpty(dbNameList), "未选择要生成的数据库表");

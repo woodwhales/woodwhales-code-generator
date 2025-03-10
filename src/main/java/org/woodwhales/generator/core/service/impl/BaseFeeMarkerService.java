@@ -58,7 +58,7 @@ public abstract class BaseFeeMarkerService {
         try(FileWriter fw = new FileWriter(targetFileAbsoluteName, !isCoverOldFile)) {
             template.process(dataModel, fw);
         } catch (IOException | TemplateException e) {
-            log.error("生成文件异常，cause = {}", e.getCause().getMessage());
+            log.error("生成文件异常，cause = {}", e.getMessage(), e);
             return false;
         }
 
