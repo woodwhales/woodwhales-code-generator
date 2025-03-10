@@ -68,7 +68,7 @@ public class DataBaseRequestBody extends BuildConnectionRequestBody {
 	/**
 	 * 是否生成全部数据库表
 	 */
-	private Boolean selectAll;
+	private boolean selectAll = false;
 
 	/**
 	 * 父类
